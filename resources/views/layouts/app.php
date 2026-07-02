@@ -48,7 +48,7 @@ $leads = $leads ?? [
 ];
 ?>
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth overflow-x-hidden"
+<html lang="en" class="scroll-smooth overflow-x-clip"
     x-data="{ darkMode: document.documentElement.classList.contains('dark') }"
     @dark-toggle.window="darkMode = document.documentElement.classList.contains('dark')"
     :class="{ 'dark': darkMode }">
@@ -150,7 +150,7 @@ $leads = $leads ?? [
     </style>
 </head>
 
-<body class="bg-gray-50 text-gray-800 font-sans antialiased dark:bg-slate-900 dark:text-gray-100 transition-colors duration-300 overflow-x-hidden w-full">
+<body class="bg-gray-50 text-gray-800 font-sans antialiased dark:bg-slate-900 dark:text-gray-100 transition-colors duration-300 overflow-x-clip w-full">
 
     <header class="bg-white dark:bg-slate-800 border-b border-gray-100 dark:border-slate-700/50 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
