@@ -12,7 +12,6 @@ export function userForm({
     city = '',
     countryId = '',
     regionId = '',
-    userTypes = [],
     availableRoles = [],
     buttonLabel = 'Save',
     formId = 'users-form',
@@ -86,34 +85,6 @@ export function userForm({
             </div>
         </div>
         ` : ''}
-
-        <div class="p-4 bg-gray-50 dark:bg-gray-800/50 rounded-2xl border border-gray-100 dark:border-gray-800">
-            <label class="${labelClasses} mb-3 text-secondary-400 uppercase tracking-widest text-[10px]">User Roles / Account Types</label>
-            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
-                ${availableRoles
-            // 1. Filter out the Admin role (ID 1) so it never renders in the form
-            .filter(role => {
-                const roleId = role.id || role.user_type_id;
-                return Number(roleId) !== 1;
-            })
-            // 2. Map the remaining roles to the UI
-            .map(role => {
-                const roleId = role.id || role.user_type_id;
-                const isChecked = Array.isArray(userTypes) && userTypes.some(selectedId => selectedId == roleId);
-                const roleLabel = role.name || role.user_type || 'User';
-
-                return `
-                    <label class="flex items-center p-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 cursor-pointer hover:border-primary-400 transition-all group">
-                        <input type="checkbox" name="userTypeIds[]" value="${roleId}" ${isChecked ? 'checked' : ''} 
-                            class="w-4 h-4 text-primary-400 border-gray-300 rounded focus:ring-primary-400" />
-                        <span class="ml-2 text-[10px] font-bold text-gray-600 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white uppercase tracking-tight">
-                            ${roleLabel}
-                        </span>
-                    </label>
-                    `;
-            }).join('')}
-            </div>
-        </div>
 
         <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-800 space-y-4">
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400 ml-1">Location Details</h3>

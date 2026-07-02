@@ -4,7 +4,6 @@ import { Modal } from '../factories/modal-factory.js';
 import { userForm } from '../forms/user-form.js';
 import { fetchRegions } from '../api/regions-api.js';
 import { fetchCountries } from '../api/countries-api.js';
-import { fetchUserTypes } from '../api/user-types-api.js';
 import { enableDynamicRegionLoading } from '../components/regions-component.js';
 import { handleUserFormSubmission } from '../utils/users/form-submit.js';
 
@@ -19,7 +18,7 @@ function initFormFeatures(formId, mode, modalInstance) {
 
     // 1. Handle Submission (API calls, spinners, etc.)
     handleUserFormSubmission(form, mode, modalInstance);
-    
+
     // 2. Setup Dynamic Region/State dropdowns
     enableDynamicRegionLoading(formId);
 }
@@ -29,8 +28,7 @@ export async function openAddUserModal() {
     const countryId = ''; // No country selected by default for Add form
     const [countries, regions, availableRoles] = await Promise.all([
         fetchCountries(),
-        fetchRegions(countryId),
-        fetchUserTypes()
+        fetchRegions(countryId)
     ]);
 
     if (userModal) userModal.destroy();
@@ -63,7 +61,7 @@ export async function openEditUserModal(trigger) {
 
     const data = btn.dataset;
     const countryId = parseInt(data.countryId || '');
-    
+
     // 1. Parse the JSON string from data-user-type-ids
     // 2. Force them into Numbers to match the database IDs exactly
     let userTypeIds = [];
@@ -75,8 +73,7 @@ export async function openEditUserModal(trigger) {
 
     const [countries, regions, availableRoles] = await Promise.all([
         fetchCountries(),
-        fetchRegions(countryId),
-        fetchUserTypes()
+        fetchRegions(countryId)
     ]);
 
     if (userModal) userModal.destroy();
@@ -96,9 +93,9 @@ export async function openEditUserModal(trigger) {
             countryId: countryId,
             regionId: parseInt(data.regionId || 0),
             city: data.city,
-            isActive: data.isActive === "1", 
+            isActive: data.isActive === "1",
             // Pass the cleaned array of numbers
-            userTypes: userTypeIds, 
+            userTypes: userTypeIds,
             countries,
             regions,
             availableRoles,
@@ -128,13 +125,13 @@ export function initUsersModal() {
 
         // Handle Edit Button (Delegated for dynamic table rows)
         const editBtn = e.target.closest('.edit-user-btn');
-        
+
         // Prevention for profile-specific edits
         if (editBtn && editBtn.dataset.action === 'edit-user-profile') return;
 
         if (editBtn) {
             e.preventDefault();
-            e.stopPropagation(); 
+            e.stopPropagation();
             openEditUserModal(editBtn);
         }
     });

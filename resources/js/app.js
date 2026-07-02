@@ -24,7 +24,6 @@ import { initDarkMode } from './utils/dark-mode.js';
 import { LoginModal } from './modals/login-modal.js';
 import { LogoutModal } from './modals/logout-modal.js';
 import { ResetModal } from './modals/reset-modal.js';
-import { initSidebarToggle } from './utils/sidebar-utils.js';
 import { initHeaderIcons } from './ui/header-icons.js';
 import { initHeaderSearch } from './ui/header-search.js';
 import { initFooterLinks } from './ui/footer-links.js';
@@ -153,7 +152,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupScrollToTop();
   bindPartialLinks();
   initDarkMode();
-  initSidebarToggle();
   initFooterLinks();
 
   // Initialize modals

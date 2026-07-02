@@ -1,23 +1,13 @@
 [
   "about-page",
-  "access-tokens-page",
-  "apply-page",
   "contact-page",
   "faqs-page",
-  "get-started-page",
+  "gonachi-home-page",
   "history-page",
   "home-page",
-  "inspections-page",
   "messages-page",
-  "pmb-page",
   "profile-page",
-  "properties-page",
-  "rental-applications-page",
   "reset-password-page",
-  "services-page",
   "settings-page",
-  "subscriptions-page",
-  "testimonials-page",
-  "users-page",
-  "verify-account-page"
+  "users-page"
 ]

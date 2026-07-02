@@ -1,7 +1,6 @@
 // /resources/js/pages/about-page.js
 
 import { AnimationEngine } from '../utils/animations';
-import { initRegisterNewLandlord } from '../utils/home/register-new-landlord.js';
 
 /**
  * Initialize the About page events
@@ -9,7 +8,6 @@ import { initRegisterNewLandlord } from '../utils/home/register-new-landlord.js'
 export function init() {
     AnimationEngine.refresh();
     handleAboutScroll();
-    initRegisterNewLandlord();
 }
 
 /**

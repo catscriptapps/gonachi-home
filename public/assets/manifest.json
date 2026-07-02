@@ -22,54 +22,21 @@
     "file": "js/home-events.min.js",
     "name": "home-events",
     "imports": [
-      "_animations.min.js",
-      "_register-new-landlord.min.js"
+      "_animations.min.js"
     ]
   },
   "_modal-factory.min.js": {
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
   },
-  "_postal-formatter.min.js": {
-    "file": "js/postal-formatter.min.js",
-    "name": "postal-formatter"
-  },
-  "_preview.min.js": {
-    "file": "js/preview.min.js",
-    "name": "preview",
-    "imports": [
-      "_toast.min.js"
-    ]
-  },
   "_profile-modal.min.js": {
     "file": "js/profile-modal.min.js",
     "name": "profile-modal",
     "imports": [
       "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_table-pagination-count.min.js"
-    ]
-  },
-  "_regions-component.min.js": {
-    "file": "js/regions-component.min.js",
-    "name": "regions-component"
-  },
-  "_register-new-landlord.min.js": {
-    "file": "js/register-new-landlord.min.js",
-    "name": "register-new-landlord",
-    "imports": [
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
+      "_delete-factory.min.js"
     ]
   },
   "_spa-router.min.js": {
@@ -79,10 +46,6 @@
   "_spinner-utils.min.js": {
     "file": "js/spinner-utils.min.js",
     "name": "spinner-utils"
-  },
-  "_table-pagination-count.min.js": {
-    "file": "js/table-pagination-count.min.js",
-    "name": "table-pagination-count"
   },
   "_table-search.min.js": {
     "file": "js/table-search.min.js",
@@ -94,10 +57,6 @@
   "_toast.min.js": {
     "file": "js/toast.min.js",
     "name": "toast"
-  },
-  "_user-types-api.min.js": {
-    "file": "js/user-types-api.min.js",
-    "name": "user-types-api"
   },
   "resources/css/app.css": {
     "file": "css/app.min.css",
@@ -120,7 +79,6 @@
       "_spinner-utils.min.js",
       "_toast.min.js",
       "resources/js/pages/messages-page.js",
-      "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js"
     ],
@@ -134,42 +92,7 @@
     "src": "resources/js/pages/about-page.js",
     "isEntry": true,
     "imports": [
-      "_animations.min.js",
-      "_register-new-landlord.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
-    ]
-  },
-  "resources/js/pages/access-tokens-page.js": {
-    "file": "js/access-tokens-page.min.js",
-    "name": "access-tokens-page",
-    "src": "resources/js/pages/access-tokens-page.js",
-    "isEntry": true,
-    "imports": [
-      "_table-search.min.js",
-      "_table-pagination-count.min.js",
-      "_toast.min.js"
-    ]
-  },
-  "resources/js/pages/apply-page.js": {
-    "file": "js/apply-page.min.js",
-    "name": "apply-page",
-    "src": "resources/js/pages/apply-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js",
-      "_modal-factory.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js"
+      "_animations.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -191,30 +114,20 @@
       "_modal-factory.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_table-pagination-count.min.js",
-      "resources/js/utils/faqs/faq-accordion.js",
       "_delete-factory.min.js",
+      "resources/js/utils/faqs/faq-accordion.js",
       "_toast.min.js",
       "_table-search.min.js"
     ]
   },
-  "resources/js/pages/get-started-page.js": {
-    "file": "js/get-started-page.min.js",
-    "name": "get-started-page",
-    "src": "resources/js/pages/get-started-page.js",
+  "resources/js/pages/gonachi-home-page.js": {
+    "file": "js/gonachi-home-page.min.js",
+    "name": "gonachi-home-page",
+    "src": "resources/js/pages/gonachi-home-page.js",
     "isEntry": true,
     "imports": [
-      "_animations.min.js",
-      "_register-new-landlord.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
+      "_home-events.min.js",
+      "_animations.min.js"
     ]
   },
   "resources/js/pages/history-page.js": {
@@ -224,9 +137,8 @@
     "isEntry": true,
     "imports": [
       "_table-search.min.js",
-      "_table-pagination-count.min.js",
-      "_toast.min.js",
-      "_delete-factory.min.js"
+      "_delete-factory.min.js",
+      "_toast.min.js"
     ]
   },
   "resources/js/pages/home-page.js": {
@@ -236,25 +148,6 @@
     "isEntry": true,
     "imports": [
       "_home-events.min.js",
-      "_animations.min.js",
-      "_register-new-landlord.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
-    ]
-  },
-  "resources/js/pages/inspections-page.js": {
-    "file": "js/inspections-page.min.js",
-    "name": "inspections-page",
-    "src": "resources/js/pages/inspections-page.js",
-    "isEntry": true,
-    "imports": [
       "_animations.min.js"
     ]
   },
@@ -265,32 +158,11 @@
     "isEntry": true,
     "imports": [
       "_toast.min.js",
-      "_table-pagination-count.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_modal-factory.min.js",
       "_delete-factory.min.js",
-      "_animations.min.js"
-    ]
-  },
-  "resources/js/pages/pmb-page.js": {
-    "file": "js/pmb-page.min.js",
-    "name": "pmb-page",
-    "src": "resources/js/pages/pmb-page.js",
-    "isEntry": true,
-    "imports": [
-      "_home-events.min.js",
-      "_animations.min.js",
-      "_register-new-landlord.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
+      "_modal-factory.min.js",
+      "_animations.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -300,55 +172,13 @@
     "isEntry": true,
     "imports": [
       "_profile-modal.min.js",
-      "_preview.min.js",
       "_toast.min.js",
       "_spa-router.min.js",
       "_delete-factory.min.js",
       "_animations.min.js",
       "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_table-pagination-count.min.js"
-    ]
-  },
-  "resources/js/pages/properties-page.js": {
-    "file": "js/properties-page.min.js",
-    "name": "properties-page",
-    "src": "resources/js/pages/properties-page.js",
-    "isEntry": true,
-    "imports": [
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js",
-      "_delete-factory.min.js",
-      "_toast.min.js",
-      "_table-search.min.js",
-      "_preview.min.js"
-    ]
-  },
-  "resources/js/pages/rental-applications-page.js": {
-    "file": "js/rental-applications-page.min.js",
-    "name": "rental-applications-page",
-    "src": "resources/js/pages/rental-applications-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js",
-      "_register-new-landlord.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
-      "_toast.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_spa-router.min.js",
-      "_table-pagination-count.min.js",
-      "_postal-formatter.min.js"
+      "_spinner-utils.min.js"
     ]
   },
   "resources/js/pages/reset-password-page.js": {
@@ -362,39 +192,10 @@
       "_toast.min.js"
     ]
   },
-  "resources/js/pages/services-page.js": {
-    "file": "js/services-page.min.js",
-    "name": "services-page",
-    "src": "resources/js/pages/services-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js",
-      "_modal-factory.min.js",
-      "_toast.min.js"
-    ]
-  },
   "resources/js/pages/settings-page.js": {
     "file": "js/settings-page.min.js",
     "name": "settings-page",
     "src": "resources/js/pages/settings-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js"
-    ]
-  },
-  "resources/js/pages/subscriptions-page.js": {
-    "file": "js/subscriptions-page.min.js",
-    "name": "subscriptions-page",
-    "src": "resources/js/pages/subscriptions-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js"
-    ]
-  },
-  "resources/js/pages/testimonials-page.js": {
-    "file": "js/testimonials-page.min.js",
-    "name": "testimonials-page",
-    "src": "resources/js/pages/testimonials-page.js",
     "isEntry": true,
     "imports": [
       "_animations.min.js"
@@ -407,24 +208,12 @@
     "isEntry": true,
     "imports": [
       "_profile-modal.min.js",
-      "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_toast.min.js",
       "_table-search.min.js",
       "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_user-types-api.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js"
-    ]
-  },
-  "resources/js/pages/verify-account-page.js": {
-    "file": "js/verify-account-page.min.js",
-    "name": "verify-account-page",
-    "src": "resources/js/pages/verify-account-page.js",
-    "isEntry": true,
-    "imports": [
-      "_animations.min.js"
     ]
   },
   "resources/js/utils/faqs/faq-accordion.js": {
