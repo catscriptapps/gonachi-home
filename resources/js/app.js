@@ -8,6 +8,18 @@ import Alpine from 'alpinejs';
 import collapse from '@alpinejs/collapse';
 Alpine.plugin(collapse);
 
+// 2. Register global stores used by the layout (sidebar/header)
+Alpine.store('sidebar', {
+  expanded: localStorage.getItem('sidebar-expanded') !== 'false',
+});
+Alpine.effect(() => {
+  localStorage.setItem('sidebar-expanded', Alpine.store('sidebar').expanded);
+});
+
+Alpine.store('theme', {
+  isDark: document.documentElement.classList.contains('dark'),
+});
+
 // 3. Set global and start
 window.Alpine = Alpine;
 Alpine.start();

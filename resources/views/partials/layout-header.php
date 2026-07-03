@@ -48,7 +48,7 @@ declare(strict_types=1);
 
         <!-- Account Meta Details -->
         <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full bg-teal-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+            <div class="w-8 h-8 rounded-full bg-primary-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
                 R
             </div>
             <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:block">Agent Workspace</span>

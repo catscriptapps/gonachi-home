@@ -43,7 +43,7 @@ declare(strict_types=1);
 
     <div
         class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 transition-all duration-300 ease-in-out"
-        :class="$store.sidebar.expanded ? 'lg:pl-64' : 'lg:pl-24'">
+        :class="$store.sidebar.expanded ? 'pl-64' : 'pl-24'">
 
         <?php include __DIR__ . '/../partials/layout-header.php'; ?>
 
@@ -57,12 +57,15 @@ declare(strict_types=1);
                 </div>
 
                 <div id="gonachi-ad-feed" class="w-full mx-auto mt-6 hidden sm:block">
-                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 transition-colors duration-300">
+                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-4 transition-colors duration-300 overflow-hidden relative">
+                        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-primary-500 via-secondary-400 to-primary-500"></div>
                         <div class="flex items-center justify-between mb-2">
-                            <span class="text-xs font-semibold tracking-wider text-gray-400 dark:text-gray-500 uppercase">Sponsored Advertisement</span>
-                            <span class="text-xs text-gray-400 dark:text-gray-600 hover:underline cursor-pointer">Report Ad</span>
+                            <span class="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-950/40 px-2 py-0.5 rounded-full uppercase">
+                                Sponsored Advertisement
+                            </span>
+                            <span class="text-xs text-gray-400 dark:text-gray-600 hover:text-primary-600 dark:hover:text-primary-400 hover:underline cursor-pointer transition-colors">Report Ad</span>
                         </div>
-                        <div class="w-full min-h-[90px] flex items-center justify-center bg-gray-50 dark:bg-zinc-950 rounded-lg border border-dashed border-gray-300 dark:border-gray-800 overflow-hidden">
+                        <div class="w-full min-h-[90px] flex items-center justify-center bg-gradient-to-br from-primary-50/60 via-gray-50 to-secondary-50/60 dark:from-primary-950/20 dark:via-zinc-950 dark:to-secondary-950/20 rounded-lg border border-dashed border-primary-200 dark:border-gray-800 overflow-hidden">
                             <div id="ad-placement-slot-1"></div>
                         </div>
                     </div>

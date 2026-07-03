@@ -16,9 +16,9 @@ declare(strict_types=1);
         
         <!-- System Navigation Footprint Links -->
         <div class="flex space-x-6 text-xs font-medium text-gray-500 dark:text-gray-400">
-            <a href="#" class="hover:text-teal-600 transition-colors">Terms of Service</a>
-            <a href="#" class="hover:text-teal-600 transition-colors">Privacy Policy</a>
-            <a href="#" class="hover:text-teal-600 transition-colors">Data Collection Standards</a>
+            <a href="#" class="hover:text-primary-600 transition-colors">Terms of Service</a>
+            <a href="#" class="hover:text-primary-600 transition-colors">Privacy Policy</a>
+            <a href="#" class="hover:text-primary-600 transition-colors">Data Collection Standards</a>
         </div>
     </div>
 </footer>

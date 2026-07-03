@@ -15,9 +15,9 @@ declare(strict_types=1);
     <!-- Sidebar Header: Identity & Brand Logo -->
     <div class="h-16 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 justify-between">
         <a href="<?= $baseUrl ?>" class="flex items-center space-x-3 overflow-hidden">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-8 w-8 flex-shrink-0" />
-            <span 
-                class="font-bold text-xl tracking-tight text-gray-900 dark:text-white transition-opacity duration-200"
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-12 w-12 flex-shrink-0" />
+            <span
+                class="font-bold text-2xl tracking-tight text-gray-900 dark:text-white transition-opacity duration-200"
                 x-show="$store.sidebar.expanded"
                 x-transition:enter="delay-100 duration-200">
                 Gonachi
@@ -27,17 +27,17 @@ declare(strict_types=1);
 
     <!-- User Value Proposition Balance Tracker -->
     <div class="p-4 border-b border-gray-100 dark:border-gray-800/50" x-show="$store.sidebar.expanded">
-        <div class="bg-teal-50 dark:bg-teal-950/40 rounded-xl p-3 border border-teal-100 dark:border-teal-900/30">
+        <div class="bg-primary-50 dark:bg-primary-950/40 rounded-xl p-3 border border-primary-100 dark:border-primary-900/30">
             <div class="flex items-center justify-between">
-                <span class="text-xs text-teal-700 dark:text-teal-400 font-medium">Available Credits</span>
-                <span class="text-xs bg-teal-600 text-white font-bold px-2 py-0.5 rounded-full">12</span>
+                <span class="text-xs text-primary-700 dark:text-primary-400 font-medium">Available Credits</span>
+                <span class="text-xs bg-primary-600 text-white font-bold px-2 py-0.5 rounded-full">12</span>
             </div>
         </div>
     </div>
 
     <!-- Navigation Directory -->
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        <a href="<?= $baseUrl ?>" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-teal-500/10 text-teal-600 dark:text-teal-400 font-semibold group transition-colors">
+        <a href="<?= $baseUrl ?>" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-primary-500/10 text-primary-600 dark:text-primary-400 font-semibold group transition-colors">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>
