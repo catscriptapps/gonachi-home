@@ -3,146 +3,137 @@
 
 declare(strict_types=1);
 
-/** @var string $baseUrl  */
-
-use Src\Config\NavigationConfig;
-
-// Pull entirely centralized infrastructure matrices
-$icons              = NavigationConfig::getIcons();
-$servicesLinks      = NavigationConfig::getModuleLinks();
-$moduleLabels       = NavigationConfig::getModuleLabels();
-$moduleDescriptions = NavigationConfig::getModuleDescriptions();
-
-// Target matching metadata matching the rental application routing key
-$targetMatchKey = null;
-foreach ($servicesLinks as $name => $url) {
-    if (trim($url, '/') === 'rental-applications') {
-        $targetMatchKey = $name;
-        break;
-    }
-}
-
-// Extract dynamic titles or fallback gracefully to structural defaults
-$pipelineTitle   = $targetMatchKey ? ($moduleLabels[$targetMatchKey] ?? 'Initialize Application Framework') : 'Initialize Application Framework';
-$pipelineSummary = $targetMatchKey ? ($moduleDescriptions[$targetMatchKey] ?? 'Launch critical cloud lease infrastructure pipeline.') : 'Launch critical cloud lease infrastructure pipeline.';
+/**
+ * Gonachi Real Estate Lead Engine - Main Discovery Engine Viewport
+ */
 ?>
+<!-- Search Optimization Metadata Block -->
+<div class="space-y-6">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Active Property Requests</h1>
+            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Discover live home buyers and home sellers signaling real estate intent across active networks.</p>
+        </div>
+        
+        <!-- Live Counters -->
+        <div class="flex items-center space-x-4 bg-white dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
+            <div class="px-4 py-2 border-r border-gray-100 dark:border-gray-800 text-center">
+                <span class="block text-2xl font-bold text-teal-600">20</span>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Buyers</span>
+            </div>
+            <div class="px-4 py-2 text-center">
+                <span class="block text-2xl font-bold text-indigo-600">50</span>
+                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Sellers</span>
+            </div>
+        </div>
+    </div>
 
-<section class="relative overflow-hidden bg-gradient-to-b from-primary-300 via-white to-primary-200 text-slate-800 dark:from-slate-950 dark:via-black dark:to-slate-950 py-20 lg:py-28 px-6 sm:px-12 lg:px-24 xl:px-32 transition-colors duration-300 border-b border-slate-200 dark:border-slate-800 relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen max-w-[100vw]">
-    <div class="absolute inset-0 bg-[linear-gradient(to_right,#00000003_1px,transparent_1px),linear-gradient(to_bottom,#00000003_1px,transparent_1px)] dark:bg-[linear-gradient(to_right,#ffffff03_1px,transparent_1px),linear-gradient(to_bottom,#ffffff03_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none"></div>
+    <!-- Search Routing & Location Filtering Bar -->
+    <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <div class="w-full md:flex-1 relative">
+            <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </span>
+            <input type="text" placeholder="Search intent categories (e.g., 'Lagos House', 'Port Harcourt Land')..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-900 dark:text-white" />
+        </div>
+        <div class="w-full md:w-48">
+            <select class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-700 dark:text-gray-300">
+                <option value="">All Regions</option>
+                <option value="lagos">Lagos State</option>
+                <option value="abuja">Abuja FCT</option>
+                <option value="ph">Port Harcourt</option>
+            </select>
+        </div>
+    </div>
 
-    <div class="absolute -top-40 -right-20 w-[500px] h-[500px] bg-primary-500/[0.04] dark:bg-primary-500/[0.07] rounded-full blur-[140px] pointer-events-none"></div>
-    <div class="absolute -bottom-40 -left-20 w-[500px] h-[500px] bg-secondary-500/[0.02] dark:bg-secondary-500/[0.04] rounded-full blur-[140px] pointer-events-none"></div>
-
-    <div class="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-
-        <div class="flex flex-col space-y-5 lg:col-span-7" data-aos="fade-right" data-aos-duration="800">
-            <div class="inline-flex items-center gap-2">
-                <span class="h-1.5 w-1.5 rounded-full bg-primary-500 dark:bg-primary-400 animate-pulse"></span>
-                <p class="uppercase tracking-[0.25em] text-[10px] font-black text-primary-600 dark:text-primary-400">
-                    Platform Infrastructure
-                </p>
+    <!-- Active Feed Streams Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Primary Stream Listing Column (Spans 2 cols for visibility) -->
+        <div class="lg:col-span-2 space-y-4">
+            <div class="flex items-center justify-between">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recently Extracted Lead Activity</h3>
+                <span class="text-xs text-teal-600 bg-teal-50 dark:bg-teal-950/40 px-2 py-1 rounded font-medium">Real-time Stream</span>
             </div>
 
-            <h1 class="text-3xl sm:text-4xl xl:text-5xl font-black text-slate-900 dark:text-white tracking-tight leading-tight uppercase font-sans">
-                Engineered for High-Yield <br />
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-600 via-primary-500 to-indigo-600 dark:from-primary-400 dark:via-primary-300 dark:to-secondary-400">
-                    Property Oversight
-                </span>
-            </h1>
+            <!-- Lead Entry Item Box -->
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:border-teal-500/50 transition-all shadow-sm group">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                    <div>
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-teal-100 text-teal-800 dark:bg-teal-950 dark:text-teal-400">
+                            Home Buyer
+                        </span>
+                        <h4 class="text-base font-bold text-gray-900 dark:text-white mt-2 group-hover:text-teal-600 transition-colors">
+                            Seeking: 4 Bedroom Detached House
+                        </h4>
+                    </div>
+                    <span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap">11 Hours Ago</span>
+                </div>
+                
+                <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-3">
+                    <div>
+                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Target Target</span>
+                        <span class="font-medium text-gray-700 dark:text-gray-300">Lekki, Lagos</span>
+                    </div>
+                    <div>
+                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Intent Score</span>
+                        <span class="font-medium text-emerald-600 dark:text-emerald-400">High Engagement</span>
+                    </div>
+                    <div class="col-span-2 sm:col-span-1">
+                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Origin Source</span>
+                        <span class="font-medium text-gray-500 dark:text-gray-400">Public Request Board</span>
+                    </div>
+                </div>
 
-            <p class="text-slate-600 dark:text-slate-400 max-w-xl font-medium leading-relaxed">
-                Discover tools curated specifically to relieve structural strain from portfolio operations. This platform operates as a centralized asset management utility designed to instantly spin up deployment service modules on demand.
-            </p>
+                <div class="flex items-center justify-between pt-2">
+                    <span class="text-xs text-gray-400">Verified identity metadata is available.</span>
+                    <button class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-teal-600 dark:hover:bg-teal-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                        View Full Details
+                    </button>
+                </div>
+            </div>
 
-            <div class="pt-4 flex flex-wrap gap-4">
-                <?php
-                // Safely extract the public route definition for the Services section
-                $publicLinks = NavigationConfig::getNavLinks(false);
-                $servicesUrl = $publicLinks['Services']['url'] ?? '#operational-matrix';
-                ?>
-                <a href="<?= $servicesUrl ?>"
-                    data-partial
-                    data-title="Service Suite Modules"
-                    data-summary="Deploy critical cloud micro-infrastructure optimized to secure rental tenants and shield field inventory objects."
-                    class="inline-flex items-center justify-center px-5 py-2.5 rounded-lg bg-primary-600 hover:bg-primary-700 text-white dark:bg-primary-500 dark:hover:bg-primary-600 dark:text-slate-950 font-bold shadow-md shadow-primary-500/10 transition-all duration-300 font-sans tracking-wide uppercase text-xs">
-                    Explore Core Modules
+            <!-- Example of a Lead locked behind Conversion Gate flow -->
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 relative overflow-hidden shadow-sm">
+                <div class="blur-[2px] opacity-40 select-none pointer-events-none">
+                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">Home Seller</span>
+                    <h4 class="text-base font-bold mt-2">Duplex Property for Outright Sale</h4>
+                    <div class="grid grid-cols-2 gap-4 my-3 text-sm">
+                        <div><span class="block text-xs font-semibold text-gray-400">Location</span><span>Ikeja, Lagos</span></div>
+                    </div>
+                </div>
+                
+                <!-- Intercept Conversion Prompt Screen overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-white via-white/95 to-white/80 dark:from-gray-900 dark:via-gray-900/95 dark:to-gray-900/80 flex flex-col items-center justify-center p-6 text-center">
+                    <svg class="h-8 w-8 text-teal-600 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                    <h5 class="text-sm font-bold text-gray-900 dark:text-white">Full Information Gated</h5>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 max-w-sm mt-1 mb-3">Unlock complete records including active contact links by starting your profile account.</p>
+                    <div class="flex items-center space-x-3">
+                        <a href="#" class="px-4 py-1.5 bg-teal-600 hover:bg-teal-500 text-white text-xs font-bold rounded-lg transition-all shadow-sm">Start Free Trial</a>
+                        <a href="#" class="px-4 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-xs font-semibold rounded-lg transition-all">Sign In</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SEO/Scalable Landing Category Sidebar Column -->
+        <div class="space-y-4">
+            <h3 class="text-lg font-bold text-gray-900 dark:text-white">Hot Category Targets</h3>
+            <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
+                <a href="<?= $baseUrl ?>home-buyers-lagos" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                    <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-teal-600">Home Buyers in Lagos</span>
+                    <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="<?= $baseUrl ?>home-sellers-lagos" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                    <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-teal-600">Home Sellers in Lagos</span>
+                    <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+                <a href="<?= $baseUrl ?>property-investors-abuja" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                    <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-teal-600">Property Investors in Abuja</span>
+                    <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
             </div>
         </div>
 
-        <div class="lg:col-span-5 bg-white/90 dark:bg-secondary-950/40 border-2 border-slate-200/80 dark:border-secondary-900 shadow-2xl rounded-3xl p-6 sm:p-8 backdrop-blur-md relative" data-aos="fade-left" data-aos-duration="800" data-aos-delay="150">
-            <div class="space-y-6">
-                <div class="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-secondary-900">
-                    <div class="flex flex-col">
-                        <span class="text-[10px] font-black text-primary-600 dark:text-primary-400 uppercase tracking-widest">Verification Node</span>
-                        <h2 class="text-base font-black text-slate-900 dark:text-white uppercase font-sans tracking-tight mt-0.5">Tenant Portal Gateway</h2>
-                    </div>
-                    <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-700 dark:bg-primary-950/40 dark:text-primary-400 border border-slate-200 dark:border-primary-900/50">Secure Sync</span>
-                </div>
-
-                <form id="tenant-token-form" class="space-y-3" autocomplete="off">
-                    <label for="access_token" class="block text-[10px] font-black uppercase tracking-wider text-slate-400 dark:text-secondary-500">
-                        Enter Secured Access Token or Link Key
-                    </label>
-                    <div class="relative flex items-center">
-                        <div class="absolute left-4 text-slate-400 dark:text-secondary-600 pointer-events-none">
-                            <i class="fa-solid fa-key text-xs"></i>
-                        </div>
-                        <input
-                            type="text"
-                            id="access_token"
-                            name="access_token"
-                            placeholder="TK-2026-XXXX"
-                            required
-                            class="w-full pl-10 pr-24 py-3 text-xs font-bold font-mono uppercase tracking-widest rounded-xl bg-slate-50 dark:bg-primary-950 border-2 border-slate-200 dark:border-primary-900 text-slate-900 dark:text-white focus:outline-none focus:border-primary-500 dark:focus:border-primary-400 transition-all placeholder:text-slate-300 dark:placeholder:text-primary-900" />
-                        <button
-                            type="submit"
-                            id="tenant-token-submit"
-                            class="absolute right-2 px-3 py-1.5 rounded-lg bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white dark:text-slate-950 text-[10px] font-black uppercase tracking-wider transition-all duration-200 shadow-sm shadow-primary-500/10">
-                            Track Node
-                        </button>
-                    </div>
-                    <div id="tenant-token-message" class="hidden text-[10px] font-bold uppercase tracking-wide"></div>
-                </form>
-
-                <div class="relative flex py-2 items-center">
-                    <div class="flex-grow border-t border-slate-100 dark:border-secondary-900"></div>
-                    <span class="flex-shrink mx-4 text-[9px] font-black uppercase tracking-[0.2em] text-slate-300 dark:text-secondary-700">OR</span>
-                    <div class="flex-grow border-t border-slate-100 dark:border-secondary-900"></div>
-                </div>
-
-                <div class="space-y-3">
-                    <div class="rounded-xl bg-slate-50/50 dark:bg-primary-950/20 border border-slate-100 dark:border-primary-950 p-4 text-center">
-                        <p class="text-xs text-slate-500 dark:text-secondary-400 font-medium leading-normal mb-3">
-                            No access vector assigned yet? Spin up a verified, cloud-isolated residential lease processing log directly into your landlord's asset portfolio ecosystem.
-                        </p>
-                        <a href="<?php echo $baseUrl; ?>rental-applications"
-                            data-partial
-                            data-title="<?= htmlspecialchars($pipelineTitle) ?>"
-                            data-summary="<?= htmlspecialchars($pipelineSummary) ?>"
-                            class="inline-flex w-full items-center justify-center gap-2 px-4 py-2.5 rounded-xl border-2 border-secondary-500/30 dark:border-secondary-500/20 bg-secondary-500/5 hover:bg-secondary-500/10 text-secondary-700 dark:text-secondary-400 text-xs font-black uppercase tracking-wider transition-all duration-200">
-                            <i class="fa-solid fa-file-signature text-xs"></i>
-                            Launch Rental Pipeline
-                        </a>
-                    </div>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 pt-1 border-t border-slate-100 dark:border-secondary-900 text-left">
-                    <div class="p-3 rounded-xl bg-slate-50/50 dark:bg-primary-950/10 border border-slate-100 dark:border-primary-950">
-                        <span class="text-[9px] text-slate-400 dark:text-primary-600 block uppercase font-bold tracking-wide">Sync State</span>
-                        <span class="text-xs font-black text-slate-700 dark:text-white font-sans flex items-center gap-1.5 mt-0.5">
-                            <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Active Node
-                        </span>
-                    </div>
-                    <div class="p-3 rounded-xl bg-slate-50/50 dark:bg-primary-950/10 border border-slate-100 dark:border-primary-950">
-                        <span class="text-[9px] text-slate-400 dark:text-primary-600 block uppercase font-bold tracking-wide">Latency Matrix</span>
-                        <span class="text-xs font-black text-primary-600 dark:text-primary-400 font-sans block mt-0.5">0.02ms Response</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </div>
-</section>
-
-<?php include __DIR__ . "/../components/general/operational-matrix.php"; ?>
+</div>
