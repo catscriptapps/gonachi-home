@@ -61,3 +61,6 @@ Thumbs.db
 *.gif
 server/storage/inspections/YTFFEM.pdf
 server/storage/
+
+# Lead extraction cron lock file
+scripts/cron/.lead-extraction.lock
