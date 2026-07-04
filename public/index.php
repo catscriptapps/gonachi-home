@@ -118,8 +118,9 @@ if ($isPartial) {
 // Final Step: Full layout rendering
 // The portal layout is the umbrella "hub" shell (landing page + cross-project
 // placeholder pages). Each live project renders in its own app shell.
-$portalPaths = ['/home', '/landlord-tenant-validation'];
+$portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding'];
+$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities'];
 
 if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/db-reset.php';
@@ -127,6 +128,8 @@ if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/portal.php';
 } elseif (in_array($path, $contractorPaths, true)) {
     include __DIR__ . '/../resources/views/layouts/contractor-app.php';
+} elseif (in_array($path, $landlordPaths, true)) {
+    include __DIR__ . '/../resources/views/layouts/landlord-app.php';
 } else {
     include __DIR__ . '/../resources/views/layouts/app.php';
 }
