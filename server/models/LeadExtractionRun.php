@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadExtractionRun extends Model
 {
-    protected $table = 'lead_extraction_runs';
+    protected $table = 'rel_lead_extraction_runs';
 
     protected $fillable = [
         'lead_source_id',

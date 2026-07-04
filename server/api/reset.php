@@ -19,30 +19,24 @@ Capsule::schema()->disableForeignKeyConstraints();
  * This ensures we don't have "ghost" tables blocking the reset scripts.
  */
 $tablesToDrop = [
-    'landlord_services',
-
-    // Dynamic Transactional Pipelines
-    'access_tokens',
-    'tenants',
-    'subscriptions',
-    'properties_pics',
-    'properties',
-    'landlords',
-
-    // Authentication & Core
+    // Authentication & Core (shared across every project)
     'password_resets',
-    'user_verifications', // Added here to ensure it gets cleared out aggressively
+    'user_verifications',
     'messages',
     'recent_activities',
     'users',
-    'user_types',
 
     // Static/Lookup Tables
-    'cities',
     'regions',
     'countries',
     'faqs',
-    'services',
+
+    // Project: real-estate-leads
+    'rel_lead_extraction_runs',
+    'rel_leads',
+    'rel_lead_sources',
+    'rel_lead_categories',
+    'rel_locations',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -52,27 +46,17 @@ foreach ($tablesToDrop as $table) {
 $messages[] = "database cleared: All dependent and parent tables dropped.";
 
 /**
- * 3. CREATION PHASE - LEVEL 1: LOOKUPS & INDEPENDENT PARENTS
- * These must exist first because other tables reference them.
+ * 3. CREATION PHASE - SHARED (used by every project under gonachi-home)
  */
-
-// Core Users & Types
-require_once __DIR__ . '/../../scripts/reset/user-types.php';
-$messages = array_merge($messages, resetUserTypesTable());
-
 require_once __DIR__ . '/../../scripts/reset/countries.php';
 $messages = array_merge($messages, resetCountriesTable());
 
 require_once __DIR__ . '/../../scripts/reset/regions.php';
 $messages = array_merge($messages, resetRegionsTable());
 
-require_once __DIR__ . '/../../scripts/reset/cities.php';
-$messages = array_merge($messages, resetCitiesTable());
-
 require_once __DIR__ . '/../../scripts/reset/users.php';
 $messages = array_merge($messages, resetUsersTable());
 
-// Support & Transient Auth Tables
 require_once __DIR__ . '/../../scripts/reset/recent-activities.php';
 $messages = array_merge($messages, resetRecentActivitiesTable());
 
@@ -82,41 +66,32 @@ $messages = array_merge($messages, resetFaqsTable());
 require_once __DIR__ . '/../../scripts/reset/password-resets.php';
 $messages = array_merge($messages, resetPasswordResetsTable());
 
-// Placed directly next to password resets following your dash naming standards
 require_once __DIR__ . '/../../scripts/reset/user-verifications.php';
 $messages = array_merge($messages, resetUserVerificationsTable());
 
 require_once __DIR__ . '/../../scripts/reset/messages.php';
 $messages = array_merge($messages, resetMessagesTable());
 
-
 /**
- * 4. CREATION PHASE - LEVEL 2: PROPERTY CORE INFRASTRUCTURE
- * Construct operational profiles, active assets, and downstream pipeline variables.
+ * 4. CREATION PHASE - PROJECT: real-estate-leads (rel_ prefixed tables)
  */
-require_once __DIR__ . '/../../scripts/reset/landlords.php';
-$messages = array_merge($messages, resetLandlordsTable());
+require_once __DIR__ . '/../../scripts/reset/rel-locations.php';
+$messages = array_merge($messages, resetRelLocationsTable());
 
-require_once __DIR__ . '/../../scripts/reset/subscriptions.php';
-$messages = array_merge($messages, resetSubscriptionsTable());
+require_once __DIR__ . '/../../scripts/reset/rel-lead-categories.php';
+$messages = array_merge($messages, resetRelLeadCategoriesTable());
 
-require_once __DIR__ . '/../../scripts/reset/properties.php';
-$messages = array_merge($messages, resetPropertiesTable());
+require_once __DIR__ . '/../../scripts/reset/rel-lead-sources.php';
+$messages = array_merge($messages, resetRelLeadSourcesTable());
 
-require_once __DIR__ . '/../../scripts/reset/properties-pics.php';
-$messages = array_merge($messages, resetPropertyPicsTable());
+require_once __DIR__ . '/../../scripts/reset/rel-leads.php';
+$messages = array_merge($messages, resetRelLeadsTable());
 
-require_once __DIR__ . '/../../scripts/reset/services.php';
-$messages = array_merge($messages, resetServicesTable());
+require_once __DIR__ . '/../../scripts/reset/rel-lead-extraction-runs.php';
+$messages = array_merge($messages, resetRelLeadExtractionRunsTable());
 
-require_once __DIR__ . '/../../scripts/reset/landlord-services.php';
-$messages = array_merge($messages, resetLandlordServiceTable());
-
-require_once __DIR__ . '/../../scripts/reset/access-tokens.php';
-$messages = array_merge($messages, resetAccessTokensTable());
-
-require_once __DIR__ . '/../../scripts/reset/tenants.php';
-$messages = array_merge($messages, resetTenantsTable());
+require_once __DIR__ . '/../../scripts/reset/rel-seed.php';
+$messages = array_merge($messages, seedRelLeadsBaselineData());
 
 
 /**

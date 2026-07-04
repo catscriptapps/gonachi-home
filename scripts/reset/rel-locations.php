@@ -1,12 +1,12 @@
 <?php
-// /scripts/reset/locations.php
+// /scripts/reset/rel-locations.php
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 use App\Models\Location;
 
-function resetLocationsTable(): array
+function resetRelLocationsTable(): array
 {
     $messages = [];
 

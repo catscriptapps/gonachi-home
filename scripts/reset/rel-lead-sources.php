@@ -1,12 +1,12 @@
 <?php
-// /scripts/reset/lead-sources.php
+// /scripts/reset/rel-lead-sources.php
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 use App\Models\LeadSource;
 
-function resetLeadSourcesTable(): array
+function resetRelLeadSourcesTable(): array
 {
     $messages = [];
 

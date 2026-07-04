@@ -1,12 +1,12 @@
 <?php
-// /scripts/reset/leads.php
+// /scripts/reset/rel-leads.php
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 use App\Models\Lead;
 
-function resetLeadsTable(): array
+function resetRelLeadsTable(): array
 {
     $messages = [];
 

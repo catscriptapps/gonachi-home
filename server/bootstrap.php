@@ -44,6 +44,12 @@ Paginator::currentPageResolver(function ($pageName = 'page') {
     return isset($_GET[$pageName]) ? (int) $_GET[$pageName] : 1;
 });
 
+// Without this, nextPageUrl()/previousPageUrl() default to '/' on every page
+// (Illuminate's default resolver, since this app has no request-aware container).
+Paginator::currentPathResolver(function () {
+    return strtok($_SERVER['REQUEST_URI'] ?? '/', '?');
+});
+
 Paginator::defaultView('pagination::default');
 Paginator::defaultSimpleView('pagination::simple-default');
 

@@ -172,6 +172,24 @@ class NavigationConfig
             $base . '/profile',
             $base . '/users',
             $base . '/properties',
+            $base . '/lead-review',
+        ];
+    }
+
+    /**
+     * Paths that require AuthService::isAdmin(), beyond the generic
+     * login/app-access model in authLinks(). Checked in index.php before
+     * any layout output starts (a page-level header() redirect can't work —
+     * the layout already echoes the sidebar/header before including the
+     * page file).
+     * @return string[]
+     */
+    public static function getAdminOnlyPaths(): array
+    {
+        $base = $_ENV['APP_BASE_PATH'] ?? '';
+
+        return [
+            $base . '/lead-review',
         ];
     }
 

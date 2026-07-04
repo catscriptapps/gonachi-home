@@ -1,12 +1,12 @@
 <?php
-// /scripts/reset/lead-extraction-runs.php
+// /scripts/reset/rel-lead-extraction-runs.php
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 use App\Models\LeadExtractionRun;
 
-function resetLeadExtractionRunsTable(): array
+function resetRelLeadExtractionRunsTable(): array
 {
     $messages = [];
 

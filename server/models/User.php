@@ -45,7 +45,7 @@ class User extends Model
         'avatar_url',
         'email_verified',
         'timestamp',
-        'user_type_ids', // Stores role array (e.g. [1, 4])
+        'user_type_ids', // Stores role array (e.g. [1, 2])
     ];
 
     /**

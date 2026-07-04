@@ -42,8 +42,7 @@ function resetUsersTable(): array
 
         $messages[] = "recreated 'users' table with correct legacy fields.";
 
-        // 3. YOUR IDEAL MAPPING ARRAY
-        // Paste your [[user_id, type_id], ...] data here
+        // 3. IDEAL MAPPING ARRAY
         $legacyMappings = [
 
             [1, 1],
@@ -67,7 +66,7 @@ function resetUsersTable(): array
         $usersData = [
 
             [1, 'Cat', 'Nduanya', 'mindofcat@hotmail.com', 39, 866, 'Barrie', '7QESZL', '$2y$10$n7WqLLBr3SPk/A7jgK8nt.Rke6dZ5VGsX9E5tDGL1p0XYAJpHudNy', 1, '2023-07-29', '2026-02-18 19:48:54', null, 1, '2023-07-29 14:29:33'],
-            [2, 'Richard', 'Brisson', 'richard@pmbrokers.ca', 39, 866, 'Sudbury', '', '$2y$10$WHQkT.ddJe/PnIA1a1ruM.pOfQpt6WlHBts5yn.4PmHhHEfDYV0SK', 1, '2023-07-29', '2024-07-15 12:04:45', null, 1, '2024-06-19 18:06:43'],
+            [2, 'Elas', 'Abone', 'chyigwe@yahoo.com', 39, 866, 'Ajax', '', '$2y$10$WHQkT.ddJe/PnIA1a1ruM.pOfQpt6WlHBts5yn.4PmHhHEfDYV0SK', 1, '2023-07-29', '2024-07-15 12:04:45', null, 1, '2024-06-19 18:06:43'],
         ];
 
         // 6. Loop and Insert

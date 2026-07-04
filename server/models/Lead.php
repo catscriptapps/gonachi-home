@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
 {
-    protected $table = 'leads';
+    protected $table = 'rel_leads';
 
     protected $fillable = [
         'lead_source_id',

@@ -96,6 +96,13 @@ if (in_array($fullPath, $protectedPaths, true)) {
     }
 }
 
+// Admin-only route guard (separate from the generic app-access model above,
+// since these paths aren't registered in NavigationConfig::authLinks()).
+if (in_array($fullPath, NavigationConfig::getAdminOnlyPaths(), true) && !AuthService::isAdmin()) {
+    header("Location: " . $baseUrl . "access-denied");
+    exit;
+}
+
 // ------------------------------------------------------------
 // Page route handling
 // ------------------------------------------------------------

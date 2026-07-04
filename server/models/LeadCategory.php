@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class LeadCategory extends Model
 {
-    protected $table = 'lead_categories';
+    protected $table = 'rel_lead_categories';
 
     protected $fillable = [
         'name',
