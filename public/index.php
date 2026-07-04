@@ -43,11 +43,6 @@ if ($isAdminReset === true) {
     $currentUser = $isLoggedIn ? AuthService::currentUser() : null;
 }
 
-// Redirect logged-in users away from home
-if ($path === '/home' && $isLoggedIn) {
-    $path = '/dashboard';
-}
-
 // Serve static assets directly
 $assetFile = __DIR__ . $path;
 if (is_file($assetFile)) {
@@ -121,8 +116,17 @@ if ($isPartial) {
 }
 
 // Final Step: Full layout rendering
+// The portal layout is the umbrella "hub" shell (landing page + cross-project
+// placeholder pages). Each live project renders in its own app shell.
+$portalPaths = ['/home', '/landlord-tenant-validation'];
+$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding'];
+
 if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/db-reset.php';
+} elseif (in_array($path, $portalPaths, true)) {
+    include __DIR__ . '/../resources/views/layouts/portal.php';
+} elseif (in_array($path, $contractorPaths, true)) {
+    include __DIR__ . '/../resources/views/layouts/contractor-app.php';
 } else {
     include __DIR__ . '/../resources/views/layouts/app.php';
 }

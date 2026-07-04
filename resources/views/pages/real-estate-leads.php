@@ -1,5 +1,5 @@
 <?php
-// /resources/views/pages/home.php
+// /resources/views/pages/real-estate-leads.php
 
 declare(strict_types=1);
 
