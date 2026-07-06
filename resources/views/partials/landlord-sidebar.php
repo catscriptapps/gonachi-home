@@ -53,6 +53,9 @@ declare(strict_types=1);
             </svg>
             <span x-show="$store.sidebar.expanded" class="text-sm">Rental Opportunities</span>
         </a>
+
+        <?php $currentProjectSlug = 'landlord-tenant-validation'; ?>
+        <?php include __DIR__ . '/project-switcher.php'; ?>
     </nav>
 
     <!-- Sidebar Collapsing Action Footer -->

@@ -10,32 +10,12 @@ declare(strict_types=1);
  * front door that routes a visitor to one.
  */
 
-$projects = [
-    [
-        'name' => 'Real Estate Leads',
-        'tagline' => 'Find people who are actively looking to buy or sell property.',
-        'href' => $baseUrl . 'real-estate-leads',
-        'status' => 'live',
-        'accent' => 'primary',
-        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />',
-    ],
-    [
-        'name' => 'Contractor Discovery',
-        'tagline' => 'The largest searchable contractor database and job marketplace in Nigeria.',
-        'href' => $baseUrl . 'contractor-discovery',
-        'status' => 'live',
-        'accent' => 'secondary',
-        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />',
-    ],
-    [
-        'name' => 'Landlord & Tenant Validation',
-        'tagline' => 'A searchable database of landlord and tenant records — a credit bureau, but for renting.',
-        'href' => $baseUrl . 'landlord-tenant-validation',
-        'status' => 'live',
-        'accent' => 'indigo',
-        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />',
-    ],
-];
+use Src\Config\ProjectsConfig;
+
+$projects = array_map(
+    fn(array $project) => $project + ['href' => $baseUrl . $project['slug']],
+    ProjectsConfig::all()
+);
 
 $accentClasses = [
     'primary' => [
@@ -108,7 +88,7 @@ $heroSlotPercent = $slideCount > 0 ? 100 / $slideCount : 100;
     <?php endif; ?>
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-32 sm:pb-44">
-        <div class="text-center max-w-2xl mx-auto">
+        <div class="text-center max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800">
             <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">Gonachi</span>
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
                 One platform. Three engines built to find opportunity.
@@ -122,9 +102,10 @@ $heroSlotPercent = $slideCount > 0 ? 100 / $slideCount : 100;
 
 <div class="relative -mt-20 sm:-mt-28 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
-        <?php foreach ($projects as $project): ?>
+        <?php foreach ($projects as $index => $project): ?>
             <?php $accent = $accentClasses[$project['accent']]; ?>
             <a href="<?= htmlspecialchars($project['href']) ?>"
+                data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>"
                 class="group relative flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                 <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r <?= $accent['bar'] ?>"></div>
 
@@ -163,18 +144,20 @@ $heroSlotPercent = $slideCount > 0 ? 100 / $slideCount : 100;
 <!-- Unified Summary: the three projects, tied together in one story -->
 <section class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-20 sm:py-28">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">The Big Picture</span>
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white max-w-3xl mx-auto">
-            Three engines. One idea: turn public information into opportunity.
-        </h2>
-        <p class="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-            Every Gonachi project follows the same playbook — continuously surface signals hiding in plain sight across the public web, structure them into something searchable, and put the right person in front of the right opportunity. Real estate leads for realtors. Verified contractors for property owners. Landlord and tenant records for renters.
-        </p>
+        <div data-aos="fade-up" data-aos-duration="800">
+            <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">The Big Picture</span>
+            <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white max-w-3xl mx-auto">
+                Three engines. One idea: turn public information into opportunity.
+            </h2>
+            <p class="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
+                Every Gonachi project follows the same playbook — continuously surface signals hiding in plain sight across the public web, structure them into something searchable, and put the right person in front of the right opportunity. Real estate leads for realtors. Verified contractors for property owners. Landlord and tenant records for renters.
+            </p>
+        </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-4xl mx-auto">
-            <?php foreach ($projects as $project): ?>
+            <?php foreach ($projects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
-                <div class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">
+                <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>" class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 <?= $accent['icon'] ?>">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><?= $project['icon'] ?></svg>
                     </div>

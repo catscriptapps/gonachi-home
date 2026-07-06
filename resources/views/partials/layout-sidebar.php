@@ -72,6 +72,9 @@ declare(strict_types=1);
                 <span x-show="$store.sidebar.expanded" class="text-sm">Lead Review Queue</span>
             </a>
         <?php endif; ?>
+
+        <?php $currentProjectSlug = 'real-estate-leads'; ?>
+        <?php include __DIR__ . '/project-switcher.php'; ?>
     </nav>
 
     <!-- Sidebar Collapsing Action Footer -->
