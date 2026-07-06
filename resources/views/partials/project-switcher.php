@@ -20,7 +20,7 @@ $switcherIconClasses = [
 ];
 ?>
 <div class="mt-10" x-show="$store.sidebar.expanded">
-    <p class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-600">Switch Project</p>
+    <p class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-600">&nbsp;</p>
     <div class="bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 rounded-2xl p-2 space-y-1">
         <?php foreach (ProjectsConfig::all() as $project): ?>
             <?php $isCurrent = $project['slug'] === $currentProjectSlug; ?>

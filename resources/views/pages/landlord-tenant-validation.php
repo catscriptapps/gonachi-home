@@ -12,6 +12,10 @@ declare(strict_types=1);
  * mirroring how Real Estate Leads and Contractor Discovery both started.
  */
 
+use Src\Utils\CuratedPhotos;
+
+$slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
+
 $opportunities = [
     ['area' => 'Lekki', 'count' => 50],
     ['area' => 'Yaba', 'count' => 30],
@@ -20,27 +24,37 @@ $opportunities = [
 ?>
 <div class="max-w-5xl mx-auto space-y-12">
 
-    <!-- Hero -->
-    <div class="text-center max-w-2xl mx-auto pt-4">
-        <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-            Check If Your Landlord Has Previous Complaints — Before Renting
-        </h1>
-        <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-            A searchable record of landlords and tenants in Nigeria. Report a problem, help the next renter, and unlock the rental opportunity feed.
-        </p>
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden rounded-3xl shadow-sm">
+        <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>
+        <?php if (!empty($slideshowImages)): ?>
+            <div class="absolute inset-0 bg-gray-50/85 dark:bg-gray-950/85"></div>
+        <?php else: ?>
+            <div class="absolute inset-0 bg-white dark:bg-gray-900"></div>
+        <?php endif; ?>
 
-        <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
-            <button class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition-colors shadow-sm">
-                Report A Landlord
-            </button>
-            <div class="w-full sm:w-80 relative">
-                <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
-                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                </span>
-                <input type="text" placeholder="Search a landlord or address..." class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+        <div class="relative text-center max-w-2xl mx-auto px-6 py-14 sm:py-20">
+            <span class="inline-block text-xs font-semibold tracking-[0.2em] text-indigo-600 dark:text-indigo-400 uppercase mb-3">Landlord & Tenant Validation</span>
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
+                Check If Your Landlord Has Previous Complaints — Before Renting
+            </h1>
+            <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
+                A searchable record of landlords and tenants in Nigeria. Report a problem, help the next renter, and unlock the rental opportunity feed.
+            </p>
+
+            <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
+                <button class="w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition-colors shadow-sm">
+                    Report A Landlord
+                </button>
+                <div class="w-full sm:w-80 relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
+                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+                    </span>
+                    <input type="text" placeholder="Search a landlord or address..." class="w-full pl-10 pr-4 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Live Counters -->
     <div class="flex items-center justify-center gap-10">

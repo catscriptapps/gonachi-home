@@ -11,26 +11,42 @@ declare(strict_types=1);
  * backend yet — content below is illustrative, mirroring how the Real
  * Estate Leads project started before its extraction pipeline landed.
  */
+
+use Src\Utils\CuratedPhotos;
+
+$slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
 ?>
 <div class="space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Find A Trusted Contractor</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Search verified plumbers, electricians, builders, and more across active service networks.</p>
-        </div>
 
-        <!-- Live Counters -->
-        <div class="flex items-center space-x-4 bg-white dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
-            <div class="px-4 py-2 border-r border-gray-100 dark:border-gray-800 text-center">
-                <span class="block text-2xl font-bold text-secondary-600">86</span>
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Contractors</span>
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden rounded-3xl shadow-sm">
+        <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>
+        <?php if (!empty($slideshowImages)): ?>
+            <div class="absolute inset-0 bg-gray-50/85 dark:bg-gray-950/85"></div>
+        <?php else: ?>
+            <div class="absolute inset-0 bg-white dark:bg-gray-900"></div>
+        <?php endif; ?>
+
+        <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
+            <div>
+                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-secondary-600 dark:text-secondary-400 uppercase mb-2">Contractor Discovery</span>
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Find A Trusted Contractor</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Search verified plumbers, electricians, builders, and more across active service networks.</p>
             </div>
-            <div class="px-4 py-2 text-center">
-                <span class="block text-2xl font-bold text-primary-600">23</span>
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Open Job Requests</span>
+
+            <!-- Live Counters -->
+            <div class="flex items-center space-x-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-2 rounded-xl border border-gray-200 dark:border-gray-800 flex-shrink-0">
+                <div class="px-4 py-2 border-r border-gray-200 dark:border-gray-800 text-center">
+                    <span class="block text-2xl font-bold text-secondary-600 dark:text-secondary-400">86</span>
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Contractors</span>
+                </div>
+                <div class="px-4 py-2 text-center">
+                    <span class="block text-2xl font-bold text-primary-600 dark:text-primary-400">23</span>
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Open Job Requests</span>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Search Routing & Category Filtering Bar -->
     <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">

@@ -10,30 +10,47 @@ declare(strict_types=1);
  */
 
 use Src\Controller\LeadsController;
+use Src\Utils\CuratedPhotos;
 
 $leadCounts = LeadsController::activeCounts();
 $recentLeads = LeadsController::recentActive(5);
+
+$featurePhotos = CuratedPhotos::fromHomeFolder($assetBase);
+$slideshowImages = $featurePhotos;
+$spotlightPhoto = $featurePhotos[0] ?? null;
 ?>
 <!-- Search Optimization Metadata Block -->
 <div class="space-y-6">
-    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-        <div>
-            <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Active Property Requests</h1>
-            <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Discover live home buyers and home sellers signaling real estate intent across active networks.</p>
-        </div>
-        
-        <!-- Live Counters -->
-        <div class="flex items-center space-x-4 bg-white dark:bg-gray-900 p-2 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm">
-            <div class="px-4 py-2 border-r border-gray-100 dark:border-gray-800 text-center">
-                <span class="block text-2xl font-bold text-primary-600"><?= $leadCounts['buyer'] ?></span>
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Buyers</span>
+
+    <!-- Hero Banner -->
+    <section class="relative overflow-hidden rounded-3xl shadow-sm">
+        <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>
+        <?php if (!empty($slideshowImages)): ?>
+            <div class="absolute inset-0 bg-gray-50/85 dark:bg-gray-950/85"></div>
+        <?php else: ?>
+            <div class="absolute inset-0 bg-white dark:bg-gray-900"></div>
+        <?php endif; ?>
+
+        <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
+            <div>
+                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-2">Real Estate Leads</span>
+                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Active Property Requests</h1>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Discover live home buyers and home sellers signaling real estate intent across active networks.</p>
             </div>
-            <div class="px-4 py-2 text-center">
-                <span class="block text-2xl font-bold text-indigo-600"><?= $leadCounts['seller'] ?></span>
-                <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Sellers</span>
+
+            <!-- Live Counters -->
+            <div class="flex items-center space-x-4 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md p-2 rounded-xl border border-gray-200 dark:border-gray-800 flex-shrink-0">
+                <div class="px-4 py-2 border-r border-gray-200 dark:border-gray-800 text-center">
+                    <span class="block text-2xl font-bold text-primary-600 dark:text-primary-400"><?= $leadCounts['buyer'] ?></span>
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Buyers</span>
+                </div>
+                <div class="px-4 py-2 text-center">
+                    <span class="block text-2xl font-bold text-indigo-600 dark:text-indigo-400"><?= $leadCounts['seller'] ?></span>
+                    <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Active Sellers</span>
+                </div>
             </div>
         </div>
-    </div>
+    </section>
 
     <!-- Search Routing & Location Filtering Bar -->
     <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
@@ -129,6 +146,19 @@ $recentLeads = LeadsController::recentActive(5);
 
         <!-- SEO/Scalable Landing Category Sidebar Column -->
         <div class="space-y-4">
+            <?php if ($spotlightPhoto): ?>
+                <!-- Spotlight Card -->
+                <div class="relative rounded-2xl overflow-hidden shadow-sm h-40"
+                    style="background-image:url('<?= htmlspecialchars($spotlightPhoto) ?>'); background-size:cover; background-position:center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+                    <div class="relative h-full flex flex-col justify-end p-4">
+                        <span class="text-xs font-semibold text-primary-300 uppercase tracking-wider">Spotlight</span>
+                        <h4 class="text-white font-bold text-sm mt-1">Commercial Demand Is Rising</h4>
+                        <p class="text-gray-200 text-xs mt-0.5">Lagos leads new commercial property interest this month.</p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Hot Category Targets</h3>
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
                 <a href="<?= $baseUrl ?>home-buyers-lagos" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">

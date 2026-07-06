@@ -39,7 +39,7 @@ $accentClasses = [
 // Hero slideshow: every image dropped into public/images/home/ is picked
 // up automatically, no code change needed to add/remove one.
 // --------------------------------------------------
-$heroImages = [];
+$slideshowImages = [];
 $heroImagesPath = __DIR__ . '/../../../public/images/home';
 
 if (is_dir($heroImagesPath)) {
@@ -48,42 +48,14 @@ if (is_dir($heroImagesPath)) {
     sort($files);
 
     foreach ($files as $file) {
-        $heroImages[] = $assetBase . 'images/home/' . rawurlencode($file);
+        $slideshowImages[] = $assetBase . 'images/home/' . rawurlencode($file);
     }
 }
-
-$secondsPerSlide = 6;
-$slideCount = count($heroImages);
-$heroCycleDuration = max($slideCount, 1) * $secondsPerSlide;
-$heroSlotPercent = $slideCount > 0 ? 100 / $slideCount : 100;
 ?>
 
-<?php if ($slideCount > 0): ?>
-    <style>
-        @keyframes gonachiHeroSlide {
-            0% { opacity: 0; transform: scale(1.15); }
-            <?= round($heroSlotPercent * 0.08, 4) ?>% { opacity: 1; transform: scale(1.15); }
-            <?= round($heroSlotPercent * 0.85, 4) ?>% { opacity: 1; transform: scale(1); }
-            <?= round($heroSlotPercent, 4) ?>% { opacity: 0; transform: scale(1); }
-            100% { opacity: 0; transform: scale(1); }
-        }
-        .gonachi-hero-slide {
-            animation: gonachiHeroSlide <?= $heroCycleDuration ?>s ease-in-out infinite;
-        }
-        @media (prefers-reduced-motion: reduce) {
-            .gonachi-hero-slide { animation: none; opacity: 1; }
-        }
-    </style>
-<?php endif; ?>
-
 <section class="relative overflow-hidden">
-    <?php if ($slideCount > 0): ?>
-        <div class="absolute inset-0 blur-[2px] scale-105" aria-hidden="true">
-            <?php foreach ($heroImages as $i => $src): ?>
-                <div class="gonachi-hero-slide absolute inset-0 bg-cover bg-center"
-                    style="background-image: url('<?= htmlspecialchars($src) ?>'); animation-delay: -<?= $i * $secondsPerSlide ?>s;"></div>
-            <?php endforeach; ?>
-        </div>
+    <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>
+    <?php if (!empty($slideshowImages)): ?>
         <div class="absolute inset-0 bg-gray-50/90 dark:bg-gray-950/90"></div>
     <?php endif; ?>
 
