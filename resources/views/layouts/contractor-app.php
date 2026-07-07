@@ -37,7 +37,7 @@ declare(strict_types=1);
     <link rel="stylesheet" href="<?= $assetBase ?>assets/css/app.min.css">
 </head>
 
-<body class="font-sans antialiased h-full text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950"
+<body class="font-sans antialiased h-full overflow-x-hidden text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950"
     x-data="{ mobileMenuOpen: false }">
 
     <?php include __DIR__ . '/../partials/contractor-sidebar.php'; ?>

@@ -14,19 +14,24 @@ use Src\Service\AuthService;
 class NavigationConfig
 {
     /**
-     * Defines the icon mapping for each navigation link name.
+     * Defines the icon mapping for each navigation link name. The three
+     * Gonachi projects reuse ProjectsConfig's icons so they never drift
+     * out of sync with the portal tabs / sidebar switcher.
      * @return array<string, string>
      */
     public static function getIcons(): array
     {
-        return [
-            'Dashboard'           => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/></svg>',
-            'Landlords'           => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>',
-            'Profile'             => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>',
-            'Users'               => '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75a3 3 0 11-6 0 3 3 0 016 0zM6.75 6.75a3 3 0 116 0 a3 3 0 01-6 0zM3 21a6 6 0 0112 0M9 21a6 6 0 0112 0"></path></svg>',
-            'Rental Applications' => '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>',
-            'Inspections'         => '<svg fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>',
+        $icons = [
+            'Dashboard' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z"/></svg>',
+            'Profile' => '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" /></svg>',
+            'Users' => '<svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.25 6.75a3 3 0 11-6 0 3 3 0 016 0zM6.75 6.75a3 3 0 116 0 a3 3 0 01-6 0zM3 21a6 6 0 0112 0M9 21a6 6 0 0112 0"></path></svg>',
         ];
+
+        foreach (ProjectsConfig::all() as $project) {
+            $icons[$project['name']] = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">' . $project['icon'] . '</svg>';
+        }
+
+        return $icons;
     }
 
     /**
@@ -76,31 +81,26 @@ class NavigationConfig
                 'title' => 'Operational Dashboard',
                 'summary' => 'Real-time performance index metrics, pending verification alerts, and systemic portfolio analysis logs.'
             ],
-            'Landlords' => [
-                'url' => $base . '/landlords',
-                'title' => 'Landlord Directory Management',
-                'summary' => 'Centralized platform hub for auditing property corporate accounts, regional properties distribution, and operational parameters.'
-            ],
-            'Rental Applications' => [
-                'url' => $base . '/rental-applications',
-                'title' => 'Rental Applications',
-                'summary' => 'Prospective tenant verification pipelines, credit verification vectors, and unified workflow assessment modules.'
-            ],
-            'Inspections' => [
-                'url' => $base . '/inspections',
-                'title' => 'Property Inspections',
-                'summary' => 'Detailed multi-point physical observation records, digital asset tracking databases, and instant sign-off engines.'
-            ],
-            'Profile' => [
-                'url' => $base . '/profile',
-                'title' => 'Profile Settings',
-                'summary' => 'Manage account access keys, administrative security structures, and regional subscription targets.'
-            ],
-            'Users' => [
-                'url' => $base . '/users',
-                'title' => 'User Directory Management',
-                'summary' => 'Control internal account scopes, assign operational roles, and check localized system access activity logs.'
-            ],
+        ];
+
+        foreach (ProjectsConfig::all() as $project) {
+            $allPossibleApps[$project['name']] = [
+                'url' => $base . '/' . $project['slug'],
+                'title' => $project['name'],
+                'summary' => $project['tagline'],
+            ];
+        }
+
+        $allPossibleApps['Profile'] = [
+            'url' => $base . '/profile',
+            'title' => 'Profile Settings',
+            'summary' => 'Manage account access keys, administrative security structures, and regional subscription targets.'
+        ];
+
+        $allPossibleApps['Users'] = [
+            'url' => $base . '/users',
+            'title' => 'User Directory Management',
+            'summary' => 'Control internal account scopes, assign operational roles, and check localized system access activity logs.'
         ];
 
         if ($showAll) {

@@ -92,9 +92,6 @@ $getCategoryIcon = function ($category) use ($icons) {
                 $url = $appConfig['url'] ?? '#';
             ?>
                 <a href="<?= $url ?>"
-                    data-partial
-                    data-title="<?= htmlspecialchars($appConfig['title'] ?? $name) ?>"
-                    data-summary="<?= htmlspecialchars($appConfig['summary'] ?? '') ?>"
                     style="animation-delay: <?= $delay ?>ms"
                     class="group animate-in fade-in zoom-in-95 duration-700 fill-mode-both relative overflow-hidden rounded-[2.5rem] bg-primary-100 dark:bg-black p-8 shadow-sm border border-gray-100 dark:border-gray-800 transition-all hover:shadow-[0_20px_60px_-15px_rgba(252,131,43,0.3)] hover:-translate-y-2 hover:border-primary-400/50">
 

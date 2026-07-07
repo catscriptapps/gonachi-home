@@ -44,7 +44,7 @@ $isLoggedIn = false; // We force this for the reset screen
     <link rel="stylesheet" href="<?= $assetBase ?>assets/css/app.min.css">
 </head>
 
-<body class="font-sans antialiased h-full text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950"
+<body class="font-sans antialiased h-full overflow-x-hidden text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950"
     x-data="{ mobileMenuOpen: false }">
 
     <div class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 transition-all duration-300 ease-in-out lg:pl-0">
