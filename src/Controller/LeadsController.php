@@ -117,4 +117,37 @@ class LeadsController
             default => ['label' => 'Medium Engagement', 'classes' => 'text-amber-600 dark:text-amber-400'],
         };
     }
+
+    /**
+     * Human-readable property type, for the full detail view.
+     */
+    public static function propertyTypeLabel(Lead $lead): string
+    {
+        return match ($lead->property_type) {
+            'residential' => 'Residential',
+            'commercial' => 'Commercial',
+            'land' => 'Land',
+            default => 'Not specified',
+        };
+    }
+
+    /**
+     * Formats budget_min/budget_max as a Naira amount or range, or null
+     * when neither was extracted.
+     */
+    public static function budgetLabel(Lead $lead): ?string
+    {
+        $min = $lead->budget_min !== null ? (float) $lead->budget_min : null;
+        $max = $lead->budget_max !== null ? (float) $lead->budget_max : null;
+
+        if ($min === null && $max === null) {
+            return null;
+        }
+
+        if ($min !== null && $max !== null && $min !== $max) {
+            return '₦' . number_format($min) . ' – ₦' . number_format($max);
+        }
+
+        return '₦' . number_format($min ?? $max);
+    }
 }

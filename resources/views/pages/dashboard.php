@@ -10,7 +10,6 @@ declare(strict_types=1);
 use Src\Config\NavigationConfig;
 use Src\Controller\RecentActivitiesController;
 use Src\Service\AuthService;
-use App\Models\Landlord;
 use App\Models\User;
 
 // --- DUAL DASHBOARD ROUTING LOGIC ---
@@ -27,7 +26,6 @@ if ($landlord) {
 // Fetch data
 $navLinks = NavigationConfig::getNavLinks((bool)$isLoggedIn);
 $icons = NavigationConfig::getIcons();
-$totalLandlords = Landlord::count();
 $totalUsers = User::count();
 
 /** @var \App\Models\User|null $currentUser */

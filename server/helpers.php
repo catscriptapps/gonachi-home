@@ -179,6 +179,19 @@ function resolvePageRoute(string $path): array
     $pageFile = __DIR__ . '/../resources/views/pages/' . ltrim($path, '/') . '.php';
 
     if (!file_exists($pageFile)) {
+        // No literal page file — try the real-estate-leads category/location
+        // SEO slugs (e.g. /home-buyers-lagos) before giving up to a 404.
+        $slug = ltrim($path, '/');
+        $match = !str_contains($slug, '/') ? \Src\Controller\LeadCategoryController::matchSlug($slug) : null;
+
+        if ($match) {
+            $GLOBALS['leadCategoryMatch'] = $match;
+            return [
+                __DIR__ . '/../resources/views/pages/lead-category-location.php',
+                "{$match['category']->name} in {$match['location']->name}",
+            ];
+        }
+
         http_response_code(404);
         $pageFile = __DIR__ . '/../resources/views/pages/404.php';
         $title = 'Page Not Found';
@@ -198,6 +211,22 @@ function resolvePageRoute(string $path): array
  */
 function resolveDynamicPageMeta(string $resource, string $id): ?array
 {
+    if ($resource === 'leads') {
+        $lead = \App\Models\Lead::with(['location.parent'])->find((int) $id);
+
+        if ($lead && $lead->status === 'active') {
+            return [
+                'title'   => \Src\Controller\LeadsController::headline($lead) . ' in ' . \Src\Controller\LeadsController::locationLabel($lead),
+                'summary' => 'Full lead record: contact details, budget, and source.',
+            ];
+        }
+
+        return [
+            'title'   => 'Lead Not Found',
+            'summary' => 'This lead is no longer available.',
+        ];
+    }
+
     if ($resource === 'apply') {
         $accessToken = (new \Src\Controller\TenantPortalController())->loadByToken($id);
 

@@ -32,12 +32,10 @@ class AuthService
      */
     public static function currentLandlord(): ?\App\Models\Landlord
     {
-        self::ensureSession();
-
-        if (!isset($_SESSION['landlord_id']) || $_SESSION['account_type'] !== 'landlord') {
-            return null;
-        }
-        return \App\Models\Landlord::find((int)$_SESSION['landlord_id']);
+        // No Landlord account model in this app (removed in the PMB-template
+        // cleanup) — always null. Kept as a stub so existing callers'
+        // falsy checks keep working without touching every call site.
+        return null;
     }
 
     /**
@@ -46,12 +44,8 @@ class AuthService
      */
     public static function currentTenant(): ?\App\Models\Tenant
     {
-        self::ensureSession();
-
-        if (!isset($_SESSION['tenant_id']) || $_SESSION['account_type'] !== 'tenant') {
-            return null;
-        }
-        return \App\Models\Tenant::find((int)$_SESSION['tenant_id']);
+        // No Tenant account model in this app — see currentLandlord() above.
+        return null;
     }
 
     /**
@@ -171,58 +165,9 @@ class AuthService
             ];
         }
 
-        // --- Priority 2: Attempt login as a Landlord ---
-        $landlord = \App\Models\Landlord::where('email', $email)->first();
-        if ($landlord && password_verify($password, $landlord->password)) {
-            // CHECK STATUS: Only active landlords can proceed
-            if ((int)$landlord->status_id !== 1) {
-                return [
-                    'success' => false,
-                    'unverified' => true,
-                    'messages' => ['Landlord account not activated. Please check your email for a verification link or contact support.']
-                ];
-            }
-
-            // Set Landlord Session Data
-            $_SESSION['landlord_id'] = $landlord->id;
-            $_SESSION['landlord_email'] = $landlord->email;
-            $_SESSION['landlord_company_name'] = $landlord->company_name;
-            $_SESSION['account_type'] = 'landlord'; // Distinguish account type
-
-            // Landlords do not use API tokens in the same way as users for now
-            $landlord->save(); // This will update the `timestamp` field
-
-            return [
-                'success' => true,
-                'messages' => ['Landlord portal login successful!'],
-                'redirect_url' => '/dashboard' // Explicit redirect for landlords
-            ];
-        }
-
-        // --- Priority 3: Attempt login as a Tenant ---
-        $tenant = \App\Models\Tenant::where('email', $email)->first();
-        if ($tenant && $tenant->password && password_verify($password, $tenant->password)) {
-            // CHECK STATUS: Only active tenants can proceed
-            if ((int)$tenant->status_id !== 1) {
-                return [
-                    'success' => false,
-                    'unverified' => true,
-                    'messages' => ['Account not activated. Please verify your email.']
-                ];
-            }
-
-            // Set Tenant Session Data
-            $_SESSION['tenant_id'] = $tenant->id;
-            $_SESSION['tenant_email'] = $tenant->email;
-            $_SESSION['tenant_full_name'] = $tenant->full_name;
-            $_SESSION['account_type'] = 'tenant'; // Distinguish account type
-
-            return [
-                'success' => true,
-                'messages' => ['Tenant portal login successful!'],
-                'redirect_url' => '/home' // No dedicated tenant dashboard yet
-            ];
-        }
+        // Note: this app only has backend User accounts. Older Landlord/Tenant
+        // login fallbacks were removed here since those models no longer
+        // exist (see currentLandlord()/currentTenant() above).
 
         return ['success' => false, 'messages' => ['Invalid email or password.']];
     }

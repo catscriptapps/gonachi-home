@@ -31,15 +31,18 @@ declare(strict_types=1);
         </a>
     </div>
 
-    <!-- User Value Proposition Balance Tracker -->
-    <div class="p-4 border-b border-gray-100 dark:border-gray-800/50" x-show="$store.sidebar.expanded">
-        <div class="bg-primary-50 dark:bg-primary-950/40 rounded-xl p-3 border border-primary-100 dark:border-primary-900/30">
-            <div class="flex items-center justify-between">
-                <span class="text-xs text-primary-700 dark:text-primary-400 font-medium">Available Credits</span>
-                <span class="text-xs bg-primary-600 text-white font-bold px-2 py-0.5 rounded-full">12</span>
-            </div>
+    <?php $sidebarUserId = \Src\Service\AuthService::userId(); ?>
+    <?php if ($sidebarUserId): ?>
+        <!-- User Value Proposition Balance Tracker -->
+        <div class="p-4 border-b border-gray-100 dark:border-gray-800/50" x-show="$store.sidebar.expanded">
+            <a href="<?= $baseUrl ?>transactions" class="block bg-primary-50 dark:bg-primary-950/40 rounded-xl p-3 border border-primary-100 dark:border-primary-900/30 hover:border-primary-300 dark:hover:border-primary-800 transition-colors">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs text-primary-700 dark:text-primary-400 font-medium">Available Credits</span>
+                    <span class="text-xs bg-primary-600 text-white font-bold px-2 py-0.5 rounded-full"><?= \Src\Service\CreditService::getBalance($sidebarUserId) ?></span>
+                </div>
+            </a>
         </div>
-    </div>
+    <?php endif; ?>
 
     <!-- Navigation Directory -->
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">

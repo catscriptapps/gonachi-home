@@ -9,7 +9,6 @@ declare(strict_types=1);
 
 /**
  * @var string $userName
- * @var int $totalLandlords
  * @var int $totalUsers
  */
 
@@ -40,10 +39,6 @@ declare(strict_types=1);
                 </div>
 
                 <div class="flex items-center gap-4 shrink-0 self-start md:self-auto ml-auto">
-                    <div class="px-5 py-2.5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200/60 dark:border-white/10 shadow-sm text-center min-w-[5rem]">
-                        <span class="text-2xl font-black text-primary-600 dark:text-primary-400 block leading-none"><?= $totalLandlords ?></span>
-                        <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider block mt-1">Landlords</span>
-                    </div>
                     <div class="px-5 py-2.5 rounded-2xl bg-white dark:bg-white/5 border border-gray-200/60 dark:border-white/10 shadow-sm text-center min-w-[5rem]">
                         <span class="text-2xl font-black text-secondary-600 dark:text-secondary-400 block leading-none"><?= $totalUsers ?></span>
                         <span class="text-[9px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider block mt-1">Users</span>

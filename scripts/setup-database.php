@@ -59,6 +59,15 @@ $messages = array_merge($messages, resetRelLeadsTable());
 require_once __DIR__ . '/reset/rel-lead-extraction-runs.php';
 $messages = array_merge($messages, resetRelLeadExtractionRunsTable());
 
+require_once __DIR__ . '/reset/rel-credit-accounts.php';
+$messages = array_merge($messages, resetRelCreditAccountsTable());
+
+require_once __DIR__ . '/reset/rel-credit-transactions.php';
+$messages = array_merge($messages, resetRelCreditTransactionsTable());
+
+require_once __DIR__ . '/reset/rel-lead-unlocks.php';
+$messages = array_merge($messages, resetRelLeadUnlocksTable());
+
 require_once __DIR__ . '/reset/rel-seed.php';
 $messages = array_merge($messages, seedRelLeadsBaselineData());
 
