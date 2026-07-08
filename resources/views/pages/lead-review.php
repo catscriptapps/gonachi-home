@@ -122,7 +122,7 @@ $pendingLeads = LeadReviewController::pending(15);
         <?php if ($pendingLeads->lastPage() > 1): ?>
             <div class="flex items-center justify-between pt-2">
                 <?php if ($pendingLeads->previousPageUrl()): ?>
-                    <a href="<?= htmlspecialchars($pendingLeads->previousPageUrl()) ?>" class="text-sm font-medium text-primary-600 hover:underline">&larr; Previous</a>
+                    <a href="<?= htmlspecialchars($pendingLeads->previousPageUrl()) ?>" data-partial class="text-sm font-medium text-primary-600 hover:underline">&larr; Previous</a>
                 <?php else: ?>
                     <span></span>
                 <?php endif; ?>
@@ -130,7 +130,7 @@ $pendingLeads = LeadReviewController::pending(15);
                 <span class="text-xs text-gray-400">Page <?= $pendingLeads->currentPage() ?> of <?= $pendingLeads->lastPage() ?></span>
 
                 <?php if ($pendingLeads->nextPageUrl()): ?>
-                    <a href="<?= htmlspecialchars($pendingLeads->nextPageUrl()) ?>" class="text-sm font-medium text-primary-600 hover:underline">Next &rarr;</a>
+                    <a href="<?= htmlspecialchars($pendingLeads->nextPageUrl()) ?>" data-partial class="text-sm font-medium text-primary-600 hover:underline">Next &rarr;</a>
                 <?php else: ?>
                     <span></span>
                 <?php endif; ?>

@@ -102,7 +102,7 @@ $packs = [
             <?php if ($history->lastPage() > 1): ?>
                 <div class="flex items-center justify-between pt-2">
                     <?php if ($history->previousPageUrl()): ?>
-                        <a href="<?= htmlspecialchars($history->previousPageUrl()) ?>" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">&larr; Previous</a>
+                        <a href="<?= htmlspecialchars($history->previousPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">&larr; Previous</a>
                     <?php else: ?>
                         <span></span>
                     <?php endif; ?>
@@ -110,7 +110,7 @@ $packs = [
                     <span class="text-xs text-gray-400">Page <?= $history->currentPage() ?> of <?= $history->lastPage() ?></span>
 
                     <?php if ($history->nextPageUrl()): ?>
-                        <a href="<?= htmlspecialchars($history->nextPageUrl()) ?>" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Next &rarr;</a>
+                        <a href="<?= htmlspecialchars($history->nextPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Next &rarr;</a>
                     <?php else: ?>
                         <span></span>
                     <?php endif; ?>

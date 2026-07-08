@@ -20,7 +20,7 @@ declare(strict_types=1);
 
     <!-- Sidebar Header: Identity & Brand Logo -->
     <div class="h-20 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 justify-between">
-        <a href="<?= $baseUrl ?>landlord-tenant-validation" class="flex items-center space-x-3 overflow-hidden">
+        <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="flex items-center space-x-3 overflow-hidden">
             <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-16 w-16 flex-shrink-0" />
             <span
                 class="font-bold text-2xl tracking-tight text-gray-900 dark:text-white transition-opacity duration-200"
@@ -36,23 +36,32 @@ declare(strict_types=1);
         </button>
     </div>
 
+    <?php
+    // Seeds the correct active nav item on each full page load (this
+    // sidebar's links aren't on the SPA partial-load router yet, so
+    // there's no client-side updateActiveLink() to hand off to).
+    $navActiveClasses = 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold';
+    $navInactiveClasses = 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 font-medium';
+    $currentPath = $path ?? '';
+    ?>
+
     <!-- Navigation Directory -->
-    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-        <a href="<?= $baseUrl ?>landlord-tenant-validation" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 font-semibold group transition-colors">
+    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto" data-nav-accent="indigo">
+        <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/landlord-tenant-validation' ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
             </svg>
             <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Property Records</span>
         </a>
 
-        <a href="<?= $baseUrl ?>report-landlord" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 font-medium transition-colors group">
+        <a href="<?= $baseUrl ?>report-landlord" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/report-landlord' ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
             </svg>
             <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Report A Landlord</span>
         </a>
 
-        <a href="<?= $baseUrl ?>rental-opportunities" class="flex items-center space-x-3 px-3 py-2.5 rounded-xl text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 font-medium transition-colors group">
+        <a href="<?= $baseUrl ?>rental-opportunities" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/rental-opportunities' ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>

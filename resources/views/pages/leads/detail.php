@@ -24,7 +24,7 @@ if (!$lead || $lead->status !== 'active'):
         <svg class="h-10 w-10 text-gray-300 dark:text-gray-700 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
         <h1 class="text-xl font-bold text-gray-900 dark:text-white">Lead Not Found</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">This lead may have been removed, expired, or is still pending review.</p>
-        <a href="<?= $baseUrl ?>real-estate-leads" class="inline-flex items-center mt-6 text-sm font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400">
+        <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="inline-flex items-center mt-6 text-sm font-semibold text-primary-600 hover:text-primary-700 dark:text-primary-400">
             &larr; Back to Active Property Requests
         </a>
     </div>
@@ -44,7 +44,7 @@ $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : null;
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
-    <a href="<?= $baseUrl ?>real-estate-leads" class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
+    <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
         &larr; Back to Active Property Requests
     </a>
 
@@ -112,7 +112,7 @@ $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : nu
                 <p class="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-1 mb-4">
                     You have <?= $unlock['balance'] ?> credits left. Top up to unlock this lead's budget, contact details, and original source post.
                 </p>
-                <a href="<?= $baseUrl ?>transactions" class="inline-flex items-center px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
+                <a href="<?= $baseUrl ?>transactions" data-partial class="inline-flex items-center px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
                     View Billing & Credits
                 </a>
             </div>

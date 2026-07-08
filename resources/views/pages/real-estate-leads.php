@@ -130,7 +130,7 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
                                 <?= $lead->contact_info_raw ? 'Public contact details available.' : 'Contact details unlock with a full record view.' ?>
                             </span>
                             <?php if ($isLoggedIn): ?>
-                                <a href="<?= $baseUrl ?>leads/<?= $lead->id ?>" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                                <a href="<?= $baseUrl ?>leads/<?= $lead->id ?>" data-partial class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                                     View Full Details
                                 </a>
                             <?php else: ?>
@@ -161,15 +161,15 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
 
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Hot Category Targets</h3>
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
-                <a href="<?= $baseUrl ?>home-buyers-lagos" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                <a href="<?= $baseUrl ?>home-buyers-lagos" data-partial class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
                     <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600">Home Buyers in Lagos</span>
                     <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                <a href="<?= $baseUrl ?>home-sellers-lagos" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                <a href="<?= $baseUrl ?>home-sellers-lagos" data-partial class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
                     <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600">Home Sellers in Lagos</span>
                     <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
-                <a href="<?= $baseUrl ?>property-investors-abuja" class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                <a href="<?= $baseUrl ?>property-investors-abuja" data-partial class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
                     <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600">Property Investors in Abuja</span>
                     <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>

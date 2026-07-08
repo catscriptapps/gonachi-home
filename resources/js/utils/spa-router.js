@@ -10,9 +10,32 @@ import { showSpinner, hideSpinner } from './../ui/spinner.js';
 
 /**
  * Updates active state of navigation links to match the sleek theme.
+ * Scoped to `nav[data-nav-accent] > a[data-partial]` — the sidebar's main
+ * nav items, one per project. The accent color (primary/secondary/indigo)
+ * comes from the nav's own data attribute since this same module is shared
+ * across all three project sidebars, each with a different brand color.
  */
 export function updateActiveLink(url) {
-  // Active CSS matching rules here
+  const path = new URL(url, window.location.origin).pathname;
+
+  document.querySelectorAll('nav[data-nav-accent]').forEach((nav) => {
+    const accent = nav.dataset.navAccent || 'primary';
+
+    nav.querySelectorAll(':scope > a[data-partial]').forEach((link) => {
+      const isActive = new URL(link.href, window.location.origin).pathname === path;
+
+      link.classList.toggle(`bg-${accent}-500/10`, isActive);
+      link.classList.toggle(`text-${accent}-600`, isActive);
+      link.classList.toggle(`dark:text-${accent}-400`, isActive);
+      link.classList.toggle('font-semibold', isActive);
+
+      link.classList.toggle('text-gray-600', !isActive);
+      link.classList.toggle('dark:text-gray-400', !isActive);
+      link.classList.toggle('hover:bg-gray-50', !isActive);
+      link.classList.toggle('dark:hover:bg-gray-800/60', !isActive);
+      link.classList.toggle('font-medium', !isActive);
+    });
+  });
 }
 
 /**

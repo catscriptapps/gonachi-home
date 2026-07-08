@@ -86,7 +86,7 @@ $leads = LeadCategoryController::leadsFor($category, $location);
                             <?= $lead->contact_info_raw ? 'Public contact details available.' : 'Contact details unlock with a full record view.' ?>
                         </span>
                         <?php if ($isLoggedIn): ?>
-                            <a href="<?= $baseUrl ?>leads/<?= $lead->id ?>" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                            <a href="<?= $baseUrl ?>leads/<?= $lead->id ?>" data-partial class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                                 View Full Details
                             </a>
                         <?php else: ?>
@@ -102,7 +102,7 @@ $leads = LeadCategoryController::leadsFor($category, $location);
         <?php if ($leads->lastPage() > 1): ?>
             <div class="flex items-center justify-between pt-2">
                 <?php if ($leads->previousPageUrl()): ?>
-                    <a href="<?= htmlspecialchars($leads->previousPageUrl()) ?>" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">&larr; Previous</a>
+                    <a href="<?= htmlspecialchars($leads->previousPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">&larr; Previous</a>
                 <?php else: ?>
                     <span></span>
                 <?php endif; ?>
@@ -110,7 +110,7 @@ $leads = LeadCategoryController::leadsFor($category, $location);
                 <span class="text-xs text-gray-400">Page <?= $leads->currentPage() ?> of <?= $leads->lastPage() ?></span>
 
                 <?php if ($leads->nextPageUrl()): ?>
-                    <a href="<?= htmlspecialchars($leads->nextPageUrl()) ?>" class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Next &rarr;</a>
+                    <a href="<?= htmlspecialchars($leads->nextPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Next &rarr;</a>
                 <?php else: ?>
                     <span></span>
                 <?php endif; ?>
