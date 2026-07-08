@@ -41,9 +41,18 @@ declare(strict_types=1);
 
     <?php include __DIR__ . '/../partials/layout-sidebar.php'; ?>
 
+    <!-- Mobile Sidebar Backdrop -->
+    <div
+        x-show="mobileMenuOpen"
+        x-transition:enter="transition-opacity ease-linear duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+        x-transition:leave="transition-opacity ease-linear duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0"
+        @click="mobileMenuOpen = false"
+        class="fixed inset-0 z-40 bg-gray-900/50 lg:hidden"
+        x-cloak></div>
+
     <div
         class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950 transition-all duration-300 ease-in-out"
-        :class="$store.sidebar.expanded ? 'pl-64' : 'pl-24'">
+        :class="$store.sidebar.expanded ? 'lg:pl-64' : 'lg:pl-24'">
 
         <?php include __DIR__ . '/../partials/layout-header.php'; ?>
 

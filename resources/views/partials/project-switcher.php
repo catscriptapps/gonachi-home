@@ -19,7 +19,7 @@ $switcherIconClasses = [
     'indigo' => 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400',
 ];
 ?>
-<div class="mt-10" x-show="$store.sidebar.expanded">
+<div class="mt-10" x-show="$store.sidebar.expanded || mobileMenuOpen">
     <p class="px-3 mb-2 text-[10px] font-bold uppercase tracking-wider text-gray-400 dark:text-gray-600">&nbsp;</p>
     <div class="bg-gray-50 dark:bg-gray-800/40 border border-gray-100 dark:border-gray-800 rounded-2xl p-2 space-y-1">
         <?php foreach (ProjectsConfig::all() as $project): ?>

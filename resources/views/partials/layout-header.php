@@ -12,14 +12,27 @@ declare(strict_types=1);
     <!-- Structural Controls (Responsive Open/Close triggers) -->
     <div class="flex items-center space-x-4">
         <!-- Desktop Quick Expand -->
-        <button 
+        <button
             @click="$store.sidebar.expanded = !$store.sidebar.expanded"
             class="hidden lg:block text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none">
             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
             </svg>
         </button>
-        
+
+        <!-- Mobile Menu Toggle -->
+        <button
+            @click="mobileMenuOpen = !mobileMenuOpen"
+            class="lg:hidden text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 focus:outline-none"
+            aria-label="Toggle Menu">
+            <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+            <svg x-show="mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-cloak>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+        </button>
+
         <!-- Target System Context Heading -->
         <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 hidden sm:inline-block">
             Real Estate Demand Network
