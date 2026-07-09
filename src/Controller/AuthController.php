@@ -8,6 +8,7 @@ use Src\Service\AuthService;
 use App\Traits\RecentActivityLogger;
 use App\Models\User;
 use App\Models\PasswordReset;
+use App\Models\UserVerification;
 
 /**
  * Class AuthController
@@ -145,6 +146,109 @@ class AuthController
                 'success' => false,
                 'messages' => ['An error occurred while processing your request.']
             ];
+        }
+    }
+
+    /**
+     * Handles public self-registration. Mirrors UsersController::save()'s
+     * env-aware activation flow (used by the admin Users CRUD app), but
+     * scoped to the public signup form: new accounts always default to
+     * user_type_ids = [2] (Registered), never auto-elevated to Admin.
+     *
+     * When APP_ENV=local the account is instantly active (no email step,
+     * since local dev typically has no mail transport configured) but the
+     * caller does NOT get auto-logged-in — server/api/register.php sends
+     * them back to sign in explicitly. Otherwise an activation email is
+     * sent and VerificationController::verify() completes the flow.
+     */
+    public static function register(array $input): array
+    {
+        $firstName = trim($input['first_name'] ?? '');
+        $lastName = trim($input['last_name'] ?? '');
+        $email = trim($input['email'] ?? '');
+        $password = (string) ($input['password'] ?? '');
+        $passwordConfirmation = (string) ($input['password_confirmation'] ?? '');
+
+        if ($firstName === '' || $lastName === '' || $email === '') {
+            return ['success' => false, 'messages' => ['Please fill in your name and email address.']];
+        }
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return ['success' => false, 'messages' => ['Please provide a valid email address.']];
+        }
+
+        if (strlen($password) < 8) {
+            return ['success' => false, 'messages' => ['Password must be at least 8 characters long.']];
+        }
+
+        if ($password !== $passwordConfirmation) {
+            return ['success' => false, 'messages' => ['Passwords do not match.']];
+        }
+
+        if (User::where('email', $email)->exists()) {
+            return ['success' => false, 'messages' => ["An account with the email '{$email}' already exists."]];
+        }
+
+        try {
+            $appEnv = $_ENV['APP_ENV'] ?? '';
+            $isLocal = $appEnv === 'local';
+
+            $user = User::create([
+                'first_name' => $firstName,
+                'last_name' => $lastName,
+                'email' => $email,
+                'password' => password_hash($password, PASSWORD_BCRYPT),
+                'user_type_ids' => [2],
+                'status_id' => $isLocal ? 1 : 0,
+            ]);
+
+            if (!$isLocal) {
+                $token = bin2hex(random_bytes(32));
+
+                UserVerification::updateOrCreate(
+                    ['email' => $email],
+                    ['token' => password_hash($token, PASSWORD_DEFAULT), 'created_at' => date('Y-m-d H:i:s')]
+                );
+
+                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+                $host = $_SERVER['HTTP_HOST'];
+                $envBase = trim($_ENV['APP_BASE_PATH'] ?? '', '/');
+                $fullBaseUrl = $protocol . $host . ($envBase ? '/' . $envBase : '');
+                $activationLink = rtrim($fullBaseUrl, '/') . "/verify-account?token={$token}&email=" . urlencode($email);
+
+                $subject = 'Activate Your Gonachi Account';
+                $body = "
+                    <div style='font-family: \"Quicksand\", sans-serif; color: #000000;'>
+                        <h2 style='color: #EA580C;'>Welcome to Gonachi, {$firstName}!</h2>
+                        <p>Please click the button below to verify your email and activate your account:</p>
+                        <div style='margin: 32px 0;'>
+                            <a href='{$activationLink}' style='background-color: #EA580C; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block;'>Verify My Account</a>
+                        </div>
+                        <p style='font-size: 0.875rem; color: #818181;'>If the button doesn't work, copy and paste this link: <br>{$activationLink}</p>
+                    </div>
+                ";
+
+                \Src\Service\MailService::send($email, $subject, $body);
+
+                static::logActivity("New account registered (pending email verification): {$email}", 'Auth', $user->id);
+
+                return [
+                    'success' => true,
+                    'is_registration' => true,
+                    'messages' => ["We've sent an activation link to {$email}."],
+                ];
+            }
+
+            static::logActivity("New account registered (local, auto-activated): {$email}", 'Auth', $user->id);
+
+            return [
+                'success' => true,
+                'is_registration' => false,
+                'messages' => ['Account created. Please sign in to continue.'],
+            ];
+        } catch (\Throwable $e) {
+            static::logActivity('Registration error: ' . $e->getMessage(), 'Auth');
+            return ['success' => false, 'messages' => ['An unexpected error occurred. Please try again.']];
         }
     }
 

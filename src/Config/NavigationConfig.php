@@ -173,6 +173,7 @@ class NavigationConfig
             $base . '/users',
             $base . '/properties',
             $base . '/lead-review',
+            $base . '/landlord-report-review',
         ];
     }
 
@@ -190,6 +191,7 @@ class NavigationConfig
 
         return [
             $base . '/lead-review',
+            $base . '/landlord-report-review',
         ];
     }
 

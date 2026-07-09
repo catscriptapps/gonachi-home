@@ -250,6 +250,22 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
 }
 
 /**
+ * Validate a `?redirect=` target before it's echoed into a Location header —
+ * only bare internal path segments are allowed (no scheme, no protocol-
+ * relative `//host`), otherwise this would be an open-redirect vector.
+ */
+function sanitizeRedirectTarget(string $target): string
+{
+    $target = ltrim(trim($target), '/');
+
+    if ($target === '' || !preg_match('#^[a-zA-Z0-9\-_/]+$#', $target)) {
+        return 'home';
+    }
+
+    return $target;
+}
+
+/**
  * Recursively delete a directory and its contents.
  */
 function rrmdir(string $dir): bool

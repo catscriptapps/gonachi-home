@@ -40,6 +40,12 @@ $tablesToDrop = [
     'rel_lead_sources',
     'rel_lead_categories',
     'rel_locations',
+
+    // Project: landlord-tenant-validation
+    'ltv_report_photos',
+    'ltv_reports',
+    'ltv_properties',
+    'ltv_landlords',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -104,6 +110,24 @@ $messages = array_merge($messages, resetRelLeadUnlocksTable());
 
 require_once __DIR__ . '/../../scripts/reset/rel-seed.php';
 $messages = array_merge($messages, seedRelLeadsBaselineData());
+
+/**
+ * 4b. CREATION PHASE - PROJECT: landlord-tenant-validation (ltv_ prefixed tables)
+ */
+require_once __DIR__ . '/../../scripts/reset/ltv-landlords.php';
+$messages = array_merge($messages, resetLtvLandlordsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-properties.php';
+$messages = array_merge($messages, resetLtvPropertiesTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-reports.php';
+$messages = array_merge($messages, resetLtvReportsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-report-photos.php';
+$messages = array_merge($messages, resetLtvReportPhotosTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-seed.php';
+$messages = array_merge($messages, seedLtvBaselineData());
 
 
 /**

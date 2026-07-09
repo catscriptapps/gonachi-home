@@ -68,6 +68,15 @@ declare(strict_types=1);
             <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Rental Opportunities</span>
         </a>
 
+        <?php if (\Src\Service\AuthService::isAdmin()): ?>
+            <a href="<?= $baseUrl ?>landlord-report-review" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/landlord-report-review' ? $navActiveClasses : $navInactiveClasses ?>">
+                <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Report Review Queue</span>
+            </a>
+        <?php endif; ?>
+
         <?php $currentProjectSlug = 'landlord-tenant-validation'; ?>
         <?php include __DIR__ . '/project-switcher.php'; ?>
     </nav>

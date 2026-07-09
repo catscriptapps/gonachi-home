@@ -120,7 +120,7 @@ if ($isPartial) {
 // placeholder pages). Each live project renders in its own app shell.
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding'];
-$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities'];
+$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review'];
 
 if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/db-reset.php';

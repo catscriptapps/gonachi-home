@@ -2,9 +2,9 @@
 // /scripts/setup-database.php
 //
 // CLI entry point for setting up gonachi_home_db from scratch: the shared
-// `users` table plus every project's tables. Currently that's just the
-// real-estate-leads project (rel_ prefixed tables); as more projects land
-// under gonachi-home, add their reset calls here alongside it.
+// `users` table plus every project's tables — real-estate-leads (rel_
+// prefixed) and landlord-tenant-validation (ltv_ prefixed) so far; as more
+// projects land under gonachi-home, add their reset calls here alongside it.
 //
 // Run: php scripts/setup-database.php
 
@@ -70,6 +70,24 @@ $messages = array_merge($messages, resetRelLeadUnlocksTable());
 
 require_once __DIR__ . '/reset/rel-seed.php';
 $messages = array_merge($messages, seedRelLeadsBaselineData());
+
+// --------------------------------------------------
+// Project: landlord-tenant-validation (ltv_ prefixed tables)
+// --------------------------------------------------
+require_once __DIR__ . '/reset/ltv-landlords.php';
+$messages = array_merge($messages, resetLtvLandlordsTable());
+
+require_once __DIR__ . '/reset/ltv-properties.php';
+$messages = array_merge($messages, resetLtvPropertiesTable());
+
+require_once __DIR__ . '/reset/ltv-reports.php';
+$messages = array_merge($messages, resetLtvReportsTable());
+
+require_once __DIR__ . '/reset/ltv-report-photos.php';
+$messages = array_merge($messages, resetLtvReportPhotosTable());
+
+require_once __DIR__ . '/reset/ltv-seed.php';
+$messages = array_merge($messages, seedLtvBaselineData());
 
 foreach ($messages as $message) {
     echo $message . PHP_EOL;
