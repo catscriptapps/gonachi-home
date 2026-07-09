@@ -32,6 +32,13 @@
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
   },
+  "_preview.min.js": {
+    "file": "js/preview.min.js",
+    "name": "preview",
+    "imports": [
+      "_toast.min.js"
+    ]
+  },
   "_profile-modal.min.js": {
     "file": "js/profile-modal.min.js",
     "name": "profile-modal",
@@ -60,13 +67,6 @@
   "_toast.min.js": {
     "file": "js/toast.min.js",
     "name": "toast"
-  },
-  "_upload-modal.min.js": {
-    "file": "js/upload-modal.min.js",
-    "name": "upload-modal",
-    "imports": [
-      "_toast.min.js"
-    ]
   },
   "resources/css/app.css": {
     "file": "css/app.min.css",
@@ -182,7 +182,7 @@
     "isEntry": true,
     "imports": [
       "_profile-modal.min.js",
-      "_upload-modal.min.js",
+      "_preview.min.js",
       "_toast.min.js",
       "_spa-router.min.js",
       "_delete-factory.min.js",
@@ -199,7 +199,7 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_upload-modal.min.js",
+      "_preview.min.js",
       "_toast.min.js"
     ]
   },

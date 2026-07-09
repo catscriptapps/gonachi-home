@@ -20,8 +20,10 @@
 import { FormValidator } from '../utils/form-validator.js';
 import { uploadModal, createUploadHandler } from '../modals/upload-modal.js';
 import { showToast } from '../ui/toast.js';
+import { registerImagePreview } from '../utils/globals/preview.js';
 
 const MAX_PICTURES = 6;
+const MAX_DOCUMENTS = 6;
 
 export function init() {
   const form = document.getElementById('report-landlord-form');
@@ -36,6 +38,11 @@ export function init() {
   let buildingPictures = []; // { url, fileName }
   let supportingEvidence = []; // { url, fileName }
 
+  // Activates the shared full-screen image previewer (resources/js/utils/globals/preview.js)
+  // for any [data-img-src] element on the page — its own listeners are idempotent, safe to
+  // call again on partial-load re-init.
+  registerImagePreview();
+
   // --- Building Pictures ---
   const addPicturesBtn = document.getElementById('add-building-pictures-btn');
   const picturesPreview = document.getElementById('building-pictures-preview');
@@ -44,7 +51,12 @@ export function init() {
     picturesPreview.innerHTML = buildingPictures.map((file, i) => `
       <div class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
         <img src="${file.url}" class="w-full h-full object-cover" alt="Building picture" />
-        <button type="button" data-remove-picture="${i}" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow">&times;</button>
+        <div class="absolute top-1 right-1 flex items-center gap-1">
+          <button type="button" data-img-src="${file.url}" title="Preview" class="bg-white/90 dark:bg-gray-900/90 text-gray-700 dark:text-gray-200 rounded-full w-5 h-5 flex items-center justify-center shadow">
+            <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+          </button>
+          <button type="button" data-remove-picture="${i}" title="Remove" class="bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow">&times;</button>
+        </div>
       </div>
     `).join('');
   }
@@ -104,6 +116,19 @@ export function init() {
   evidenceInput.addEventListener('change', async () => {
     const files = Array.from(evidenceInput.files);
     if (!files.length) return;
+
+    if (supportingEvidence.length >= MAX_DOCUMENTS) {
+      showToast(`You can attach up to ${MAX_DOCUMENTS} supporting documents.`, 'error');
+      evidenceInput.value = '';
+      return;
+    }
+
+    if (supportingEvidence.length + files.length > MAX_DOCUMENTS) {
+      const remaining = MAX_DOCUMENTS - supportingEvidence.length;
+      showToast(`You can attach up to ${MAX_DOCUMENTS} supporting documents (${remaining} more allowed).`, 'error');
+      evidenceInput.value = '';
+      return;
+    }
 
     // Client-side check is a UX nicety only — server re-verifies actual file
     // content via finfo before accepting anything (see report-landlord-document-upload.php).

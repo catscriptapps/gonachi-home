@@ -114,7 +114,7 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
 
                 <!-- Building Pictures — routed through the shared upload modal (client-side compression) -->
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Building Pictures</label>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Building Pictures <span class="normal-case font-medium text-gray-400">(up to 6 pictures)</span></label>
                     <button type="button" id="add-building-pictures-btn" class="w-full flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
                         <span>Add Building Pictures</span>
@@ -124,7 +124,7 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
 
                 <!-- Supporting Evidence — PDF only, uploaded straight to its own endpoint -->
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Supporting Evidence <span class="normal-case font-medium text-gray-400">(PDF files only)</span></label>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Supporting Evidence <span class="normal-case font-medium text-gray-400">(PDF files only, up to 6 files)</span></label>
                     <label for="supporting-evidence-input" class="w-full flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                         <svg class="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="none">
                             <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 2h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z" />
