@@ -181,6 +181,15 @@
       "_spinner-utils.min.js"
     ]
   },
+  "resources/js/pages/report-landlord-page.js": {
+    "file": "js/report-landlord-page.min.js",
+    "name": "report-landlord-page",
+    "src": "resources/js/pages/report-landlord-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator.min.js"
+    ]
+  },
   "resources/js/pages/reset-password-page.js": {
     "file": "js/reset-password-page.min.js",
     "name": "reset-password-page",
@@ -199,6 +208,15 @@
     "isEntry": true,
     "imports": [
       "_animations.min.js"
+    ]
+  },
+  "resources/js/pages/signup-page.js": {
+    "file": "js/signup-page.min.js",
+    "name": "signup-page",
+    "src": "resources/js/pages/signup-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/users-page.js": {

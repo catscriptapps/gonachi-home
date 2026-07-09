@@ -74,22 +74,22 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
         </div>
     <?php else: ?>
 
-        <form method="POST" action="<?= $baseUrl ?>api/report-landlord" enctype="multipart/form-data" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <form id="report-landlord-form" method="POST" action="<?= $baseUrl ?>api/report-landlord" enctype="multipart/form-data" novalidate class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="sm:col-span-2">
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Property Address</label>
-                    <input type="text" name="address" required placeholder="e.g. House 14, Admiralty Way, Lekki" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                    <label for="report-landlord-address" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Property Address</label>
+                    <input type="text" id="report-landlord-address" name="address" required placeholder="e.g. House 14, Admiralty Way, Lekki" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Landlord Name</label>
-                    <input type="text" name="landlord_name" required placeholder="e.g. Mr X" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                    <label for="report-landlord-name" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Landlord Name</label>
+                    <input type="text" id="report-landlord-name" name="landlord_name" required placeholder="e.g. Mr X" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Property Type</label>
-                    <select name="property_type" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-700 dark:text-gray-300">
+                    <label for="report-landlord-property-type" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Property Type</label>
+                    <select id="report-landlord-property-type" name="property_type" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-700 dark:text-gray-300">
                         <option value="">Select property type&hellip;</option>
                         <option value="flat">Flat / Apartment</option>
                         <option value="duplex">Duplex</option>
@@ -100,13 +100,13 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Duration Of Tenancy</label>
-                    <input type="text" name="duration_of_tenancy" placeholder="e.g. 2 years" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                    <label for="report-landlord-duration" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Duration Of Tenancy</label>
+                    <input type="text" id="report-landlord-duration" name="duration_of_tenancy" placeholder="e.g. 2 years" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Issue Type</label>
-                    <select name="issue_type" required class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-700 dark:text-gray-300">
+                    <label for="report-landlord-issue-type" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Issue Type</label>
+                    <select id="report-landlord-issue-type" name="issue_type" required class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-700 dark:text-gray-300">
                         <option value="">Select an issue&hellip;</option>
                         <option value="deposit">Withheld Deposit</option>
                         <option value="harassment">Harassment</option>
@@ -117,8 +117,8 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
                 </div>
 
                 <div class="sm:col-span-2">
-                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Additional Notes</label>
-                    <textarea name="notes" rows="4" placeholder="Describe what happened&hellip;" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white resize-none"></textarea>
+                    <label for="report-landlord-notes" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Additional Notes</label>
+                    <textarea id="report-landlord-notes" name="notes" rows="4" placeholder="Describe what happened&hellip;" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white resize-none"></textarea>
                 </div>
             </div>
 
