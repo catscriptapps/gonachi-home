@@ -10,7 +10,6 @@ use App\Models\LandlordReport;
 use App\Models\LandlordReportPhoto;
 use App\Models\PropertyRecord;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Src\Service\ImageUploadService;
 
 /**
  * LandlordDirectoryController
@@ -24,15 +23,26 @@ class LandlordDirectoryController
     private const REQUIRED_FIELDS = ['address', 'landlord_name', 'issue_type'];
 
     /**
+     * Only URLs under this prefix are trusted when attaching photos to a
+     * report — guards against a crafted payload smuggling in an external
+     * URL (e.g. a tracking pixel an admin's browser would load when
+     * reviewing the report). See report-landlord-photo-upload.php /
+     * report-landlord-document-upload.php, the only two writers of this path.
+     */
+    private const ALLOWED_UPLOAD_PREFIX = '/images/uploads/landlord-reports/';
+
+    /**
      * Normalize, find-or-create the landlord + property, then create the
-     * report itself (always starts pending_review). Any uploaded photos are
-     * stored via ImageUploadService and attached to the report.
+     * report itself (always starts pending_review). Photos are uploaded
+     * separately beforehand (report-landlord-photo-upload.php /
+     * report-landlord-document-upload.php, both fronted by JS upload flows)
+     * — this just attaches the resulting URLs to the report.
      *
-     * @param array $input Raw $_POST fields.
-     * @param array $files Raw $_FILES entries (expects 'building_pictures' / 'supporting_evidence' keys, each multi-file).
+     * @param array $input Decoded JSON body: address, landlord_name, property_type,
+     *                      duration_of_tenancy, issue_type, notes, building_picture_urls[], supporting_evidence_urls[].
      * @return array{success: bool, errors: string[]}
      */
-    public static function submitReport(array $input, array $files, int $userId): array
+    public static function submitReport(array $input, int $userId): array
     {
         $errors = [];
         foreach (self::REQUIRED_FIELDS as $field) {
@@ -71,7 +81,8 @@ class LandlordDirectoryController
             'status' => 'pending_review',
         ]);
 
-        self::storePhotos($report, $files);
+        self::attachPhotos($report, 'building_picture', $input['building_picture_urls'] ?? []);
+        self::attachPhotos($report, 'supporting_evidence', $input['supporting_evidence_urls'] ?? []);
 
         return ['success' => true, 'errors' => []];
     }
@@ -159,30 +170,23 @@ class LandlordDirectoryController
             ->withMax(['reports as latest_report_at' => fn($q) => $q->published()], 'created_at');
     }
 
-    private static function storePhotos(LandlordReport $report, array $files): void
+    /**
+     * @param string[] $urls Already-uploaded URLs (e.g. "/images/uploads/landlord-reports/xyz.jpg").
+     */
+    private static function attachPhotos(LandlordReport $report, string $kind, array $urls): void
     {
-        $uploadDir = realpath(__DIR__ . '/../../public/images/uploads/') . '/landlord-reports/';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-        }
+        foreach ($urls as $url) {
+            $url = trim((string) $url);
 
-        $service = new ImageUploadService($uploadDir);
-
-        foreach (['building_pictures' => 'building_picture', 'supporting_evidence' => 'supporting_evidence'] as $inputName => $kind) {
-            if (empty($files[$inputName]['tmp_name'][0])) {
+            if ($url === '' || !str_starts_with($url, self::ALLOWED_UPLOAD_PREFIX)) {
                 continue;
             }
 
-            $service->upload($files[$inputName], function (array $uploadedFiles) use ($report, $kind) {
-                foreach ($uploadedFiles as $file) {
-                    LandlordReportPhoto::create([
-                        'report_id' => $report->id,
-                        'kind' => $kind,
-                        'file_path' => 'images/uploads/landlord-reports/' . $file['fileName'],
-                    ]);
-                }
-                return $uploadedFiles;
-            });
+            LandlordReportPhoto::create([
+                'report_id' => $report->id,
+                'kind' => $kind,
+                'file_path' => ltrim($url, '/'),
+            ]);
         }
     }
 

@@ -11,6 +11,12 @@ declare(strict_types=1);
  * pending_review until an admin approves them via /landlord-report-review —
  * see landlord-report-review.php.
  *
+ * Submission is pure AJAX (no page reload/redirect) — see
+ * resources/js/pages/report-landlord-page.js. Photos upload immediately on
+ * selection to their own endpoints (report-landlord-photo-upload.php /
+ * report-landlord-document-upload.php); the main submit only sends the
+ * resulting URLs.
+ *
  * @var bool $isLoggedIn
  * @var string $baseUrl
  */
@@ -19,8 +25,6 @@ use Src\Service\AuthService;
 
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 
-$submitted = isset($_GET['submitted']);
-$error = $_GET['error'] ?? null;
 $registered = isset($_GET['registered']);
 $signupRedirect = ltrim($path ?? '/report-landlord', '/');
 ?>
@@ -31,23 +35,7 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Share your experience to help the next renter — every contribution strengthens the verification confidence score.</p>
     </div>
 
-    <?php if ($submitted): ?>
-        <div class="flex items-start gap-3 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-100 dark:border-emerald-900/30 rounded-xl p-4">
-            <svg class="h-5 w-5 text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <div>
-                <h4 class="text-sm font-bold text-emerald-800 dark:text-emerald-300">Report submitted</h4>
-                <p class="text-xs text-emerald-700 dark:text-emerald-400 mt-0.5">Thank you — it's in the review queue and will appear on the landlord's public record once approved.</p>
-            </div>
-        </div>
-    <?php elseif ($error): ?>
-        <div class="flex items-start gap-3 bg-red-50 dark:bg-red-950/40 border border-red-100 dark:border-red-900/30 rounded-xl p-4">
-            <svg class="h-5 w-5 text-red-600 dark:text-red-400 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01M4.93 4.93a10 10 0 0114.14 0 10 10 0 010 14.14 10 10 0 01-14.14 0 10 10 0 010-14.14z" /></svg>
-            <div>
-                <h4 class="text-sm font-bold text-red-800 dark:text-red-300">Couldn't submit that report</h4>
-                <p class="text-xs text-red-700 dark:text-red-400 mt-0.5"><?= htmlspecialchars($error) ?></p>
-            </div>
-        </div>
-    <?php endif; ?>
+    <div id="report-landlord-message"></div>
 
     <?php if (!$currentUserId): ?>
         <div class="max-w-lg mx-auto text-center py-20">
@@ -74,7 +62,7 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
         </div>
     <?php else: ?>
 
-        <form id="report-landlord-form" method="POST" action="<?= $baseUrl ?>api/report-landlord" enctype="multipart/form-data" novalidate class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
+        <form id="report-landlord-form" novalidate class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm space-y-6">
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div class="sm:col-span-2">
@@ -122,25 +110,37 @@ $signupRedirect = ltrim($path ?? '/report-landlord', '/');
                 </div>
             </div>
 
-            <div class="border-t border-gray-100 dark:border-gray-800 pt-6">
-                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Optional Documents</label>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+            <div class="border-t border-gray-100 dark:border-gray-800 pt-6 space-y-6">
+
+                <!-- Building Pictures — routed through the shared upload modal (client-side compression) -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Building Pictures</label>
+                    <button type="button" id="add-building-pictures-btn" class="w-full flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-                        <span>Building Pictures</span>
-                        <input type="file" name="building_pictures[]" accept="image/*" multiple class="hidden" onchange="this.previousElementSibling.textContent = this.files.length ? this.files.length + ' file(s) selected' : 'Building Pictures'" />
+                        <span>Add Building Pictures</span>
+                    </button>
+                    <div id="building-pictures-preview" class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3 empty:mt-0"></div>
+                </div>
+
+                <!-- Supporting Evidence — PDF only, uploaded straight to its own endpoint -->
+                <div>
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-3">Supporting Evidence <span class="normal-case font-medium text-gray-400">(PDF files only)</span></label>
+                    <label for="supporting-evidence-input" class="w-full flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <svg class="h-8 w-8 text-red-500" viewBox="0 0 24 24" fill="none">
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 2h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z" />
+                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 2v5h5" />
+                            <text x="12" y="17.5" text-anchor="middle" font-size="6.5" font-weight="bold" fill="currentColor" stroke="none" font-family="sans-serif">PDF</text>
+                        </svg>
+                        <span>Add Supporting Documents</span>
+                        <input type="file" id="supporting-evidence-input" accept="application/pdf" multiple class="hidden" />
                     </label>
-                    <label class="flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 cursor-pointer hover:border-indigo-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" /></svg>
-                        <span>Supporting Evidence</span>
-                        <input type="file" name="supporting_evidence[]" accept="image/*" multiple class="hidden" onchange="this.previousElementSibling.textContent = this.files.length ? this.files.length + ' file(s) selected' : 'Supporting Evidence'" />
-                    </label>
+                    <div id="supporting-evidence-list" class="mt-3 space-y-2 empty:mt-0"></div>
                 </div>
             </div>
 
             <div class="flex items-center justify-between pt-2">
                 <span class="text-xs text-gray-400">Reports are reviewed before appearing on a landlord's public record.</span>
-                <button type="submit" class="inline-flex items-center px-6 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold text-sm rounded-lg transition-colors shadow-sm whitespace-nowrap">
+                <button type="submit" id="report-landlord-submit" class="inline-flex items-center px-6 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold text-sm rounded-lg transition-colors shadow-sm whitespace-nowrap">
                     Submit Report
                 </button>
             </div>

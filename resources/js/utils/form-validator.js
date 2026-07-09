@@ -12,6 +12,8 @@
  * - Automatically generates readable field names from labels or input names
  */
 
+import { showToast } from '../ui/toast.js';
+
 export class FormValidator {
     /**
      * @param {HTMLFormElement} formElement - Form element to validate
@@ -161,6 +163,7 @@ export class FormValidator {
         if (!isValid) {
             e.preventDefault();
             this.animateInvalidFields();
+            showToast('Some required fields are missing', 'error');
         }
 
         return isValid;
