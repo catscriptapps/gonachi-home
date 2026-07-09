@@ -123,14 +123,13 @@ export class LoginModal {
                     setTimeout(() => {
                         this.modal.close();
 
-                        // Use the redirect_url from the server if it exists, otherwise default to /dashboard.
-                        // This handles both user and landlord logins gracefully.
-                        const redirectTarget = result.redirect_url || '/dashboard';
-                        if (redirectTarget) {
-                            window.location.href = `${window.APP_CONFIG.baseUrl}${redirectTarget.replace(/^\//, '')}`;
-                        } else {
-                            window.location.href = `${window.APP_CONFIG.baseUrl}dashboard`;
-                        }
+                        // Stay put — reload the page the modal was opened from rather
+                        // than jumping to /dashboard, so e.g. signing in from the
+                        // Report A Landlord guest gate lands back on that page with
+                        // the real form instead of yanking the user elsewhere. A full
+                        // reload (not a partial load) is required so the server
+                        // re-renders with the now-authenticated session.
+                        window.location.reload();
                     }, 1200);
                 } else {
                     if (apiMessageContainer) {

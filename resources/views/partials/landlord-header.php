@@ -60,11 +60,24 @@ declare(strict_types=1);
         <div class="h-6 w-px bg-gray-200 dark:bg-gray-800"></div>
 
         <!-- Account Meta Details -->
-        <div class="flex items-center space-x-3">
-            <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                R
-            </div>
-            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:block">Tenant Workspace</span>
-        </div>
+        <?php $accountInfo = \Src\Config\NavigationConfig::getUserDisplayInfo(); ?>
+        <?php if ($isLoggedIn): ?>
+            <a href="#" data-logout-button class="flex items-center space-x-3 group cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-indigo-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                    <?= htmlspecialchars($accountInfo['initial']) ?>
+                </div>
+                <div class="hidden md:flex flex-col leading-tight">
+                    <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors"><?= htmlspecialchars($accountInfo['displayName']) ?></span>
+                    <span class="text-xs text-gray-400 group-hover:text-indigo-500 dark:group-hover:text-indigo-400 transition-colors">Sign Out</span>
+                </div>
+            </a>
+        <?php else: ?>
+            <a href="<?= $baseUrl ?>login" data-login-button class="flex items-center space-x-3 group cursor-pointer">
+                <div class="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-300 font-bold flex items-center justify-center text-sm shadow-sm">
+                    G
+                </div>
+                <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 hidden md:block transition-colors">Sign In</span>
+            </a>
+        <?php endif; ?>
     </div>
 </header>
