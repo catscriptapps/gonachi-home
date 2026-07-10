@@ -3,8 +3,9 @@
 //
 // CLI entry point for setting up gonachi_home_db from scratch: the shared
 // `users` table plus every project's tables — real-estate-leads (rel_
-// prefixed) and landlord-tenant-validation (ltv_ prefixed) so far; as more
-// projects land under gonachi-home, add their reset calls here alongside it.
+// prefixed), landlord-tenant-validation (ltv_ prefixed), and
+// contractor-discovery (cde_ prefixed) so far; as more projects land under
+// gonachi-home, add their reset calls here alongside it.
 //
 // Run: php scripts/setup-database.php
 
@@ -88,6 +89,18 @@ $messages = array_merge($messages, resetLtvReportPhotosTable());
 
 require_once __DIR__ . '/reset/ltv-seed.php';
 $messages = array_merge($messages, seedLtvBaselineData());
+
+// --------------------------------------------------
+// Project: contractor-discovery (cde_ prefixed tables)
+// --------------------------------------------------
+require_once __DIR__ . '/reset/cde-job-requests.php';
+$messages = array_merge($messages, resetCdeJobRequestsTable());
+
+require_once __DIR__ . '/reset/cde-job-request-photos.php';
+$messages = array_merge($messages, resetCdeJobRequestPhotosTable());
+
+require_once __DIR__ . '/reset/cde-seed.php';
+$messages = array_merge($messages, seedCdeBaselineData());
 
 foreach ($messages as $message) {
     echo $message . PHP_EOL;

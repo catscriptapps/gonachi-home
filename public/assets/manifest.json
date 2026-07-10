@@ -161,6 +161,17 @@
       "_animations.min.js"
     ]
   },
+  "resources/js/pages/job-requests-page.js": {
+    "file": "js/job-requests-page.min.js",
+    "name": "job-requests-page",
+    "src": "resources/js/pages/job-requests-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator.min.js",
+      "_preview.min.js",
+      "_toast.min.js"
+    ]
+  },
   "resources/js/pages/messages-page.js": {
     "file": "js/messages-page.min.js",
     "name": "messages-page",

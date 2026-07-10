@@ -46,6 +46,10 @@ $tablesToDrop = [
     'ltv_reports',
     'ltv_properties',
     'ltv_landlords',
+
+    // Project: contractor-discovery
+    'cde_job_request_photos',
+    'cde_job_requests',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -128,6 +132,18 @@ $messages = array_merge($messages, resetLtvReportPhotosTable());
 
 require_once __DIR__ . '/../../scripts/reset/ltv-seed.php';
 $messages = array_merge($messages, seedLtvBaselineData());
+
+/**
+ * 4c. CREATION PHASE - PROJECT: contractor-discovery (cde_ prefixed tables)
+ */
+require_once __DIR__ . '/../../scripts/reset/cde-job-requests.php';
+$messages = array_merge($messages, resetCdeJobRequestsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-job-request-photos.php';
+$messages = array_merge($messages, resetCdeJobRequestPhotosTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
+$messages = array_merge($messages, seedCdeBaselineData());
 
 
 /**
