@@ -99,6 +99,12 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 require_once __DIR__ . '/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
 
+require_once __DIR__ . '/reset/cde-contractors.php';
+$messages = array_merge($messages, resetCdeContractorsTable());
+
+require_once __DIR__ . '/reset/cde-contractor-claims.php';
+$messages = array_merge($messages, resetCdeContractorClaimsTable());
+
 require_once __DIR__ . '/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
 

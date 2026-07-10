@@ -119,7 +119,7 @@ if ($isPartial) {
 // The portal layout is the umbrella "hub" shell (landing page + cross-project
 // placeholder pages). Each live project renders in its own app shell.
 $portalPaths = ['/home'];
-$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding'];
+$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
 $landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review'];
 
 if ($isAdminReset) {

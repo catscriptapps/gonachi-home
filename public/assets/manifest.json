@@ -10,6 +10,13 @@
     "file": "css/app.min2.css",
     "src": "_app.min2.css"
   },
+  "_contractor-claim.min.js": {
+    "file": "js/contractor-claim.min.js",
+    "name": "contractor-claim",
+    "imports": [
+      "_toast.min.js"
+    ]
+  },
   "_delete-factory.min.js": {
     "file": "js/delete-factory.min.js",
     "name": "delete-factory"
@@ -112,6 +119,26 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
+      "_toast.min.js"
+    ]
+  },
+  "resources/js/pages/contractor-discovery-page.js": {
+    "file": "js/contractor-discovery-page.min.js",
+    "name": "contractor-discovery-page",
+    "src": "resources/js/pages/contractor-discovery-page.js",
+    "isEntry": true,
+    "imports": [
+      "_contractor-claim.min.js",
+      "_toast.min.js"
+    ]
+  },
+  "resources/js/pages/contractor-page.js": {
+    "file": "js/contractor-page.min.js",
+    "name": "contractor-page",
+    "src": "resources/js/pages/contractor-page.js",
+    "isEntry": true,
+    "imports": [
+      "_contractor-claim.min.js",
       "_toast.min.js"
     ]
   },
