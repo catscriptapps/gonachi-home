@@ -4,8 +4,28 @@
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
+use Src\Service\AuthService;
 
 header('Content-Type: application/json');
+
+// This wipes and rebuilds the entire database — admin session required, and
+// the submitted password must match the requesting admin's own account
+// password (re-authentication before a destructive action, same pattern as
+// GitHub's "type your password to confirm"). Previously this endpoint had
+// no auth check at all and the password field from reset-form.js was never
+// actually verified against anything — the modal collected it, but nothing
+// server-side checked it.
+if (!AuthService::isAdmin()) {
+    json_response(['success' => false, 'messages' => ['Forbidden.']], 403);
+}
+
+$input = json_decode(file_get_contents('php://input'), true) ?: [];
+$password = (string) ($input['password'] ?? '');
+$currentUser = AuthService::currentUser();
+
+if ($password === '' || !$currentUser || !password_verify($password, $currentUser->password)) {
+    json_response(['success' => false, 'messages' => ['Incorrect password.']], 403);
+}
 
 $messages = [];
 

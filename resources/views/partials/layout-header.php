@@ -57,6 +57,16 @@ declare(strict_types=1);
             </svg>
         </button>
 
+        <!-- DB Reset Trigger (admin only) -->
+        <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
+            <button data-reset-button data-tooltip="DB Reset" title="Reset Database"
+                class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-all focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                </svg>
+            </button>
+        <?php endif; ?>
+
         <div class="h-6 w-px bg-gray-200 dark:bg-gray-800"></div>
 
         <!-- Account Meta Details -->

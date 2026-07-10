@@ -33,12 +33,24 @@ export class ResetModal {
   }
 
   attachResetListener() {
+    // This button lives in the persistent header (outside #main-content),
+    // so it survives partial-load navigations untouched — but
+    // initGlobalModals() re-runs `new ResetModal(...)` after every one of
+    // them. Without this guard, each navigation would stack another click
+    // listener on the same button, and clicking it would then re-attach
+    // another submit listener on top of that — so after enough navigating
+    // (or even just opening/closing the modal a few times), one real
+    // submit could fire the destructive reset request multiple times.
+    if (this.resetButton.dataset.resetBound) return;
+    this.resetButton.dataset.resetBound = 'true';
+
     this.resetButton.addEventListener('click', (e) => {
       e.preventDefault();
       this.modal.open();
 
       const form = document.getElementById('reset-form');
-      if (!form) return;
+      if (!form || form.dataset.submitBound) return;
+      form.dataset.submitBound = 'true';
 
       // Initialize custom validator for shake animation & live error clearing
       const validator = new FormValidator(form);
