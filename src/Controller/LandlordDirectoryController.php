@@ -23,13 +23,13 @@ class LandlordDirectoryController
     private const REQUIRED_FIELDS = ['address', 'landlord_name', 'issue_type'];
 
     /**
-     * Only URLs under this prefix are trusted when attaching photos to a
+     * Only URLs under this path are trusted when attaching photos to a
      * report — guards against a crafted payload smuggling in an external
      * URL (e.g. a tracking pixel an admin's browser would load when
      * reviewing the report). See report-landlord-photo-upload.php /
      * report-landlord-document-upload.php, the only two writers of this path.
      */
-    private const ALLOWED_UPLOAD_PREFIX = '/images/uploads/landlord-reports/';
+    private const ALLOWED_UPLOAD_PATH = 'images/uploads/landlord-reports/';
 
     /**
      * Normalize, find-or-create the landlord + property, then create the
@@ -171,21 +171,36 @@ class LandlordDirectoryController
     }
 
     /**
-     * @param string[] $urls Already-uploaded URLs (e.g. "/images/uploads/landlord-reports/xyz.jpg").
+     * @param string[] $urls Already-uploaded URLs, e.g. "/images/uploads/landlord-reports/xyz.jpg"
+     *                       locally or "/gonachi-home/images/uploads/landlord-reports/xyz.jpg" on
+     *                       a production deploy under a subdirectory (getAssetBase() prefixes
+     *                       whichever applies — see report-landlord-photo-upload.php).
      */
     private static function attachPhotos(LandlordReport $report, string $kind, array $urls): void
     {
+        $assetBase = getAssetBase();
+
         foreach ($urls as $url) {
             $url = trim((string) $url);
 
-            if ($url === '' || !str_starts_with($url, self::ALLOWED_UPLOAD_PREFIX)) {
+            if ($url === '' || !str_starts_with($url, $assetBase)) {
+                continue;
+            }
+
+            // Strip the environment's base path back off so file_path is
+            // always stored relative — read paths prepend $assetBase fresh
+            // each time, so a baked-in base path here would break the moment
+            // the environment's subdirectory ever changed.
+            $relative = substr($url, strlen($assetBase));
+
+            if (!str_starts_with($relative, self::ALLOWED_UPLOAD_PATH)) {
                 continue;
             }
 
             LandlordReportPhoto::create([
                 'report_id' => $report->id,
                 'kind' => $kind,
-                'file_path' => ltrim($url, '/'),
+                'file_path' => $relative,
             ]);
         }
     }

@@ -55,9 +55,11 @@ for ($i = 0; $i < $totalFiles; $i++) {
     $destination = $uploadDir . $fileName;
 
     if (move_uploaded_file($tmpName, $destination)) {
+        // getAssetBase() (not a hardcoded leading slash) — see
+        // report-landlord-photo-upload.php for why.
         $files[] = [
             'fileName' => $fileName,
-            'url' => '/images/uploads/landlord-reports/documents/' . $fileName,
+            'url' => getAssetBase() . 'images/uploads/landlord-reports/documents/' . $fileName,
         ];
     }
 }

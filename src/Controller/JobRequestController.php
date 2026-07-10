@@ -26,12 +26,12 @@ class JobRequestController
     ];
 
     /**
-     * Only URLs under this prefix are trusted when attaching photos — guards
+     * Only URLs under this path are trusted when attaching photos — guards
      * against a crafted payload smuggling in an external URL. See
      * job-request-photo-upload.php, the only writer of this path (mirrors
      * the same guard in LandlordDirectoryController).
      */
-    private const ALLOWED_UPLOAD_PREFIX = '/images/uploads/job-requests/';
+    private const ALLOWED_UPLOAD_PATH = 'images/uploads/job-requests/';
 
     /**
      * @param array $input Decoded JSON body: service_category, location, budget,
@@ -114,20 +114,35 @@ class JobRequestController
     }
 
     /**
-     * @param string[] $urls Already-uploaded URLs (e.g. "/images/uploads/job-requests/xyz.jpg").
+     * @param string[] $urls Already-uploaded URLs, e.g. "/images/uploads/job-requests/xyz.jpg"
+     *                       locally or "/gonachi-home/images/uploads/job-requests/xyz.jpg" on a
+     *                       production deploy under a subdirectory (getAssetBase() prefixes
+     *                       whichever applies — see job-request-photo-upload.php).
      */
     private static function attachPhotos(JobRequest $jobRequest, array $urls): void
     {
+        $assetBase = getAssetBase();
+
         foreach ($urls as $url) {
             $url = trim((string) $url);
 
-            if ($url === '' || !str_starts_with($url, self::ALLOWED_UPLOAD_PREFIX)) {
+            if ($url === '' || !str_starts_with($url, $assetBase)) {
+                continue;
+            }
+
+            // Strip the environment's base path back off so file_path is
+            // always stored relative — read paths prepend $assetBase fresh
+            // each time, so a baked-in base path here would break the moment
+            // the environment's subdirectory ever changed.
+            $relative = substr($url, strlen($assetBase));
+
+            if (!str_starts_with($relative, self::ALLOWED_UPLOAD_PATH)) {
                 continue;
             }
 
             JobRequestPhoto::create([
                 'job_request_id' => $jobRequest->id,
-                'file_path' => ltrim($url, '/'),
+                'file_path' => $relative,
             ]);
         }
     }

@@ -36,8 +36,13 @@ $service = new ImageUploadService($uploadDir);
 $relativePrefix = 'images/uploads/landlord-reports/';
 
 $uploaded = $service->upload($_FILES['images'], function (array $files) use ($relativePrefix) {
+    // getAssetBase() (not a hardcoded leading slash) — production runs under
+    // a subdirectory (APP_BASE_PATH), so a root-relative "/images/..." URL
+    // 404s in the browser there even though it works locally where the base
+    // path is empty. See LandlordDirectoryController::attachPhotos() for the
+    // matching read side of this.
     foreach ($files as $key => $fileInfo) {
-        $files[$key]['url'] = '/' . $relativePrefix . $fileInfo['fileName'];
+        $files[$key]['url'] = getAssetBase() . $relativePrefix . $fileInfo['fileName'];
     }
     return $files;
 });

@@ -36,8 +36,10 @@ $service = new ImageUploadService($uploadDir);
 $relativePrefix = 'images/uploads/job-requests/';
 
 $uploaded = $service->upload($_FILES['images'], function (array $files) use ($relativePrefix) {
+    // getAssetBase() (not a hardcoded leading slash) — see
+    // report-landlord-photo-upload.php for why.
     foreach ($files as $key => $fileInfo) {
-        $files[$key]['url'] = '/' . $relativePrefix . $fileInfo['fileName'];
+        $files[$key]['url'] = getAssetBase() . $relativePrefix . $fileInfo['fileName'];
     }
     return $files;
 });
