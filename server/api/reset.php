@@ -68,6 +68,8 @@ $tablesToDrop = [
     'ltv_landlords',
 
     // Project: contractor-discovery
+    'cde_contractor_claims',
+    'cde_contractors',
     'cde_job_request_photos',
     'cde_job_requests',
 ];
@@ -161,6 +163,12 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-contractors.php';
+$messages = array_merge($messages, resetCdeContractorsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-contractor-claims.php';
+$messages = array_merge($messages, resetCdeContractorClaimsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
