@@ -175,6 +175,8 @@ class NavigationConfig
             $base . '/lead-review',
             $base . '/landlord-report-review',
             $base . '/contractor-claims-review',
+            $base . '/live-chat',
+            $base . '/admin',
         ];
     }
 
@@ -194,6 +196,8 @@ class NavigationConfig
             $base . '/lead-review',
             $base . '/landlord-report-review',
             $base . '/contractor-claims-review',
+            $base . '/live-chat',
+            $base . '/admin',
         ];
     }
 

@@ -70,10 +70,31 @@ class AuthService
 
     /**
      * Ensures that a PHP session is started with a 2-week persistence.
+     *
+     * Previously this only started the default session-only cookie (expires
+     * on browser close, server-side data garbage-collected after ~24
+     * minutes of inactivity per PHP's default gc_maxlifetime) despite this
+     * docblock's claim — nothing actually configured the lifetime. That
+     * mismatch is what let a guest's chat_guest_token (see ChatController)
+     * silently expire while the widget's localStorage-cached conversation
+     * id lived on indefinitely, producing a "couldn't find that
+     * conversation" error the next time they sent a message.
      */
     protected static function ensureSession(): void
     {
         if (session_status() === PHP_SESSION_NONE) {
+            $lifetime = 60 * 60 * 24 * 14; // 2 weeks
+
+            session_set_cookie_params([
+                'lifetime' => $lifetime,
+                'path' => '/',
+                'domain' => '',
+                'secure' => !empty($_SERVER['HTTPS']),
+                'httponly' => true,
+                'samesite' => 'Lax',
+            ]);
+            ini_set('session.gc_maxlifetime', (string) $lifetime);
+
             session_start();
         }
     }

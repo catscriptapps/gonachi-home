@@ -31,6 +31,7 @@ declare(strict_types=1);
             appName: <?= json_encode($appName) ?>,
             protectedPaths: <?= json_encode($protectedPaths ?? []) ?>,
             mediaLimit: <?= getMediaLimit() ?>,
+            isLoggedIn: <?= json_encode($isLoggedIn ?? false) ?>,
         };
     </script>
 
@@ -101,6 +102,7 @@ declare(strict_types=1);
     </div>
 
     <?php include __DIR__ . '/../components/scroll-top.php'; ?>
+    <?php include __DIR__ . '/../components/chat-widget.php'; ?>
 
     <?php if ($isLoggedIn && isset($_SESSION['user_id'])): ?>
         <script>

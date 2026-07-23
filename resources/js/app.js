@@ -40,8 +40,10 @@ import { initHeaderIcons } from './ui/header-icons.js';
 import { initHeaderSearch } from './ui/header-search.js';
 import { initFooterLinks } from './ui/footer-links.js';
 import { initUnreadPolling } from './ui/unread-handler.js';
+import { initLiveChatBadge } from './ui/live-chat-badge.js';
 import { init as initMessagesPage } from './pages/messages-page.js';
 import { cleanupModals } from './utils/modal-cleanup.js';
+import { init as initChatWidget } from './components/chat-widget.js';
 
 // === Page Manifest ===
 let PAGE_MANIFEST = [];
@@ -165,6 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   bindPartialLinks();
   initDarkMode();
   initFooterLinks();
+  initChatWidget();
 
   // Initialize modals
   initGlobalModals();
@@ -192,6 +195,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initUnreadPolling();
     initHeaderIcons();
     initMessagesPage();
+    initLiveChatBadge();
   }
 
   // 🔑 Load manifest first

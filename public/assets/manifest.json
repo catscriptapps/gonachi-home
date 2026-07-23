@@ -199,6 +199,15 @@
       "_toast.min.js"
     ]
   },
+  "resources/js/pages/live-chat-page.js": {
+    "file": "js/live-chat-page.min.js",
+    "name": "live-chat-page",
+    "src": "resources/js/pages/live-chat-page.js",
+    "isEntry": true,
+    "imports": [
+      "_toast.min.js"
+    ]
+  },
   "resources/js/pages/messages-page.js": {
     "file": "js/messages-page.min.js",
     "name": "messages-page",

@@ -8,7 +8,7 @@
   aria-label="Scroll to top"
   style="
   position: fixed;
-  bottom: 1.5rem;
+  bottom: 6rem;
   right: 1.5rem;
   z-index: 9999;
   display: flex;

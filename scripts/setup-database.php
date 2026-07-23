@@ -42,6 +42,15 @@ $messages = array_merge($messages, resetUserVerificationsTable());
 require_once __DIR__ . '/reset/messages.php';
 $messages = array_merge($messages, resetMessagesTable());
 
+require_once __DIR__ . '/reset/chat-conversations.php';
+$messages = array_merge($messages, resetChatConversationsTable());
+
+require_once __DIR__ . '/reset/chat-messages.php';
+$messages = array_merge($messages, resetChatMessagesTable());
+
+require_once __DIR__ . '/reset/chat-ai-settings.php';
+$messages = array_merge($messages, resetChatAiSettingsTable());
+
 // --------------------------------------------------
 // Project: real-estate-leads (rel_ prefixed tables)
 // --------------------------------------------------

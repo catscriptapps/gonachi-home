@@ -42,6 +42,9 @@ $tablesToDrop = [
     // Authentication & Core (shared across every project)
     'password_resets',
     'user_verifications',
+    'chat_messages',
+    'chat_conversations',
+    'chat_ai_settings',
     'messages',
     'recent_activities',
     'users',
@@ -106,6 +109,15 @@ $messages = array_merge($messages, resetUserVerificationsTable());
 
 require_once __DIR__ . '/../../scripts/reset/messages.php';
 $messages = array_merge($messages, resetMessagesTable());
+
+require_once __DIR__ . '/../../scripts/reset/chat-conversations.php';
+$messages = array_merge($messages, resetChatConversationsTable());
+
+require_once __DIR__ . '/../../scripts/reset/chat-messages.php';
+$messages = array_merge($messages, resetChatMessagesTable());
+
+require_once __DIR__ . '/../../scripts/reset/chat-ai-settings.php';
+$messages = array_merge($messages, resetChatAiSettingsTable());
 
 /**
  * 4. CREATION PHASE - PROJECT: real-estate-leads (rel_ prefixed tables)

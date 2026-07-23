@@ -61,7 +61,7 @@ if (is_dir($heroImagesPath)) {
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-32 sm:pb-44">
         <div class="text-center max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800">
-            <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">Gonachi</span>
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-28 w-28 sm:h-32 sm:w-32 mx-auto mb-6" />
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
                 One platform. Three engines built to find opportunity.
             </h1>

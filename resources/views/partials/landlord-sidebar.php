@@ -19,19 +19,13 @@ declare(strict_types=1);
     </a>
 
     <!-- Sidebar Header: Identity & Brand Logo -->
-    <div class="h-20 flex items-center px-6 border-b border-gray-200 dark:border-gray-800 justify-between">
-        <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="flex items-center space-x-3 overflow-hidden">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-16 w-16 flex-shrink-0" />
-            <span
-                class="font-bold text-2xl tracking-tight text-gray-900 dark:text-white transition-opacity duration-200"
-                x-show="$store.sidebar.expanded || mobileMenuOpen"
-                x-transition:enter="delay-100 duration-200">
-                Gonachi
-            </span>
+    <div class="h-20 relative flex items-center justify-center px-6 border-b border-gray-200 dark:border-gray-800">
+        <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="flex items-center justify-center">
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-20 w-20 flex-shrink-0" />
         </a>
 
         <!-- Mobile Close Trigger -->
-        <button @click="mobileMenuOpen = false" class="lg:hidden p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+        <button @click="mobileMenuOpen = false" class="lg:hidden absolute right-6 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
     </div>
@@ -69,11 +63,28 @@ declare(strict_types=1);
         </a>
 
         <?php if (\Src\Service\AuthService::isAdmin()): ?>
+            <a href="<?= $baseUrl ?>admin" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/admin' ? $navActiveClasses : $navInactiveClasses ?>">
+                <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                </svg>
+                <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Admin Dashboard</span>
+            </a>
+
             <a href="<?= $baseUrl ?>landlord-report-review" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/landlord-report-review' ? $navActiveClasses : $navInactiveClasses ?>">
                 <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Report Review Queue</span>
+            </a>
+
+            <a href="<?= $baseUrl ?>live-chat" data-partial class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/live-chat' ? $navActiveClasses : $navInactiveClasses ?>">
+                <span class="flex items-center space-x-3">
+                    <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Live Chat</span>
+                </span>
+                <span id="live-chat-nav-badge" x-show="$store.sidebar.expanded || mobileMenuOpen" class="hidden flex-shrink-0 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">0</span>
             </a>
         <?php endif; ?>
 

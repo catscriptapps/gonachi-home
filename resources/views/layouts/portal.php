@@ -33,6 +33,7 @@ declare(strict_types=1);
             appName: <?= json_encode($appName) ?>,
             protectedPaths: <?= json_encode($protectedPaths ?? []) ?>,
             mediaLimit: <?= getMediaLimit() ?>,
+            isLoggedIn: <?= json_encode($isLoggedIn ?? false) ?>,
         };
     </script>
 
@@ -43,13 +44,18 @@ declare(strict_types=1);
 
     <div class="flex flex-col min-h-screen">
 
-        <header class="h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-300">
-            <a href="<?= $baseUrl ?>" class="flex items-center space-x-3">
-                <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-9 w-9 flex-shrink-0" />
-                <span class="font-bold text-xl tracking-tight text-gray-900 dark:text-white">Gonachi</span>
-            </a>
-
+        <header class="h-16 flex items-center justify-end px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-300">
             <div class="flex items-center space-x-3">
+                <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
+                    <a href="<?= $baseUrl ?>admin" data-partial class="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                        <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                        </svg>
+                        <span class="hidden sm:inline">Admin</span>
+                        <span id="live-chat-nav-badge" class="hidden absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center border-2 border-white dark:border-gray-900">0</span>
+                    </a>
+                <?php endif; ?>
+
                 <button
                     @click="$store.theme.isDark = !$store.theme.isDark; document.documentElement.classList.toggle('dark', $store.theme.isDark)"
                     class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all focus:outline-none"
@@ -89,6 +95,8 @@ declare(strict_types=1);
             </div>
         </footer>
     </div>
+
+    <?php include __DIR__ . '/../components/chat-widget.php'; ?>
 
     <?php if ($isLoggedIn && isset($_SESSION['user_id'])): ?>
         <script>
