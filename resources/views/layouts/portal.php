@@ -51,7 +51,12 @@ declare(strict_types=1);
 
             <div class="flex items-center space-x-3">
                 <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
-                    <a href="<?= $baseUrl ?>admin" data-partial class="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
+                    <?php // No data-partial: /admin renders under layouts/app.php (sidebar +
+                    // sticky header), while this portal page has neither — a partial
+                    // swap only replaces #main-content, so it can't retroactively add
+                    // chrome this page's shell never had. Same reason project-switcher.php's
+                    // cross-project links and home.php's project cards don't use it either. ?>
+                    <a href="<?= $baseUrl ?>admin" class="relative flex items-center gap-1.5 px-3 py-2 rounded-xl text-sm font-semibold text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
                         </svg>

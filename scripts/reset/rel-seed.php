@@ -81,7 +81,10 @@ function seedRelLeadsBaselineData(): array
         'type' => 'forum',
         'connector_class' => \Src\Service\LeadSources\NairalandPropertiesConnector::class,
         'base_url' => 'https://www.nairaland.com/properties',
-        'config' => ['board_url' => 'https://www.nairaland.com/properties'],
+        'config' => [
+            'board_url' => 'https://www.nairaland.com/properties',
+            'scraperapi_key_env' => 'SCRAPERAPI_KEY',
+        ],
         'is_active' => true,
         'poll_interval_minutes' => 60,
     ]);
@@ -125,9 +128,8 @@ function seedRelLeadsBaselineData(): array
                 'seeking investment property Nigeria',
             ],
         ],
-        // Inactive until SERPER_API_KEY is set in .env — flip to true once
-        // a key exists (see Src\Service\LeadSources\SerperConnector).
-        'is_active' => false,
+        // Active: SERPER_API_KEY is set in .env and confirmed working.
+        'is_active' => true,
         'poll_interval_minutes' => 1440,
     ]);
 
