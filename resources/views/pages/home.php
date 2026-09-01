@@ -12,10 +12,31 @@ declare(strict_types=1);
 
 use Src\Config\ProjectsConfig;
 
-$projects = array_map(
-    fn(array $project) => $project + ['href' => $baseUrl . $project['slug']],
+// The three sub-apps hosted under gonachi-home — used both for the top
+// card grid below and for the "Unified Summary" section further down,
+// which tells the "three engines, one idea" story about these specifically.
+$internalProjects = array_map(
+    fn(array $project) => $project + ['href' => $baseUrl . $project['slug'], 'external' => false],
     ProjectsConfig::all()
 );
+
+// Real Estate World: a companion platform on its own domain (gonachi.com),
+// not one of the sub-apps hosted under gonachi-home — kept out of
+// ProjectsConfig (and therefore out of the sidebar "switch project" card,
+// see partials/project-switcher.php) and out of $internalProjects, so it
+// only appears in the top card grid, not the "three engines" narrative
+// below. Summary line is quoted verbatim from gonachi.com/home.
+$projects = $internalProjects;
+$projects[] = [
+    'slug' => 'real-estate-world',
+    'name' => 'Real Estate World',
+    'tagline' => 'The ultimate nexus for Real Estate Stakeholders.',
+    'status' => 'live',
+    'accent' => 'teal',
+    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />',
+    'href' => 'https://gonachi.com/home',
+    'external' => true,
+];
 
 $accentClasses = [
     'primary' => [
@@ -31,6 +52,11 @@ $accentClasses = [
     'indigo' => [
         'bar' => 'from-indigo-500 to-indigo-400',
         'icon' => 'bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400 group-hover:bg-indigo-500 group-hover:text-white',
+        'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
+    ],
+    'teal' => [
+        'bar' => 'from-teal-500 to-teal-400',
+        'icon' => 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 group-hover:bg-teal-500 group-hover:text-white',
         'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
     ],
 ];
@@ -61,9 +87,9 @@ if (is_dir($heroImagesPath)) {
 
     <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-32 sm:pb-44">
         <div class="text-center max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-28 w-28 sm:h-32 sm:w-32 mx-auto mb-6" />
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-44 w-44 sm:h-52 sm:w-52 mx-auto mb-6 rounded-full object-contain bg-white ring-1 ring-black/5 dark:ring-white/10 shadow-lg" />
             <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
-                One platform. Three engines built to find opportunity.
+                One platform. Built to find opportunity.
             </h1>
             <p class="mt-4 text-base text-gray-500 dark:text-gray-400">
                 Choose a project to get started.
@@ -73,10 +99,11 @@ if (is_dir($heroImagesPath)) {
 </section>
 
 <div class="relative -mt-20 sm:-mt-28 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         <?php foreach ($projects as $index => $project): ?>
             <?php $accent = $accentClasses[$project['accent']]; ?>
             <a href="<?= htmlspecialchars($project['href']) ?>"
+                <?php if (!empty($project['external'])): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
                 data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>"
                 class="group relative flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
                 <div class="absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r <?= $accent['bar'] ?>"></div>
@@ -105,8 +132,13 @@ if (is_dir($heroImagesPath)) {
                 <p class="text-sm text-gray-500 dark:text-gray-400 flex-1"><?= htmlspecialchars($project['tagline']) ?></p>
 
                 <div class="mt-6 flex items-center text-sm font-semibold text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors">
-                    <?= $project['status'] === 'live' ? 'Enter' : 'Preview' ?>
-                    <svg class="h-4 w-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <?php if (!empty($project['external'])): ?>
+                        Visit Site
+                        <svg class="h-3.5 w-3.5 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                    <?php else: ?>
+                        <?= $project['status'] === 'live' ? 'Enter' : 'Preview' ?>
+                        <svg class="h-4 w-4 ml-1.5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    <?php endif; ?>
                 </div>
             </a>
         <?php endforeach; ?>
@@ -127,7 +159,7 @@ if (is_dir($heroImagesPath)) {
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-4xl mx-auto">
-            <?php foreach ($projects as $index => $project): ?>
+            <?php foreach ($internalProjects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
                 <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>" class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 <?= $accent['icon'] ?>">

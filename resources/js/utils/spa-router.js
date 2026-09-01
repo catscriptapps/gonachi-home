@@ -115,6 +115,29 @@ export async function loadPartial(url, pushState = true, clickedLink = null) {
   }
 }
 
+/**
+ * GET filter/search forms (e.g. the search + region bar on
+ * real-estate-leads, or contractor-discovery's search + category bar) opt
+ * into partial loads the same way links do: add [data-partial] to the
+ * <form>. Submitting builds the querystring from the form fields (so page
+ * reload/back-button/pagination links keep working exactly the same) and
+ * routes it through loadPartial() instead of a native navigation.
+ *
+ * POST forms (login, signup, etc.) are untouched — those legitimately want
+ * a full page load, or already handle their own submission via fetch.
+ */
+function bindPartialForms() {
+  document.body.addEventListener('submit', (e) => {
+    const form = e.target.closest('form[data-partial]');
+    if (!form || form.method.toUpperCase() !== 'GET') return;
+
+    e.preventDefault();
+    const params = new URLSearchParams(new FormData(form));
+    const url = form.action.split('?')[0] + '?' + params.toString();
+    loadPartial(url, true);
+  });
+}
+
 export function bindPartialLinks() {
   document.body.addEventListener('click', (e) => {
     const link = e.target.closest('a[data-partial]');
@@ -129,6 +152,7 @@ export function bindPartialLinks() {
     loadPartial(url, false);
   });
 
+  bindPartialForms();
   updateActiveLink(window.location.href);
 }
 

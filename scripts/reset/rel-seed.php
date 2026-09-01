@@ -102,8 +102,31 @@ function seedRelLeadsBaselineData(): array
                 'seeking investment property Nigeria',
             ],
         ],
-        // Inactive until GOOGLE_CSE_API_KEY / GOOGLE_CSE_ID are set in .env —
-        // flip to true once credentials exist.
+        // Dead end, kept only for history: Google closed Custom Search JSON
+        // API to new Cloud projects in 2025 and is discontinuing it for
+        // everyone on 2027-01-01 — no config change can make this work.
+        // Replaced below by SerperConnector.
+        'is_active' => false,
+        'poll_interval_minutes' => 1440,
+    ]);
+
+    LeadSource::create([
+        'name' => 'Serper Search (Real Estate Intent)',
+        'slug' => 'serper-intent',
+        'type' => 'search_api',
+        'connector_class' => \Src\Service\LeadSources\SerperConnector::class,
+        'base_url' => 'https://google.serper.dev/search',
+        'config' => [
+            'api_key_env' => 'SERPER_API_KEY',
+            'queries' => [
+                'looking for 3 bedroom house Lagos',
+                'looking for land to buy Lagos',
+                'looking for house to rent Abuja',
+                'seeking investment property Nigeria',
+            ],
+        ],
+        // Inactive until SERPER_API_KEY is set in .env — flip to true once
+        // a key exists (see Src\Service\LeadSources\SerperConnector).
         'is_active' => false,
         'poll_interval_minutes' => 1440,
     ]);

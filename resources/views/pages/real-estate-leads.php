@@ -13,7 +13,14 @@ use Src\Controller\LeadsController;
 use Src\Utils\CuratedPhotos;
 
 $leadCounts = LeadsController::activeCounts();
-$recentLeads = LeadsController::recentActive(5);
+
+$search = trim($_GET['q'] ?? '');
+$region = trim($_GET['region'] ?? '');
+
+$leads = LeadsController::browse($search ?: null, $region ?: null)
+    ->appends(['q' => $search, 'region' => $region]);
+
+$regions = LeadsController::regions();
 
 $featurePhotos = CuratedPhotos::fromHomeFolder($assetBase);
 $slideshowImages = $featurePhotos;
@@ -53,22 +60,28 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
     </section>
 
     <!-- Search Routing & Location Filtering Bar -->
-    <div class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET" action="<?= $baseUrl ?>real-estate-leads" id="lead-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div class="w-full md:flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </span>
-            <input type="text" placeholder="Search intent categories (e.g., 'Lagos House', 'Port Harcourt Land')..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none text-gray-900 dark:text-white" />
+            <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search intent categories (e.g., 'Lagos House', 'Port Harcourt Land')..." class="w-full pl-10 pr-4 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none text-gray-900 dark:text-white" />
         </div>
         <div class="w-full md:w-48">
-            <select class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none text-gray-700 dark:text-gray-300">
+            <select name="region" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-primary-500 focus:outline-none text-gray-700 dark:text-gray-300">
                 <option value="">All Regions</option>
-                <option value="lagos">Lagos State</option>
-                <option value="abuja">Abuja FCT</option>
-                <option value="ph">Port Harcourt</option>
+                <?php foreach ($regions as $r): ?>
+                    <option value="<?= htmlspecialchars($r->slug) ?>" <?= $region === $r->slug ? 'selected' : '' ?>><?= htmlspecialchars($r->name) ?></option>
+                <?php endforeach; ?>
             </select>
         </div>
-    </div>
+        <button type="submit" class="w-full md:w-auto px-6 py-2.5 bg-primary-600 hover:bg-primary-700 text-white font-bold text-sm rounded-lg transition-colors shadow-sm whitespace-nowrap">
+            Search
+        </button>
+        <?php if ($search || $region): ?>
+            <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="text-xs font-semibold text-gray-500 hover:text-primary-600 whitespace-nowrap">Clear</a>
+        <?php endif; ?>
+    </form>
 
     <!-- Active Feed Streams Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -76,21 +89,26 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
         <!-- Primary Stream Listing Column (Spans 2 cols for visibility) -->
         <div class="lg:col-span-2 space-y-4">
             <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white">Recently Extracted Lead Activity</h3>
-                <span class="text-xs text-primary-600 bg-primary-50 dark:bg-primary-950/40 px-2 py-1 rounded font-medium">Real-time Stream</span>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white"><?= ($search || $region) ? 'Search Results' : 'Recently Extracted Lead Activity' ?></h3>
+                <span class="text-xs text-primary-600 bg-primary-50 dark:bg-primary-950/40 px-2 py-1 rounded font-medium"><?= ($search || $region) ? $leads->total() . ' Found' : 'Real-time Stream' ?></span>
             </div>
 
-            <?php if ($recentLeads->isEmpty()): ?>
-                <!-- Empty State: pipeline hasn't surfaced any reviewed leads yet -->
+            <?php if ($leads->isEmpty()): ?>
+                <!-- Empty State: either no leads match the search, or the pipeline hasn't surfaced any reviewed leads yet -->
                 <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
                     <svg class="h-8 w-8 text-gray-300 dark:text-gray-700 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-                    <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">No Active Leads Yet</h4>
-                    <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">
-                        The extraction pipeline is running in the background. New requests appear here once they've been reviewed and marked active.
-                    </p>
+                    <?php if ($search || $region): ?>
+                        <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">No Leads Match That Search</h4>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">Try a different keyword or region, or <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="text-primary-600 hover:underline">clear the filters</a>.</p>
+                    <?php else: ?>
+                        <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">No Active Leads Yet</h4>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">
+                            The extraction pipeline is running in the background. New requests appear here once they've been reviewed and marked active.
+                        </p>
+                    <?php endif; ?>
                 </div>
             <?php else: ?>
-                <?php foreach ($recentLeads as $lead): ?>
+                <?php foreach ($leads as $lead): ?>
                     <?php
                     $badge = LeadsController::requestTypeBadge($lead);
                     $intent = LeadsController::intentBadge($lead);
@@ -141,6 +159,24 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
                         </div>
                     </div>
                 <?php endforeach; ?>
+            <?php endif; ?>
+
+            <?php if ($leads->lastPage() > 1): ?>
+                <div class="flex items-center justify-between pt-2">
+                    <?php if ($leads->previousPageUrl()): ?>
+                        <a href="<?= htmlspecialchars($leads->previousPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">&larr; Previous</a>
+                    <?php else: ?>
+                        <span></span>
+                    <?php endif; ?>
+
+                    <span class="text-xs text-gray-400">Page <?= $leads->currentPage() ?> of <?= $leads->lastPage() ?></span>
+
+                    <?php if ($leads->nextPageUrl()): ?>
+                        <a href="<?= htmlspecialchars($leads->nextPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-primary-600 dark:hover:text-primary-400">Next &rarr;</a>
+                    <?php else: ?>
+                        <span></span>
+                    <?php endif; ?>
+                </div>
             <?php endif; ?>
         </div>
 

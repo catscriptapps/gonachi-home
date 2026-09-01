@@ -6,7 +6,9 @@ declare(strict_types=1);
 namespace Src\Controller;
 
 use App\Models\Lead;
+use App\Models\Location;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * LeadsController
@@ -38,6 +40,50 @@ class LeadsController
             ->orderByDesc('posted_at')
             ->orderByDesc('scraped_at')
             ->limit($limit)
+            ->get();
+    }
+
+    /**
+     * Searchable, region-filterable, paginated active leads — powers the
+     * search bar + region select on the real-estate-leads discovery page.
+     * $regionSlug matches a region (see regions()) or any of its child
+     * locations, e.g. "lagos" also matches leads located in "Lekki".
+     */
+    public static function browse(?string $search, ?string $regionSlug, int $perPage = 6): LengthAwarePaginator
+    {
+        $query = Lead::with(['location.parent', 'category', 'source'])->active();
+
+        if ($search) {
+            $term = '%' . $search . '%';
+            $query->where(function ($q) use ($term) {
+                $q->where('raw_text', 'like', $term)
+                    ->orWhere('location_raw', 'like', $term);
+            });
+        }
+
+        if ($regionSlug) {
+            $region = Location::where('slug', $regionSlug)->first();
+            if ($region) {
+                $locationIds = $region->children()->pluck('id')->push($region->id);
+                $query->whereIn('location_id', $locationIds);
+            }
+        }
+
+        return $query->orderByDesc('posted_at')
+            ->orderByDesc('scraped_at')
+            ->paginate($perPage);
+    }
+
+    /**
+     * Regions for the search bar's "region" select — the state-level
+     * locations (Lagos, Abuja, ...), i.e. locations whose own parent is a
+     * top-level (country) location. Deliberately not hardcoded so a future
+     * admin-managed location list stays in sync automatically.
+     */
+    public static function regions(): Collection
+    {
+        return Location::whereHas('parent', fn($q) => $q->whereNull('parent_id'))
+            ->orderBy('name')
             ->get();
     }
 

@@ -163,7 +163,7 @@ $totalOpen = JobRequestController::totalOpenCount();
     </div>
 
     <!-- Filter Bar -->
-    <form method="GET" action="<?= $baseUrl ?>job-requests" class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET" action="<?= $baseUrl ?>job-requests" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div class="w-full md:w-56">
             <select name="category" class="w-full px-3 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-secondary-500 focus:outline-none text-gray-700 dark:text-gray-300">
                 <option value="">All Categories</option>

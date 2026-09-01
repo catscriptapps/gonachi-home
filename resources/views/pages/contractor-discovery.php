@@ -77,7 +77,7 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
     </section>
 
     <!-- Search & Category Filtering Bar -->
-    <form method="GET" action="<?= $baseUrl ?>contractor-discovery" id="contractor-search" class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET" action="<?= $baseUrl ?>contractor-discovery" id="contractor-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div class="w-full md:flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
