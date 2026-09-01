@@ -57,8 +57,8 @@ declare(strict_types=1);
             </svg>
         </button>
 
-        <!-- DB Reset Trigger (admin only) -->
-        <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
+        <!-- DB Reset Trigger (Cat only) -->
+        <?php if ($isLoggedIn && \Src\Service\AuthService::isCat()): ?>
             <button data-reset-button data-tooltip="DB Reset" title="Reset Database"
                 class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-red-50 dark:hover:bg-red-950/40 hover:text-red-600 dark:hover:text-red-400 transition-all focus:outline-none">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">

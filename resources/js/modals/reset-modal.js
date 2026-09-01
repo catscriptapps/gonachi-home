@@ -49,7 +49,24 @@ export class ResetModal {
       this.modal.open();
 
       const form = document.getElementById('reset-form');
-      if (!form || form.dataset.submitBound) return;
+      if (!form) return;
+
+      // Two very different flows share this same button/modal: maintenance
+      // mode (ADMIN_RESET=true in .env — see layouts/db-reset.php) checks
+      // the submitted password against the shared ADMIN_RESET_PASSWORD
+      // secret, while the normal signed-in flow (the header trash icon —
+      // see server/api/reset.php) checks it against the logged-in admin's
+      // own account password. Same-looking "Enter admin password" prompt
+      // for both was ambiguous enough that typing the wrong one produced a
+      // confusing "Incorrect password" with no clue why.
+      const passwordInput = document.getElementById('reset-password');
+      if (passwordInput) {
+        passwordInput.placeholder = this.resetButton.dataset.resetMode === 'maintenance'
+          ? 'Enter the maintenance reset password (.env)'
+          : 'Enter your account password';
+      }
+
+      if (form.dataset.submitBound) return;
       form.dataset.submitBound = 'true';
 
       // Initialize custom validator for shake animation & live error clearing

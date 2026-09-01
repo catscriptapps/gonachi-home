@@ -108,8 +108,14 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 require_once __DIR__ . '/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
 
+require_once __DIR__ . '/reset/cde-contractor-sources.php';
+$messages = array_merge($messages, resetCdeContractorSourcesTable());
+
 require_once __DIR__ . '/reset/cde-contractors.php';
 $messages = array_merge($messages, resetCdeContractorsTable());
+
+require_once __DIR__ . '/reset/cde-contractor-discovery-runs.php';
+$messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());
 
 require_once __DIR__ . '/reset/cde-contractor-claims.php';
 $messages = array_merge($messages, resetCdeContractorClaimsTable());

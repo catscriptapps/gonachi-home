@@ -8,23 +8,38 @@ use Src\Service\AuthService;
 
 header('Content-Type: application/json');
 
-// This wipes and rebuilds the entire database — admin session required, and
-// the submitted password must match the requesting admin's own account
-// password (re-authentication before a destructive action, same pattern as
-// GitHub's "type your password to confirm"). Previously this endpoint had
-// no auth check at all and the password field from reset-form.js was never
-// actually verified against anything — the modal collected it, but nothing
-// server-side checked it.
-if (!AuthService::isAdmin()) {
-    json_response(['success' => false, 'messages' => ['Forbidden.']], 403);
-}
-
+// This wipes and rebuilds the entire database. Two independent ways in:
+//
+// 1. Maintenance mode (ADMIN_RESET=true in .env): index.php forces the
+//    whole site into layouts/db-reset.php and $isLoggedIn=false for
+//    everyone, so no admin session exists to check — auth here is instead
+//    a shared secret (ADMIN_RESET_PASSWORD from .env), for the case where
+//    no admin account can log in yet (fresh deploy) or an operator wants
+//    the site reset-only without touching any user account.
+// 2. Normal mode: must be signed in as an admin, and re-enter that admin's
+//    own account password (re-authentication before a destructive action,
+//    same pattern as GitHub's "type your password to confirm"). Previously
+//    this endpoint had no auth check at all and the password field from
+//    reset-form.js was never actually verified against anything — the
+//    modal collected it, but nothing server-side checked it.
+$isAdminReset = filter_var($_ENV['ADMIN_RESET'] ?? false, FILTER_VALIDATE_BOOLEAN);
 $input = json_decode(file_get_contents('php://input'), true) ?: [];
 $password = (string) ($input['password'] ?? '');
-$currentUser = AuthService::currentUser();
 
-if ($password === '' || !$currentUser || !password_verify($password, $currentUser->password)) {
-    json_response(['success' => false, 'messages' => ['Incorrect password.']], 403);
+if ($isAdminReset) {
+    if ($password === '' || !hash_equals((string) ADMIN_RESET_PASSWORD, $password)) {
+        json_response(['success' => false, 'messages' => ['Incorrect password.']], 403);
+    }
+} else {
+    if (!AuthService::isAdmin()) {
+        json_response(['success' => false, 'messages' => ['Forbidden.']], 403);
+    }
+
+    $currentUser = AuthService::currentUser();
+
+    if ($password === '' || !$currentUser || !password_verify($password, $currentUser->password)) {
+        json_response(['success' => false, 'messages' => ['Incorrect password.']], 403);
+    }
 }
 
 $messages = [];
@@ -72,7 +87,9 @@ $tablesToDrop = [
 
     // Project: contractor-discovery
     'cde_contractor_claims',
+    'cde_contractor_discovery_runs',
     'cde_contractors',
+    'cde_contractor_sources',
     'cde_job_request_photos',
     'cde_job_requests',
 ];
@@ -176,8 +193,14 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 require_once __DIR__ . '/../../scripts/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
 
+require_once __DIR__ . '/../../scripts/reset/cde-contractor-sources.php';
+$messages = array_merge($messages, resetCdeContractorSourcesTable());
+
 require_once __DIR__ . '/../../scripts/reset/cde-contractors.php';
 $messages = array_merge($messages, resetCdeContractorsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-contractor-discovery-runs.php';
+$messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-contractor-claims.php';
 $messages = array_merge($messages, resetCdeContractorClaimsTable());

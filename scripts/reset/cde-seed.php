@@ -12,6 +12,7 @@ declare(strict_types=1);
 
 use App\Models\JobRequest;
 use App\Models\Contractor;
+use App\Models\ContractorSource;
 
 function seedCdeBaselineData(): array
 {
@@ -122,6 +123,52 @@ function seedCdeBaselineData(): array
     }
 
     $messages[] = 'seeded ' . count($contractors) . ' baseline contractor records';
+
+    // --------------------------------------------------
+    // Contractor discovery source (contractor_discovery.pdf Phase 1) —
+    // reuses Serper.dev, the same provider already wired up and paying off
+    // for real-estate-leads discovery (see Src\Service\LeadSources\SerperConnector).
+    // Active from the start since SERPER_API_KEY is already configured and
+    // proven working; expand the categories/regions in `queries` below
+    // whenever you want broader coverage.
+    // --------------------------------------------------
+    $categoryQueries = [
+        'plumbing' => 'Plumbers',
+        'electrical' => 'Electricians',
+        'painting' => 'Painters',
+        'building_construction' => 'Building Contractors',
+        'interior_design' => 'Interior Designers',
+        'renovation' => 'Renovation Contractors',
+        'solar_installation' => 'Solar Installers',
+    ];
+    $regions = ['Lagos', 'Abuja'];
+
+    $queries = [];
+    foreach ($categoryQueries as $category => $plural) {
+        foreach ($regions as $region) {
+            $queries[] = [
+                'category' => $category,
+                'location' => $region,
+                'query' => "{$plural} in {$region}, Nigeria",
+            ];
+        }
+    }
+
+    ContractorSource::create([
+        'name' => 'Serper Search (Contractor Discovery)',
+        'slug' => 'serper-contractors',
+        'type' => 'search_api',
+        'connector_class' => \Src\Service\ContractorSources\SerperContractorConnector::class,
+        'base_url' => 'https://google.serper.dev/search',
+        'config' => [
+            'api_key_env' => 'SERPER_API_KEY',
+            'queries' => $queries,
+        ],
+        'is_active' => true,
+        'poll_interval_minutes' => 1440,
+    ]);
+
+    $messages[] = 'seeded 1 contractor discovery source';
 
     return $messages;
 }

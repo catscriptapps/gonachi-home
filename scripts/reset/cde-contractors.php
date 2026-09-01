@@ -19,6 +19,14 @@ function resetCdeContractorsTable(): array
         Capsule::schema()->create($tableName, function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            // Null for admin-curated rows (see scripts/reset/cde-seed.php);
+            // set for rows created by an automated ContractorSource — see
+            // Src\Service\ContractorIngestionService. The composite unique
+            // index lets repeated discovery runs dedup safely (MySQL treats
+            // NULL as distinct, so admin-curated rows are never affected).
+            $table->unsignedBigInteger('contractor_source_id')->nullable()->index();
+            $table->string('external_id')->nullable();
+
             $table->string('business_name');
 
             // plumbing | electrical | painting | building_construction |
@@ -42,6 +50,7 @@ function resetCdeContractorsTable(): array
             $table->timestamps();
 
             $table->index(['service_category', 'location', 'status']);
+            $table->unique(['contractor_source_id', 'external_id']);
         });
 
         $messages[] = "created {$tableName} table";
