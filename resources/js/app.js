@@ -44,6 +44,7 @@ import { initLiveChatBadge } from './ui/live-chat-badge.js';
 import { init as initMessagesPage } from './pages/messages-page.js';
 import { cleanupModals } from './utils/modal-cleanup.js';
 import { init as initChatWidget } from './components/chat-widget.js';
+import { wireReviewQueue } from './utils/review-queue.js';
 
 // === Page Manifest ===
 let PAGE_MANIFEST = [];
@@ -168,6 +169,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initDarkMode();
   initFooterLinks();
   initChatWidget();
+  wireReviewQueue();
 
   // Initialize modals
   initGlobalModals();

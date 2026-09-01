@@ -98,19 +98,15 @@ $pendingLeads = LeadReviewController::pending(15);
                     </div>
 
                     <div class="flex items-center justify-end gap-3">
-                        <form method="POST" action="<?= $baseUrl ?>api/lead-review">
+                        <form method="POST" action="<?= $baseUrl ?>api/lead-review" data-review-form>
                             <input type="hidden" name="action" value="reject">
-                            <input type="hidden" name="id" value="<?= $lead->id ?>">
-                            <input type="hidden" name="page" value="<?= $pendingLeads->currentPage() ?>">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors">
+                            <input type="hidden" name="id" value="<?= $lead->id ?>">                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors">
                                 Reject
                             </button>
                         </form>
-                        <form method="POST" action="<?= $baseUrl ?>api/lead-review">
+                        <form method="POST" action="<?= $baseUrl ?>api/lead-review" data-review-form>
                             <input type="hidden" name="action" value="approve">
-                            <input type="hidden" name="id" value="<?= $lead->id ?>">
-                            <input type="hidden" name="page" value="<?= $pendingLeads->currentPage() ?>">
-                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm">
+                            <input type="hidden" name="id" value="<?= $lead->id ?>">                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm">
                                 Approve &amp; Publish
                             </button>
                         </form>
