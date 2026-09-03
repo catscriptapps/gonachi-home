@@ -25,6 +25,7 @@ $regions = LeadsController::regions();
 $featurePhotos = CuratedPhotos::fromHomeFolder($assetBase);
 $slideshowImages = $featurePhotos;
 $spotlightPhoto = $featurePhotos[0] ?? null;
+$spotlight = LeadsController::spotlight();
 ?>
 <!-- Search Optimization Metadata Block -->
 <div class="space-y-6">
@@ -194,8 +195,13 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
                     <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
                     <div class="relative h-full flex flex-col justify-end p-4">
                         <span class="text-xs font-semibold text-primary-300 uppercase tracking-wider">Spotlight</span>
-                        <h4 class="text-white font-bold text-sm mt-1">Commercial Demand Is Rising</h4>
-                        <p class="text-gray-200 text-xs mt-0.5">Lagos leads new commercial property interest this month.</p>
+                        <?php if ($spotlight): ?>
+                            <h4 class="text-white font-bold text-sm mt-1"><?= htmlspecialchars($spotlight['headline']) ?></h4>
+                            <p class="text-gray-200 text-xs mt-0.5"><?= htmlspecialchars($spotlight['text']) ?></p>
+                        <?php else: ?>
+                            <h4 class="text-white font-bold text-sm mt-1">Fresh Leads, Every Day</h4>
+                            <p class="text-gray-200 text-xs mt-0.5">New buyer and seller activity is scraped and reviewed continuously.</p>
+                        <?php endif; ?>
                     </div>
                 </div>
             <?php endif; ?>

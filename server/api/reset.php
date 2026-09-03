@@ -42,11 +42,20 @@ if ($isAdminReset) {
     }
 }
 
+require_once __DIR__ . '/../../scripts/reset/preserve-scraped-data.php';
+
 $messages = [];
 
 /**
  * 1. PRE-FLIGHT CHECKS & DISABLE CONSTRAINTS
  */
+
+// Snapshot real, cron-discovered leads/contractors before anything is
+// dropped — see scripts/reset/preserve-scraped-data.php for why this can't
+// just be "skip dropping those tables" (their foreign keys point at parent
+// tables that DO get reseeded with new IDs).
+$scrapedDataBackup = backupScrapedData();
+
 Capsule::schema()->disableForeignKeyConstraints();
 
 /**
@@ -208,6 +217,12 @@ $messages = array_merge($messages, resetCdeContractorClaimsTable());
 require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
 
+/**
+ * 4d. RESTORE PRESERVED DATA
+ * Re-attach the leads/contractors snapshotted in step 1, now that their
+ * parent tables (sources, categories, locations) have fresh IDs to resolve against.
+ */
+$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
 
 /**
  * 5. FINALIZE

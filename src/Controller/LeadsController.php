@@ -6,7 +6,9 @@ declare(strict_types=1);
 namespace Src\Controller;
 
 use App\Models\Lead;
+use App\Models\LeadCategory;
 use App\Models\Location;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -85,6 +87,63 @@ class LeadsController
         return Location::whereHas('parent', fn($q) => $q->whereNull('parent_id'))
             ->orderBy('name')
             ->get();
+    }
+
+    /**
+     * Homepage "Spotlight" card copy — the (category, location) pairing
+     * with the most active leads, preferring the last 14 days so it reads
+     * as a genuine trend rather than a lifetime total, but falling back to
+     * all-time if nothing recent has enough signal. Returns null when there
+     * isn't enough data yet (fewer than 2 matching leads) so the page can
+     * show a neutral placeholder instead of a fabricated "trend".
+     *
+     * @return array{headline: string, text: string, count: int}|null
+     */
+    public static function spotlight(): ?array
+    {
+        $topCombo = self::topCategoryLocationCombo(Carbon::now()->subDays(14));
+
+        if (!$topCombo || $topCombo->total < 2) {
+            $topCombo = self::topCategoryLocationCombo(null);
+        }
+
+        if (!$topCombo || $topCombo->total < 2) {
+            return null;
+        }
+
+        $category = LeadCategory::find($topCombo->category_id);
+        $location = Location::with('parent')->find($topCombo->location_id);
+
+        if (!$category || !$location) {
+            return null;
+        }
+
+        $locationLabel = $location->parent ? "{$location->name}, {$location->parent->name}" : $location->name;
+
+        return [
+            'headline' => "{$category->name} Demand Is Rising",
+            'text' => "{$locationLabel} leads new {$category->name} interest this month.",
+            'count' => $topCombo->total,
+        ];
+    }
+
+    /**
+     * @return object{category_id: int, location_id: int, total: int}|null
+     */
+    private static function topCategoryLocationCombo(?Carbon $since)
+    {
+        $query = Lead::active()
+            ->whereNotNull('category_id')
+            ->whereNotNull('location_id');
+
+        if ($since) {
+            $query->where('scraped_at', '>=', $since);
+        }
+
+        return $query->selectRaw('category_id, location_id, count(*) as total')
+            ->groupBy('category_id', 'location_id')
+            ->orderByDesc('total')
+            ->first();
     }
 
     /**

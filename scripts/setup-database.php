@@ -12,8 +12,15 @@
 declare(strict_types=1);
 
 require_once __DIR__ . '/../server/bootstrap.php';
+require_once __DIR__ . '/reset/preserve-scraped-data.php';
 
 $messages = [];
+
+// Snapshot real, cron-discovered leads/contractors before anything is
+// dropped — see reset/preserve-scraped-data.php for why this can't just be
+// "skip dropping those tables" (their foreign keys point at parent tables
+// that DO get reseeded with new IDs).
+$scrapedDataBackup = backupScrapedData();
 
 // --------------------------------------------------
 // Shared: tables every project/page in gonachi-home still depends on
@@ -122,6 +129,10 @@ $messages = array_merge($messages, resetCdeContractorClaimsTable());
 
 require_once __DIR__ . '/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
+
+// Re-attach the leads/contractors snapshotted at the top, now that their
+// parent tables (sources, categories, locations) have fresh IDs to resolve against.
+$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
 
 foreach ($messages as $message) {
     echo $message . PHP_EOL;
