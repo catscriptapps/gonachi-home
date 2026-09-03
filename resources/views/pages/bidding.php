@@ -43,6 +43,15 @@ $statusStyles = [
 ?>
 <div class="space-y-6">
 
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Contractor Discovery', 'href' => $baseUrl . 'contractor-discovery'],
+        ['label' => 'Bidding & Quotes'],
+    ];
+    $breadcrumbAccent = 'secondary';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Bidding & Quotes</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Track every quote you've submitted and its response status.</p>

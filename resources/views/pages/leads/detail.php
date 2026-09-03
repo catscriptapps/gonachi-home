@@ -44,6 +44,14 @@ $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : null;
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Real Estate Leads', 'href' => $baseUrl . 'real-estate-leads'],
+        ['label' => LeadsController::headline($lead)],
+    ];
+    include __DIR__ . '/../../components/breadcrumbs.php';
+    ?>
+
     <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-primary-600 dark:text-gray-400 dark:hover:text-primary-400">
         &larr; Back to Active Property Requests
     </a>

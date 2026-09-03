@@ -29,6 +29,11 @@ $spotlightPhoto = $featurePhotos[0] ?? null;
 <!-- Search Optimization Metadata Block -->
 <div class="space-y-6">
 
+    <?php
+    $breadcrumbs = [['label' => 'Real Estate Leads']];
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
         <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>

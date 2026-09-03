@@ -40,6 +40,12 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
 ?>
 <div class="max-w-5xl mx-auto space-y-12">
 
+    <?php
+    $breadcrumbs = [['label' => 'Landlord & Tenant Validation']];
+    $breadcrumbAccent = 'indigo';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
         <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>

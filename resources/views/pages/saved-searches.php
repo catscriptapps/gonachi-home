@@ -13,6 +13,14 @@ declare(strict_types=1);
  */
 ?>
 <div class="space-y-6">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Real Estate Leads', 'href' => $baseUrl . 'real-estate-leads'],
+        ['label' => 'Saved Alerts'],
+    ];
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Saved Alerts</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Get notified the moment a new lead matches a search you care about.</p>

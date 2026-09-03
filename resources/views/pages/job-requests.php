@@ -54,6 +54,15 @@ $totalOpen = JobRequestController::totalOpenCount();
 ?>
 <div class="space-y-6">
 
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Contractor Discovery', 'href' => $baseUrl . 'contractor-discovery'],
+        ['label' => 'Job Requests'],
+    ];
+    $breadcrumbAccent = 'secondary';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Job Requests</h1>

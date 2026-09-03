@@ -43,6 +43,15 @@ $issueLabels = [
 ?>
 
 <div class="space-y-6">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Landlord & Tenant Validation', 'href' => $baseUrl . 'landlord-tenant-validation'],
+        ['label' => 'Report Review Queue'],
+    ];
+    $breadcrumbAccent = 'indigo';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Landlord Report Review Queue</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">

@@ -40,6 +40,15 @@ $isClaimed = $contractor->claim_status === 'claimed';
 $categoryLabels = ContractorController::CATEGORY_LABELS;
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Contractor Discovery', 'href' => $baseUrl . 'contractor-discovery'],
+        ['label' => $contractor->business_name],
+    ];
+    $breadcrumbAccent = 'secondary';
+    include __DIR__ . '/../../components/breadcrumbs.php';
+    ?>
+
     <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-secondary-600 dark:text-gray-400 dark:hover:text-secondary-400">
         &larr; Back to Contractor Directory
     </a>

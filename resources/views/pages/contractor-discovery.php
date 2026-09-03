@@ -46,6 +46,12 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
 ?>
 <div class="space-y-6">
 
+    <?php
+    $breadcrumbs = [['label' => 'Contractor Discovery']];
+    $breadcrumbAccent = 'secondary';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
         <?php include __DIR__ . '/../components/hero-slideshow.php'; ?>

@@ -33,6 +33,14 @@ $pendingLeads = LeadReviewController::pending(15);
 ?>
 
 <div class="space-y-6">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Real Estate Leads', 'href' => $baseUrl . 'real-estate-leads'],
+        ['label' => 'Lead Review Queue'],
+    ];
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Lead Review Queue</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">

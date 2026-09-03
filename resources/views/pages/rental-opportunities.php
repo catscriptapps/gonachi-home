@@ -45,6 +45,15 @@ $statusStyles = [
 ?>
 <div class="space-y-6">
 
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Landlord & Tenant Validation', 'href' => $baseUrl . 'landlord-tenant-validation'],
+        ['label' => 'Rental Opportunities'],
+    ];
+    $breadcrumbAccent = 'indigo';
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
         <div>
             <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Rental Opportunities</h1>
