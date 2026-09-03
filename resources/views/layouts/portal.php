@@ -88,9 +88,16 @@ declare(strict_types=1);
                 </button>
 
                 <?php if ($isLoggedIn): ?>
-                    <div class="w-8 h-8 rounded-full bg-primary-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                        <?= htmlspecialchars(strtoupper(substr($currentUser->full_name ?? 'U', 0, 1))) ?>
-                    </div>
+                    <?php $accountInfo = \Src\Config\NavigationConfig::getUserDisplayInfo(); ?>
+                    <a href="#" data-logout-button class="flex items-center space-x-3 group cursor-pointer">
+                        <div class="w-8 h-8 rounded-full bg-primary-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+                            <?= htmlspecialchars($accountInfo['initial']) ?>
+                        </div>
+                        <div class="hidden md:flex flex-col leading-tight">
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"><?= htmlspecialchars($accountInfo['displayName']) ?></span>
+                            <span class="text-xs text-gray-400 group-hover:text-primary-500 dark:group-hover:text-primary-400 transition-colors">Sign Out</span>
+                        </div>
+                    </a>
                 <?php else: ?>
                     <a href="<?= $baseUrl ?>login" data-login-button class="text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
                         Sign In

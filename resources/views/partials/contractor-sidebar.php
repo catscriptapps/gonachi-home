@@ -13,15 +13,15 @@ declare(strict_types=1);
     x-cloak>
 
     <!-- Back to the Gonachi project hub -->
-    <a href="<?= $baseUrl ?>" x-show="$store.sidebar.expanded || mobileMenuOpen" class="flex items-center gap-1.5 px-6 pt-4 text-xs font-semibold text-gray-400 hover:text-secondary-600 dark:hover:text-secondary-400 transition-colors">
-        <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+    <a href="<?= $baseUrl ?>" x-show="$store.sidebar.expanded || mobileMenuOpen" class="mx-4 mt-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-secondary-50 dark:hover:bg-secondary-950/40 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-secondary-600 dark:hover:text-secondary-400 transition-colors">
+        <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
         All Projects
     </a>
 
     <!-- Sidebar Header: Identity & Brand Logo -->
-    <div class="h-20 relative flex items-center justify-center px-6 border-b border-gray-200 dark:border-gray-800">
+    <div class="h-28 relative flex items-center justify-center px-6 border-b border-gray-200 dark:border-gray-800">
         <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="flex items-center justify-center">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-20 w-20 flex-shrink-0" />
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
         </a>
 
         <!-- Mobile Close Trigger -->
