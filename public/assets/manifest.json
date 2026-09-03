@@ -267,6 +267,15 @@
       "_toast.min.js"
     ]
   },
+  "resources/js/pages/saved-searches-page.js": {
+    "file": "js/saved-searches-page.min.js",
+    "name": "saved-searches-page",
+    "src": "resources/js/pages/saved-searches-page.js",
+    "isEntry": true,
+    "imports": [
+      "_toast.min.js"
+    ]
+  },
   "resources/js/pages/settings-page.js": {
     "file": "js/settings-page.min.js",
     "name": "settings-page",

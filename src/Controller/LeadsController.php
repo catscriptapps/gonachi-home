@@ -53,7 +53,48 @@ class LeadsController
      */
     public static function browse(?string $search, ?string $regionSlug, int $perPage = 6): LengthAwarePaginator
     {
-        $query = Lead::with(['location.parent', 'category', 'source'])->active();
+        return self::matchingQuery($search, $regionSlug)
+            ->with(['location.parent', 'category', 'source'])
+            ->orderByDesc('posted_at')
+            ->orderByDesc('scraped_at')
+            ->paginate($perPage);
+    }
+
+    /**
+     * How many active leads currently match a (search, region) pair —
+     * powers the match count on a saved alert.
+     */
+    public static function countMatching(?string $search, ?string $regionSlug): int
+    {
+        return self::matchingQuery($search, $regionSlug)->count();
+    }
+
+    /**
+     * How many matching active leads were scraped after $since — powers a
+     * saved alert's "N new since you last checked" badge. A null $since
+     * (never viewed) counts everything as new.
+     */
+    public static function countNewMatching(?string $search, ?string $regionSlug, ?Carbon $since): int
+    {
+        $query = self::matchingQuery($search, $regionSlug);
+
+        if ($since) {
+            $query->where('scraped_at', '>', $since);
+        }
+
+        return $query->count();
+    }
+
+    /**
+     * Shared filter logic behind browse()/countMatching()/countNewMatching()
+     * — same (search, region) semantics everywhere so a saved alert's match
+     * count always agrees with what "View Matches" actually shows.
+     * $regionSlug matches a region (see regions()) or any of its child
+     * locations, e.g. "lagos" also matches leads located in "Lekki".
+     */
+    private static function matchingQuery(?string $search, ?string $regionSlug)
+    {
+        $query = Lead::active();
 
         if ($search) {
             $term = '%' . $search . '%';
@@ -71,9 +112,7 @@ class LeadsController
             }
         }
 
-        return $query->orderByDesc('posted_at')
-            ->orderByDesc('scraped_at')
-            ->paginate($perPage);
+        return $query;
     }
 
     /**

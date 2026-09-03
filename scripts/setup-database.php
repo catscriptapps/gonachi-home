@@ -85,6 +85,9 @@ $messages = array_merge($messages, resetRelCreditTransactionsTable());
 require_once __DIR__ . '/reset/rel-lead-unlocks.php';
 $messages = array_merge($messages, resetRelLeadUnlocksTable());
 
+require_once __DIR__ . '/reset/rel-saved-searches.php';
+$messages = array_merge($messages, resetRelSavedSearchesTable());
+
 require_once __DIR__ . '/reset/rel-seed.php';
 $messages = array_merge($messages, seedRelLeadsBaselineData());
 

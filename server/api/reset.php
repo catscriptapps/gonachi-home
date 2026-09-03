@@ -79,6 +79,7 @@ $tablesToDrop = [
     'faqs',
 
     // Project: real-estate-leads
+    'rel_saved_searches',
     'rel_lead_unlocks',
     'rel_credit_transactions',
     'rel_credit_accounts',
@@ -171,6 +172,9 @@ $messages = array_merge($messages, resetRelCreditTransactionsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rel-lead-unlocks.php';
 $messages = array_merge($messages, resetRelLeadUnlocksTable());
+
+require_once __DIR__ . '/../../scripts/reset/rel-saved-searches.php';
+$messages = array_merge($messages, resetRelSavedSearchesTable());
 
 require_once __DIR__ . '/../../scripts/reset/rel-seed.php';
 $messages = array_merge($messages, seedRelLeadsBaselineData());
