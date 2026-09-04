@@ -9,22 +9,20 @@ declare(strict_types=1);
  * Report-a-landlord contribution loop, confidence engine, and search are
  * backed by real data via Src\Controller\LandlordDirectoryController — see
  * report-landlord.php (submission) and landlord-report-review.php
- * (moderation). The rental opportunity feed below stays illustrative; that's
- * rental-opportunities.php's concern, a separate future piece.
+ * (moderation). The Rental Opportunities teaser below is backed by
+ * Src\Controller\RentalListingController — see list-rental-property.php
+ * (submission) and rental-listing-review.php (moderation).
  *
  * @var string $baseUrl
  */
 
 use Src\Controller\LandlordDirectoryController;
+use Src\Controller\RentalListingController;
 use Src\Utils\CuratedPhotos;
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
 
-$opportunities = [
-    ['area' => 'Lekki', 'count' => 50],
-    ['area' => 'Yaba', 'count' => 30],
-    ['area' => 'Ikeja', 'count' => 20],
-];
+$opportunities = RentalListingController::countsByArea(3);
 
 $searchQuery = trim($_GET['q'] ?? '');
 // ->appends() keeps `q` on the Next/Previous links — the app's Paginator::
@@ -199,15 +197,24 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
             <!-- Rental Opportunities -->
             <div class="space-y-3">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Rental Opportunities</h3>
-                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
-                    <?php foreach ($opportunities as $opportunity): ?>
-                        <a href="<?= $baseUrl ?>rental-opportunities" data-partial class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
-                            <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600">New Listings in <?= htmlspecialchars($opportunity['area']) ?></span>
-                            <span class="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400 px-2 py-0.5 rounded-full"><?= $opportunity['count'] ?></span>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-                <p class="text-xs text-gray-400 dark:text-gray-500 px-1">Unlocked after your first contribution.</p>
+                <?php if (empty($opportunities)): ?>
+                    <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-6 text-center">
+                        <p class="text-sm text-gray-400 dark:text-gray-500">No published listings yet.</p>
+                        <a href="<?= $baseUrl ?>list-rental-property" data-partial class="inline-flex items-center mt-3 text-xs font-bold text-indigo-600 hover:underline">List Your Property &rarr;</a>
+                    </div>
+                <?php else: ?>
+                    <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
+                        <?php foreach ($opportunities as $opportunity): ?>
+                            <a href="<?= $baseUrl ?>rental-opportunities?area=<?= urlencode($opportunity['area']) ?>" data-partial class="flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                                <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-indigo-600">New Listings in <?= htmlspecialchars($opportunity['area']) ?></span>
+                                <span class="text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-400 px-2 py-0.5 rounded-full"><?= $opportunity['count'] ?></span>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+                <p class="text-xs text-gray-400 dark:text-gray-500 px-1">
+                    <a href="<?= $baseUrl ?>rental-opportunities" data-partial class="hover:text-indigo-600 dark:hover:text-indigo-400">View all rental opportunities &rarr;</a>
+                </p>
             </div>
 
         </div>

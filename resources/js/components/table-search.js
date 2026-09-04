@@ -8,7 +8,8 @@ export function enableTableSearch(config) {
         countId,
         endpoint,
         resourceLabel,
-        addButtonId
+        addButtonId,
+        getExtraParams   // optional: () => ({ sort, dir, filter_x, ... }) merged into every request
     } = config;
 
     const input = document.getElementById(searchInputId);
@@ -35,11 +36,27 @@ export function enableTableSearch(config) {
         }
     }
 
+    function buildUrl(query) {
+        const params = new URLSearchParams();
+        params.set('q', query);
+
+        if (typeof getExtraParams === 'function') {
+            const extra = getExtraParams() || {};
+            Object.entries(extra).forEach(([key, value]) => {
+                if (value !== '' && value !== null && typeof value !== 'undefined') {
+                    params.set(key, value);
+                }
+            });
+        }
+
+        return `${endpoint}?${params.toString()}`;
+    }
+
     async function performSearch(query) {
         if (controller) controller.abort();
         controller = new AbortController();
 
-        const url = endpoint + `?q=${encodeURIComponent(query)}`;
+        const url = buildUrl(query);
 
         try {
             const res = await fetch(url, { 
@@ -112,4 +129,11 @@ export function enableTableSearch(config) {
         container.children.length,
         container.children.length
     );
+
+    return {
+        // Re-runs the search using the current input value — used by
+        // callers (e.g. users-page.js's column sort/filter controls) that
+        // change getExtraParams()'s state and need a fresh fetch.
+        refresh: () => performSearch(input.value.trim())
+    };
 }

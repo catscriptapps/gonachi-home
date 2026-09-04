@@ -33,6 +33,7 @@ function resetCountriesTable(): array
         $legacyData = [
             [39, 'Canada', 'CAN', 'CAD', '$'],
             [233, 'United States', 'USA', 'USD', '$'],
+            [160, 'Nigeria', 'NGA', 'NGN', '₦'],
         ];
 
         // 4. Populate from array

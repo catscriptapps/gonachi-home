@@ -14,8 +14,8 @@ declare(strict_types=1);
 
     <!-- Back to the Gonachi project hub -->
     <a href="<?= $baseUrl ?>" x-show="$store.sidebar.expanded || mobileMenuOpen" class="mx-4 mt-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-indigo-50 dark:hover:bg-indigo-950/40 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-        <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-        All Projects
+        <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+        Home
     </a>
 
     <!-- Sidebar Header: Identity & Brand Logo -->
@@ -62,6 +62,13 @@ declare(strict_types=1);
             <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Rental Opportunities</span>
         </a>
 
+        <a href="<?= $baseUrl ?>list-rental-property" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/list-rental-property' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">List A Property</span>
+        </a>
+
         <?php if (\Src\Service\AuthService::isAdmin()): ?>
             <a href="<?= $baseUrl ?>admin" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/admin' ? $navActiveClasses : $navInactiveClasses ?>">
                 <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -75,6 +82,13 @@ declare(strict_types=1);
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
                 <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Report Review Queue</span>
+            </a>
+
+            <a href="<?= $baseUrl ?>rental-listing-review" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/rental-listing-review' ? $navActiveClasses : $navInactiveClasses ?>">
+                <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Listing Review Queue</span>
             </a>
 
             <a href="<?= $baseUrl ?>live-chat" data-partial class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/live-chat' ? $navActiveClasses : $navInactiveClasses ?>">

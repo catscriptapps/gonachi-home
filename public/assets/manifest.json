@@ -205,6 +205,17 @@
       "_toast.min.js"
     ]
   },
+  "resources/js/pages/list-rental-property-page.js": {
+    "file": "js/list-rental-property-page.min.js",
+    "name": "list-rental-property-page",
+    "src": "resources/js/pages/list-rental-property-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator.min.js",
+      "_preview.min.js",
+      "_toast.min.js"
+    ]
+  },
   "resources/js/pages/live-chat-page.js": {
     "file": "js/live-chat-page.min.js",
     "name": "live-chat-page",

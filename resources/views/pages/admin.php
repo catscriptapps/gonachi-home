@@ -41,6 +41,7 @@ $pendingClaims = ContractorClaimController::pending()->total();
 
 $tabs = [
     ['label' => 'Overview', 'href' => 'admin'],
+    ['label' => 'Users', 'href' => 'users'],
     ['label' => 'Live Chats', 'href' => 'live-chat', 'badge' => $unreadChats],
     ['label' => 'Lead Review', 'href' => 'lead-review', 'badge' => $pendingLeads],
     ['label' => 'Landlord Reports', 'href' => 'landlord-report-review', 'badge' => $pendingReports],

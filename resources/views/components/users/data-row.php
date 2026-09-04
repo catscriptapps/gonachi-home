@@ -44,6 +44,10 @@ $userDataAttrs = [
 
 $editClass = 'edit-user-btn';
 $deleteClass = 'delete-user-btn';
+// Core seeded accounts (Cat, Elas) — every reset script recreates these two;
+// the real enforcement is UsersController::PROTECTED_USER_IDS, this just
+// keeps the admin from attempting (and getting) a blocked delete.
+$isProtectedAccount = in_array((int) ($rowItem['id'] ?? 0), [1, 2], true);
 
 $statusBadge = (int)($rowItem['status_id'] ?? 0) === 1
     ? '<span class="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/20 px-2.5 py-0.5 text-xs font-bold text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-800/30">Current</span>'
@@ -104,6 +108,7 @@ $lastLog = !empty($rowItem['user_last_log']) ? date('M j, g:i a', strtotime($row
                     <?php
                     $isMobile = true;
                     $dataAttrs = $userDataAttrs;
+                    $hideDelete = $isProtectedAccount;
                     include __DIR__ . '/../ui/action-buttons.php';
                     ?>
                 </div>
@@ -143,6 +148,7 @@ $lastLog = !empty($rowItem['user_last_log']) ? date('M j, g:i a', strtotime($row
         <?php
         $isMobile = false;
         $dataAttrs = $userDataAttrs;
+        $hideDelete = $isProtectedAccount;
         include __DIR__ . '/../ui/action-buttons.php';
         ?>
     </td>

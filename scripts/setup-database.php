@@ -106,6 +106,12 @@ $messages = array_merge($messages, resetLtvReportsTable());
 require_once __DIR__ . '/reset/ltv-report-photos.php';
 $messages = array_merge($messages, resetLtvReportPhotosTable());
 
+require_once __DIR__ . '/reset/ltv-rental-listings.php';
+$messages = array_merge($messages, resetLtvRentalListingsTable());
+
+require_once __DIR__ . '/reset/ltv-rental-listing-photos.php';
+$messages = array_merge($messages, resetLtvRentalListingPhotosTable());
+
 require_once __DIR__ . '/reset/ltv-seed.php';
 $messages = array_merge($messages, seedLtvBaselineData());
 

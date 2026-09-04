@@ -16,6 +16,14 @@ class UsersController
     use RecentActivityLogger;
 
     /**
+     * Core accounts that must always survive a delete request — id 1 (Cat)
+     * and id 2 (Elas), the two seeded legacy accounts every reset script
+     * recreates. Enforced here (not just in the UI) since this is the
+     * actual authority the API checks.
+     */
+    private const PROTECTED_USER_IDS = [1, 2];
+
+    /**
      * Handle Delete
      * @param string|null $id
      * @return array
@@ -24,6 +32,11 @@ class UsersController
     {
         try {
             $rawId = (is_string($id) && !is_numeric($id)) ? IdEncoder::decode($id) : (int)$id;
+
+            if (in_array((int) $rawId, self::PROTECTED_USER_IDS, true)) {
+                return ['success' => false, 'messages' => ['This is a core account and cannot be deleted.']];
+            }
+
             $user = User::find($rawId);
 
             if ($user) {
@@ -55,6 +68,17 @@ class UsersController
 
         $mode = $_GET['mode'] ?? 'table';
 
+        // Per-column header filters (all AND'd together, and with $query above)
+        $filterName     = trim((string) ($_GET['filter_name'] ?? ''));
+        $filterLocation = trim((string) ($_GET['filter_location'] ?? ''));
+        $filterRoles    = trim((string) ($_GET['filter_roles'] ?? ''));
+        $filterStatus   = trim((string) ($_GET['filter_status'] ?? ''));
+
+        // Column sort: name | location | joined | status. Anything else falls
+        // back to the original default (most recently created first).
+        $sortKey = (string) ($_GET['sort'] ?? '');
+        $sortDir = strtolower((string) ($_GET['dir'] ?? '')) === 'desc' ? 'desc' : 'asc';
+
         $builder = User::with(['country', 'region'])
             ->leftJoin('countries', 'users.country_id', '=', 'countries.id')
             ->leftJoin('regions', 'users.region_id', '=', 'regions.id')
@@ -72,10 +96,77 @@ class UsersController
             });
         }
 
+        if ($filterName !== '') {
+            $builder->where(function ($q) use ($filterName) {
+                $q->where('users.first_name', 'LIKE', "%{$filterName}%")
+                    ->orWhere('users.last_name', 'LIKE', "%{$filterName}%")
+                    ->orWhereRaw("CONCAT(users.first_name, ' ', users.last_name) LIKE ?", ["%{$filterName}%"])
+                    ->orWhere('users.email', 'LIKE', "%{$filterName}%");
+            });
+        }
+
+        if ($filterLocation !== '') {
+            $builder->where(function ($q) use ($filterLocation) {
+                $q->where('users.city', 'LIKE', "%{$filterLocation}%")
+                    ->orWhere('regions.region', 'LIKE', "%{$filterLocation}%")
+                    ->orWhere('countries.country', 'LIKE', "%{$filterLocation}%");
+            });
+        }
+
+        if ($filterStatus !== '') {
+            // Only two labels ever render ("Current" / "Archived" — see
+            // data-row.php's $statusBadge) so match the typed text against
+            // those labels rather than the raw status_id.
+            $needle = mb_strtolower($filterStatus);
+            if (str_contains('current', $needle)) {
+                $builder->where('users.status_id', 1);
+            } elseif (str_contains('archived', $needle)) {
+                $builder->where('users.status_id', '!=', 1);
+            } else {
+                $builder->whereRaw('1 = 0');
+            }
+        }
+
+        if ($filterRoles !== '') {
+            $matchingTypeIds = [];
+            foreach (\Src\Controller\UserTypesController::list() as $type) {
+                if (stripos((string) $type->user_type, $filterRoles) !== false) {
+                    $matchingTypeIds[] = (int) $type->user_type_id;
+                }
+            }
+
+            if (!empty($matchingTypeIds)) {
+                $builder->where(function ($q) use ($matchingTypeIds) {
+                    foreach ($matchingTypeIds as $typeId) {
+                        $q->orWhereRaw('JSON_CONTAINS(users.user_type_ids, ?)', [json_encode($typeId)]);
+                    }
+                });
+            } else {
+                $builder->whereRaw('1 = 0');
+            }
+        }
+
         $totalFiltered = $builder->count();
 
-        $users = $builder->orderBy('users.date_created', 'desc')
-            ->offset($offset)
+        switch ($sortKey) {
+            case 'name':
+                $builder->orderByRaw("CONCAT(users.first_name, ' ', users.last_name) {$sortDir}");
+                break;
+            case 'location':
+                $builder->orderBy('users.city', $sortDir);
+                break;
+            case 'joined':
+                $builder->orderBy('users.date_created', $sortDir);
+                break;
+            case 'status':
+                $builder->orderBy('users.status_id', $sortDir);
+                break;
+            default:
+                $builder->orderBy('users.date_created', 'desc');
+                break;
+        }
+
+        $users = $builder->offset($offset)
             ->limit($perPage)
             ->get();
 
@@ -206,6 +297,8 @@ class UsersController
 
             if ($isNew) {
                 $user->status_id = $isLocal ? 1 : 0;
+            } elseif (array_key_exists('status_id', $data)) {
+                $user->status_id = (int) $data['status_id'] === 1 ? 1 : 0;
             }
 
             $user->save();

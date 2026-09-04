@@ -174,6 +174,7 @@ class NavigationConfig
             $base . '/properties',
             $base . '/lead-review',
             $base . '/landlord-report-review',
+            $base . '/rental-listing-review',
             $base . '/contractor-claims-review',
             $base . '/live-chat',
             $base . '/admin',
@@ -195,6 +196,7 @@ class NavigationConfig
         return [
             $base . '/lead-review',
             $base . '/landlord-report-review',
+            $base . '/rental-listing-review',
             $base . '/contractor-claims-review',
             $base . '/live-chat',
             $base . '/admin',

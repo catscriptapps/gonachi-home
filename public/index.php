@@ -120,7 +120,7 @@ if ($isPartial) {
 // placeholder pages). Each live project renders in its own app shell.
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
-$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review'];
+$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
 
 // /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
 // /{resource}/{id} handling) — its path always carries the contractor's ID,

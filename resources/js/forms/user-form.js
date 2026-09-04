@@ -13,6 +13,8 @@ export function userForm({
     countryId = '',
     regionId = '',
     availableRoles = [],
+    userTypes = [],
+    isActive = true,
     buttonLabel = 'Save',
     formId = 'users-form',
     countries = [],
@@ -110,6 +112,34 @@ export function userForm({
                 </div>
             </div>
         </div>
+
+        <div class="p-4 rounded-2xl border border-gray-100 dark:border-gray-800 space-y-4">
+            <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400 ml-1">Account Types</h3>
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                ${availableRoles.map(role => {
+                    const checked = mode === 'add' ? role.id === 2 : userTypes.includes(role.id);
+                    return `
+                    <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
+                        <input type="checkbox" name="userTypeIds[]" value="${role.id}" ${checked ? 'checked' : ''}
+                            class="rounded border-gray-300 dark:border-gray-600 text-primary-500 focus:ring-primary-400" />
+                        <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${role.name}</span>
+                    </label>
+                `;}).join('')}
+            </div>
+        </div>
+
+        ${mode === 'edit' ? `
+        <div class="flex items-center justify-between p-4 rounded-2xl border border-gray-100 dark:border-gray-800">
+            <div>
+                <h3 class="text-sm font-bold text-gray-900 dark:text-white">Account Status</h3>
+                <p class="text-xs text-gray-500 dark:text-gray-400">Archived users cannot sign in.</p>
+            </div>
+            <label class="relative inline-flex items-center cursor-pointer">
+                <input type="checkbox" name="isActive" class="sr-only peer" ${isActive ? 'checked' : ''} />
+                <div class="w-11 h-6 bg-gray-200 dark:bg-gray-700 rounded-full peer peer-checked:bg-primary-500 peer-focus:outline-none after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-gray-300 after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full peer-checked:after:border-white"></div>
+            </label>
+        </div>
+        ` : ''}
 
         <div class="flex items-center justify-end pt-4 border-t border-gray-100 dark:border-gray-800">
             <button type="submit" id="${idPrefix}-submit"

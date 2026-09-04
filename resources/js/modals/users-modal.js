@@ -4,6 +4,7 @@ import { Modal } from '../factories/modal-factory.js';
 import { userForm } from '../forms/user-form.js';
 import { fetchRegions } from '../api/regions-api.js';
 import { fetchCountries } from '../api/countries-api.js';
+import { fetchUserTypes } from '../api/user-types-api.js';
 import { enableDynamicRegionLoading } from '../components/regions-component.js';
 import { handleUserFormSubmission } from '../utils/users/form-submit.js';
 
@@ -28,7 +29,8 @@ export async function openAddUserModal() {
     const countryId = ''; // No country selected by default for Add form
     const [countries, regions, availableRoles] = await Promise.all([
         fetchCountries(),
-        fetchRegions(countryId)
+        fetchRegions(countryId),
+        fetchUserTypes()
     ]);
 
     if (userModal) userModal.destroy();
@@ -73,7 +75,8 @@ export async function openEditUserModal(trigger) {
 
     const [countries, regions, availableRoles] = await Promise.all([
         fetchCountries(),
-        fetchRegions(countryId)
+        fetchRegions(countryId),
+        fetchUserTypes()
     ]);
 
     if (userModal) userModal.destroy();

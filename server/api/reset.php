@@ -90,6 +90,8 @@ $tablesToDrop = [
     'rel_locations',
 
     // Project: landlord-tenant-validation
+    'ltv_rental_listing_photos',
+    'ltv_rental_listings',
     'ltv_report_photos',
     'ltv_reports',
     'ltv_properties',
@@ -193,6 +195,12 @@ $messages = array_merge($messages, resetLtvReportsTable());
 
 require_once __DIR__ . '/../../scripts/reset/ltv-report-photos.php';
 $messages = array_merge($messages, resetLtvReportPhotosTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-rental-listings.php';
+$messages = array_merge($messages, resetLtvRentalListingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-rental-listing-photos.php';
+$messages = array_merge($messages, resetLtvRentalListingPhotosTable());
 
 require_once __DIR__ . '/../../scripts/reset/ltv-seed.php';
 $messages = array_merge($messages, seedLtvBaselineData());
