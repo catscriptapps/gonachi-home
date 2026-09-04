@@ -121,6 +121,7 @@ if ($isPartial) {
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
 $landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
+$realEstateWorldPaths = ['/real-estate-world'];
 
 // /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
 // /{resource}/{id} handling) — its path always carries the contractor's ID,
@@ -137,6 +138,8 @@ if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/contractor-app.php';
 } elseif (in_array($path, $landlordPaths, true)) {
     include __DIR__ . '/../resources/views/layouts/landlord-app.php';
+} elseif (in_array($path, $realEstateWorldPaths, true)) {
+    include __DIR__ . '/../resources/views/layouts/real-estate-world-app.php';
 } else {
     include __DIR__ . '/../resources/views/layouts/app.php';
 }

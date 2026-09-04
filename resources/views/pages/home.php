@@ -20,22 +20,24 @@ $internalProjects = array_map(
     ProjectsConfig::all()
 );
 
-// Real Estate World: a companion platform on its own domain (gonachi.com),
-// not one of the sub-apps hosted under gonachi-home — kept out of
+// Real Estate World: the umbrella overview tying the three engines below
+// together (see resources/views/pages/real-estate-world.php) — kept out of
 // ProjectsConfig (and therefore out of the sidebar "switch project" card,
-// see partials/project-switcher.php) and out of $internalProjects, so it
-// only appears in the top card grid, not the "three engines" narrative
-// below. Summary line is quoted verbatim from gonachi.com/home.
+// see partials/project-switcher.php) and out of $internalProjects because
+// it's a different narrative shape: a network/overview page, not a
+// leads-extraction engine, so it only appears in the top card grid, not
+// the "three engines" narrative below. Formerly linked out to the legacy
+// platform at gonachi.com; now hosted here as its own project.
 $projects = $internalProjects;
 $projects[] = [
     'slug' => 'real-estate-world',
     'name' => 'Real Estate World',
     'tagline' => 'The ultimate nexus for Real Estate Stakeholders.',
-    'status' => 'live',
+    'status' => 'coming_soon',
     'accent' => 'teal',
     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />',
-    'href' => 'https://gonachi.com/home',
-    'external' => true,
+    'href' => $baseUrl . 'real-estate-world',
+    'external' => false,
 ];
 
 $accentClasses = [

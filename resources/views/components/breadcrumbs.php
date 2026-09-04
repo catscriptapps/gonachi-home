@@ -30,6 +30,7 @@ $accentHoverClasses = [
     'primary' => 'hover:text-primary-600 dark:hover:text-primary-400',
     'secondary' => 'hover:text-secondary-600 dark:hover:text-secondary-400',
     'indigo' => 'hover:text-indigo-600 dark:hover:text-indigo-400',
+    'teal' => 'hover:text-teal-600 dark:hover:text-teal-400',
 ][$breadcrumbAccent ?? 'primary'] ?? 'hover:text-primary-600 dark:hover:text-primary-400';
 
 $lastIndex = count($breadcrumbs) - 1;
