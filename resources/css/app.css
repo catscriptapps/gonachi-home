@@ -21,19 +21,11 @@
 | Custom Styles (Optional)
 |--------------------------------------------------------------------------
 |
-| Any custom CSS you want to write can go here. 
-| For example, you might want to hide the scrollbar for aesthetic reasons 
+| Any custom CSS you want to write can go here.
+| For example, you might want to hide the scrollbar for aesthetic reasons
 | or define simple global styles.
 |
 */
-
-/* Example: Hiding scrollbar on some browsers */
-body {
-    -ms-overflow-style: none;
-    /* IE and Edge */
-    scrollbar-width: none;
-    /* Firefox */
-}
 
 /* Example: Ensuring images are fluid */
 img {
@@ -208,8 +200,62 @@ input[type=number] {
     color: #6b7280;
 }
 
-/* Add this to your main CSS file */
+/* |--------------------------------------------------------------------------
+| Custom Scrollbars
+|--------------------------------------------------------------------------
+|
+| Slim, rounded, and quiet at rest — a thin gray thread that only picks up
+| color on hover. Used on the main page scroll (html) and on the sidebar's
+| scrollable nav list (.custom-scrollbar). The sidebar nav also carries a
+| data-nav-accent attribute (primary/secondary/indigo/teal) per project, so
+| its hover color matches whichever project you're in instead of a single
+| generic accent.
+|
+*/
 @layer components {
+
+    /* Firefox: thin width + thumb/track color pair (no separate hover state) */
+    html {
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.gray.300') transparent;
+    }
+
+    html.dark {
+        scrollbar-color: theme('colors.gray.700') transparent;
+    }
+
+    /* WebKit/Blink: the main page scrollbar */
+    html::-webkit-scrollbar {
+        width: 11px;
+    }
+
+    html::-webkit-scrollbar-track {
+        @apply bg-transparent;
+    }
+
+    html::-webkit-scrollbar-thumb {
+        @apply bg-gray-300 dark:bg-gray-700;
+        border-radius: 9999px;
+        border: 3px solid transparent;
+        background-clip: padding-box;
+    }
+
+    html::-webkit-scrollbar-thumb:hover {
+        @apply bg-primary-500;
+        border: 3px solid transparent;
+        background-clip: padding-box;
+    }
+
+    /* WebKit/Blink: scoped scrollbars (sidebar nav, modals, etc.) */
+    .custom-scrollbar {
+        scrollbar-width: thin;
+        scrollbar-color: theme('colors.gray.300') transparent;
+    }
+
+    .dark .custom-scrollbar {
+        scrollbar-color: theme('colors.gray.700') transparent;
+    }
+
     .custom-scrollbar::-webkit-scrollbar {
         width: 6px;
     }
@@ -219,7 +265,24 @@ input[type=number] {
     }
 
     .custom-scrollbar::-webkit-scrollbar-thumb {
-        @apply bg-gray-300 dark:bg-gray-600 rounded-full hover:bg-primary-500 transition-colors;
+        @apply bg-gray-300 dark:bg-gray-700 rounded-full transition-colors;
+    }
+
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-primary-500;
+    }
+
+    /* Per-project sidebar accent on hover, keyed off the nav's own data-nav-accent attribute */
+    nav[data-nav-accent="secondary"].custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-secondary-500;
+    }
+
+    nav[data-nav-accent="indigo"].custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-indigo-500;
+    }
+
+    nav[data-nav-accent="teal"].custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        @apply bg-teal-500;
     }
 }
 

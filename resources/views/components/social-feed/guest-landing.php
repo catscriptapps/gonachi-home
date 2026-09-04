@@ -2,6 +2,12 @@
 // /resources/views/components/social-feed/guest-landing.php
 
 /** @var string $baseUrl */
+/** @var string|null $path */
+
+// No registration modal in this codebase (unlike the legacy platform) —
+// route to the real /signup page instead, matching job-requests.php,
+// list-rental-property.php, and report-landlord.php's guest CTAs.
+$signupRedirect = ltrim($path ?? '/social-feed', '/');
 ?>
 
 <div class="relative min-h-[80vh] flex items-center justify-center px-4 overflow-hidden">
@@ -17,25 +23,25 @@
 
         <div class="space-y-4">
             <h1 class="text-5xl md:text-7xl font-black text-secondary-900 dark:text-white tracking-tight leading-none">
-                The New Era of <br />
-                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-secondary-500">Asset Exchange.</span>
+                The Inner Circle of <br />
+                <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary-500 to-secondary-500">Professionals.</span>
             </h1>
             <p class="max-w-xl mx-auto text-lg text-gray-500 dark:text-gray-400 font-medium leading-relaxed">
-                Unlock the market. Swap properties, trade high-value services, and negotiate directly with verified owners in the Gonachi Swap ecosystem.
+                Share updates, photos, and videos with landlords, tenants, agents, contractors, and property managers across the Gonachi network.
             </p>
         </div>
 
         <div class="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <a href="<?= $baseUrl ?>login" data-login-button
                 class="group relative inline-flex items-center justify-center px-8 py-4 font-black text-white transition-all duration-200 bg-secondary-900 dark:bg-primary-500 font-sans rounded-2xl hover:bg-secondary-800 dark:hover:bg-primary-600 active:scale-95 shadow-xl shadow-secondary-500/10">
-                <span class="mr-3">Sign in to Start Swapping</span>
+                <span class="mr-3">Sign in to Access Feed</span>
                 <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M13 7l5 5m0 0l-5 5m5-5H6" />
                 </svg>
             </a>
 
-            <a href="javascript:"
-                class="register-btn inline-flex items-center justify-center px-8 py-4 bg-gray-300 dark:bg-gray-800 font-black text-secondary-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all active:scale-95">
+            <a href="<?= $baseUrl ?>signup?redirect=<?= urlencode($signupRedirect) ?>" data-partial
+                class="inline-flex items-center justify-center px-8 py-4 bg-gray-300 dark:bg-gray-800 font-black text-secondary-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all active:scale-95">
                 Create an Account
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round" class="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1">
@@ -49,16 +55,16 @@
 
         <div class="grid grid-cols-3 gap-8 pt-12 border-t border-gray-100 dark:border-white/5 max-w-2xl mx-auto">
             <div>
-                <div class="text-2xl font-black text-secondary-900 dark:text-white">$42M+</div>
-                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Asset Value</div>
+                <div class="text-2xl font-black text-secondary-900 dark:text-white">5k+</div>
+                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Members</div>
             </div>
             <div>
-                <div class="text-2xl font-black text-secondary-900 dark:text-white">1.2k</div>
-                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Active Swaps</div>
+                <div class="text-2xl font-black text-secondary-900 dark:text-white">12k</div>
+                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Daily Posts</div>
             </div>
             <div>
-                <div class="text-2xl font-black text-secondary-900 dark:text-white">Instant</div>
-                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Matching</div>
+                <div class="text-2xl font-black text-secondary-900 dark:text-white">100%</div>
+                <div class="text-xs uppercase tracking-widest font-bold text-gray-400">Verified</div>
             </div>
         </div>
     </div>

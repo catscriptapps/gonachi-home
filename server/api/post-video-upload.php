@@ -9,7 +9,7 @@ use Src\Service\AuthService;
 header('Content-Type: application/json; charset=UTF-8');
 
 // 1. Auth Check
-$userId = AuthService::userId() ?? $_SESSION['user_id'] ?? 1;
+$userId = AuthService::userId();
 if (!$userId) {
     json_response(['success' => false, 'message' => 'Authentication required'], 401);
     exit;
@@ -39,7 +39,8 @@ try {
         $uploadDir = __DIR__ . '/../../public/videos/';
     }
 
-    $publicPathPrefix = '/videos/';
+    // getAssetBase(), not a hardcoded leading slash — see post-media-upload.php.
+    $publicPathPrefix = getAssetBase() . 'videos/';
 
     // 4. Service Execution - Now handling chunks
     // Increased max size to 200MB in the constructor call

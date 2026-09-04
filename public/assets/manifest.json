@@ -14,7 +14,7 @@
     "file": "js/contractor-claim.min.js",
     "name": "contractor-claim",
     "imports": [
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "_modal-factory.min.js",
       "_form-validator.min.js"
     ]
@@ -27,7 +27,7 @@
     "file": "js/form-validator.min.js",
     "name": "form-validator",
     "imports": [
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
     ]
   },
   "_home-events.min.js": {
@@ -41,12 +41,13 @@
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
   },
+  "_preload-helper.min.js": {
+    "file": "js/preload-helper.min.js",
+    "name": "preload-helper"
+  },
   "_preview.min.js": {
     "file": "js/preview.min.js",
-    "name": "preview",
-    "imports": [
-      "_toast.min.js"
-    ]
+    "name": "preview"
   },
   "_profile-modal.min.js": {
     "file": "js/profile-modal.min.js",
@@ -69,13 +70,19 @@
   "_table-search.min.js": {
     "file": "js/table-search.min.js",
     "name": "table-search",
+    "imports": [
+      "_preload-helper.min.js"
+    ],
     "dynamicImports": [
       "resources/js/utils/faqs/faq-accordion.js"
     ]
   },
-  "_toast.min.js": {
-    "file": "js/toast.min.js",
-    "name": "toast"
+  "_upload-modal.min.js": {
+    "file": "js/upload-modal.min.js",
+    "name": "upload-modal",
+    "imports": [
+      "resources/js/ui/toast.js"
+    ]
   },
   "resources/css/app.css": {
     "file": "css/app.min.css",
@@ -96,7 +103,7 @@
       "_modal-factory.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "resources/js/pages/messages-page.js",
       "_delete-factory.min.js",
       "_animations.min.js"
@@ -121,7 +128,7 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/contractor-discovery-page.js": {
@@ -131,7 +138,7 @@
     "isEntry": true,
     "imports": [
       "_contractor-claim.min.js",
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "_modal-factory.min.js",
       "_form-validator.min.js"
     ]
@@ -143,7 +150,7 @@
     "isEntry": true,
     "imports": [
       "_contractor-claim.min.js",
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "_modal-factory.min.js",
       "_form-validator.min.js"
     ]
@@ -159,8 +166,9 @@
       "_spinner-utils.min.js",
       "_delete-factory.min.js",
       "resources/js/utils/faqs/faq-accordion.js",
-      "_toast.min.js",
-      "_table-search.min.js"
+      "resources/js/ui/toast.js",
+      "_table-search.min.js",
+      "_preload-helper.min.js"
     ]
   },
   "resources/js/pages/gonachi-home-page.js": {
@@ -181,7 +189,8 @@
     "imports": [
       "_table-search.min.js",
       "_delete-factory.min.js",
-      "_toast.min.js"
+      "resources/js/ui/toast.js",
+      "_preload-helper.min.js"
     ]
   },
   "resources/js/pages/home-page.js": {
@@ -201,8 +210,9 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_toast.min.js"
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/list-rental-property-page.js": {
@@ -212,8 +222,9 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_toast.min.js"
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/live-chat-page.js": {
@@ -222,7 +233,7 @@
     "src": "resources/js/pages/live-chat-page.js",
     "isEntry": true,
     "imports": [
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/messages-page.js": {
@@ -231,7 +242,7 @@
     "src": "resources/js/pages/messages-page.js",
     "isEntry": true,
     "imports": [
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "_delete-factory.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
@@ -246,10 +257,11 @@
     "isEntry": true,
     "imports": [
       "_profile-modal.min.js",
-      "_preview.min.js",
-      "_toast.min.js",
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
       "_spa-router.min.js",
       "_delete-factory.min.js",
+      "_preview.min.js",
       "_animations.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
@@ -263,8 +275,9 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_toast.min.js"
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/reset-password-page.js": {
@@ -275,7 +288,7 @@
     "imports": [
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/saved-searches-page.js": {
@@ -284,7 +297,7 @@
     "src": "resources/js/pages/saved-searches-page.js",
     "isEntry": true,
     "imports": [
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/settings-page.js": {
@@ -303,7 +316,23 @@
     "isEntry": true,
     "imports": [
       "_form-validator.min.js",
-      "_toast.min.js"
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/social-feed-page.js": {
+    "file": "js/social-feed-page.min.js",
+    "name": "social-feed-page",
+    "src": "resources/js/pages/social-feed-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_preload-helper.min.js"
+    ],
+    "dynamicImports": [
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/users-page.js": {
@@ -314,12 +343,19 @@
     "imports": [
       "_profile-modal.min.js",
       "_delete-factory.min.js",
-      "_toast.min.js",
+      "resources/js/ui/toast.js",
       "_table-search.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js"
+      "_spinner-utils.min.js",
+      "_preload-helper.min.js"
     ]
+  },
+  "resources/js/ui/toast.js": {
+    "file": "js/toast.min.js",
+    "name": "toast",
+    "src": "resources/js/ui/toast.js",
+    "isDynamicEntry": true
   },
   "resources/js/utils/faqs/faq-accordion.js": {
     "file": "js/faq-accordion.min.js",

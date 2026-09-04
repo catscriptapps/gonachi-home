@@ -52,7 +52,7 @@ declare(strict_types=1);
 
 <body class="font-sans antialiased h-full overflow-x-hidden text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950" x-data="{}">
 
-    <div class="flex flex-col min-h-screen">
+    <div class="flex flex-col min-h-screen bg-gray-50 dark:bg-gray-950">
 
         <header class="sticky top-0 z-40 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-300">
             <a href="<?= $baseUrl ?>" class="flex items-center flex-shrink-0">
@@ -116,7 +116,7 @@ declare(strict_types=1);
             </div>
         </header>
 
-        <main class="flex-1">
+        <main class="flex-1 bg-gray-50 dark:bg-gray-950">
             <div id="modal-zone"></div>
             <div id="main-content">
                 <?php include $pageFile; ?>

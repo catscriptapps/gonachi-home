@@ -15,7 +15,7 @@ declare(strict_types=1);
     <!-- Back to the Gonachi project hub -->
     <a href="<?= $baseUrl ?>" x-show="$store.sidebar.expanded || mobileMenuOpen" class="mx-4 mt-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-secondary-50 dark:hover:bg-secondary-950/40 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-secondary-600 dark:hover:text-secondary-400 transition-colors">
         <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Home
+        Gonachi Home
     </a>
 
     <!-- Sidebar Header: Identity & Brand Logo -->
@@ -40,7 +40,7 @@ declare(strict_types=1);
     ?>
 
     <!-- Navigation Directory -->
-    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto" data-nav-accent="secondary">
+    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar" data-nav-accent="secondary">
         <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/contractor-discovery' ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
@@ -87,6 +87,13 @@ declare(strict_types=1);
                 <span id="live-chat-nav-badge" x-show="$store.sidebar.expanded || mobileMenuOpen" class="hidden flex-shrink-0 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">0</span>
             </a>
         <?php endif; ?>
+
+        <a href="<?= $baseUrl ?>contact" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/contact' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Contact</span>
+        </a>
 
         <?php $currentProjectSlug = 'contractor-discovery'; ?>
         <?php include __DIR__ . '/project-switcher.php'; ?>

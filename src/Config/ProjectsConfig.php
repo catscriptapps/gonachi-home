@@ -6,9 +6,13 @@ declare(strict_types=1);
 namespace Src\Config;
 
 /**
- * Single source of truth for the three projects under gonachi-home —
- * used by the portal landing page and by each project's sidebar
- * "switch project" card, so identity/icons/colors stay in sync.
+ * Single source of truth for the three data-engine projects under
+ * gonachi-home — used by the portal landing page and by each project's
+ * sidebar "switch project" card, so identity/icons/colors stay in sync.
+ * Real Estate World is a fourth project but isn't listed here (see
+ * resources/views/pages/home.php and partials/project-switcher.php,
+ * which each add it in separately) — it's a different shape (a global
+ * submission platform, not a leads-extraction engine).
  */
 class ProjectsConfig
 {
@@ -24,7 +28,9 @@ class ProjectsConfig
                 'tagline' => 'Find people who are actively looking to buy or sell property.',
                 'status' => 'live',
                 'accent' => 'primary',
-                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />',
+                // Funnel icon — distinct from the house icon used by the
+                // sidebar's "Gonachi Home" hub link and breadcrumbs.php.
+                'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4.5h18M3 4.5v1.086c0 .464.184.909.513 1.237l5.974 5.974c.329.328.513.773.513 1.237v5.148c0 .687.56 1.212 1.229 1.318a48.62 48.62 0 003.542 0c.669-.106 1.229-.63 1.229-1.318v-5.148c0-.464.184-.909.513-1.237l5.974-5.974A1.75 1.75 0 0021 5.586V4.5" />',
             ],
             [
                 'slug' => 'contractor-discovery',

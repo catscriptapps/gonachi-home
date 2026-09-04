@@ -12,28 +12,28 @@ declare(strict_types=1);
 
 use Src\Config\ProjectsConfig;
 
-// The three sub-apps hosted under gonachi-home — used both for the top
-// card grid below and for the "Unified Summary" section further down,
-// which tells the "three engines, one idea" story about these specifically.
+// The three data-engine sub-apps hosted under gonachi-home — used for the
+// top card grid below and drive ProjectsConfig (icons/nav links/sidebar
+// switcher).
 $internalProjects = array_map(
     fn(array $project) => $project + ['href' => $baseUrl . $project['slug'], 'external' => false],
     ProjectsConfig::all()
 );
 
-// Real Estate World: the umbrella overview tying the three engines below
-// together (see resources/views/pages/real-estate-world.php) — kept out of
-// ProjectsConfig (and therefore out of the sidebar "switch project" card,
-// see partials/project-switcher.php) and out of $internalProjects because
-// it's a different narrative shape: a network/overview page, not a
-// leads-extraction engine, so it only appears in the top card grid, not
-// the "three engines" narrative below. Formerly linked out to the legacy
-// platform at gonachi.com; now hosted here as its own project.
+// Real Estate World: a fourth project, but a different shape — a global
+// submission platform (people post adverts/listings/quotations directly
+// to us) rather than a leads-extraction engine (see resources/views/pages/
+// real-estate-world.php) — so it's kept out of ProjectsConfig itself, but
+// still appears here alongside the other three, and in the sidebar
+// switcher (partials/project-switcher.php adds it in the same way).
+// Formerly linked out to the legacy platform at gonachi.com; now hosted
+// here as its own project.
 $projects = $internalProjects;
 $projects[] = [
     'slug' => 'real-estate-world',
     'name' => 'Real Estate World',
     'tagline' => 'The ultimate nexus for Real Estate Stakeholders.',
-    'status' => 'coming_soon',
+    'status' => 'live',
     'accent' => 'teal',
     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />',
     'href' => $baseUrl . 'real-estate-world',
@@ -147,21 +147,21 @@ if (is_dir($heroImagesPath)) {
     </div>
 </div>
 
-<!-- Unified Summary: the three projects, tied together in one story -->
+<!-- Unified Summary: all four projects, tied together in one story -->
 <section class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 py-20 sm:py-28">
     <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <div data-aos="fade-up" data-aos-duration="800">
             <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">The Big Picture</span>
             <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white max-w-3xl mx-auto">
-                Three engines. One idea: turn public information into opportunity.
+                Four projects. One idea: put the right person in front of the right opportunity.
             </h2>
             <p class="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Every Gonachi project follows the same playbook — continuously surface signals hiding in plain sight across the public web, structure them into something searchable, and put the right person in front of the right opportunity. Real estate leads for realtors. Verified contractors for property owners. Landlord and tenant records for renters.
+                Three engines continuously surface signals hiding in plain sight across the public web and structure them into something searchable — real estate leads for realtors, verified contractors for property owners, landlord and tenant records for renters. The fourth flips the model: Real Estate World is a global platform where stakeholders anywhere submit their own adverts, listings, and quotations directly to us.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-4xl mx-auto">
-            <?php foreach ($internalProjects as $index => $project): ?>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-5xl mx-auto">
+            <?php foreach ($projects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
                 <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>" class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">
                     <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 <?= $accent['icon'] ?>">

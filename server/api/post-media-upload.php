@@ -4,10 +4,18 @@
 declare(strict_types=1);
 
 use Src\Service\ImageUploadService;
+use Src\Service\AuthService;
 
 header('Content-Type: application/json');
 
-$userId = $_SESSION['user_id'] ?? 1;
+// Auth required — this was previously falling back to user_id=1 for any
+// unauthenticated request, letting anyone upload files to this project's
+// disk and attributing them to another user's account.
+if (!AuthService::userId()) {
+    http_response_code(401);
+    echo json_encode(['success' => false, 'message' => 'Please sign in to upload media.']);
+    exit;
+}
 
 // 1. Validate
 if (empty($_FILES['images']) || empty($_FILES['images']['tmp_name'][0])) {
@@ -39,8 +47,11 @@ $singleFile = [
 
 $uploaded = $service->upload($singleFile, function (array $files) use ($relativePublicPathPrefix) {
     foreach ($files as $key => $fileInfo) {
-        // fileUrl is for the Frontend Preview (needs the path)
-        $files[$key]['fileUrl'] = '/' . $relativePublicPathPrefix . $fileInfo['fileName'];
+        // fileUrl is for the Frontend Preview (needs the path) — getAssetBase(),
+        // not a hardcoded leading slash, so this still resolves correctly if
+        // this app is ever deployed under a subdirectory (see
+        // job-request-photo-upload.php for the same convention).
+        $files[$key]['fileUrl'] = getAssetBase() . $relativePublicPathPrefix . $fileInfo['fileName'];
         // resultUrl is the raw filename for the hidden input/database
         $files[$key]['resultUrl'] = $fileInfo['fileName'];
     }

@@ -3,9 +3,9 @@
 //
 // CLI entry point for setting up gonachi_home_db from scratch: the shared
 // `users` table plus every project's tables — real-estate-leads (rel_
-// prefixed), landlord-tenant-validation (ltv_ prefixed), and
-// contractor-discovery (cde_ prefixed) so far; as more projects land under
-// gonachi-home, add their reset calls here alongside it.
+// prefixed), landlord-tenant-validation (ltv_ prefixed), contractor-discovery
+// (cde_ prefixed), and real-estate-world (rew_ prefixed) so far; as more
+// projects land under gonachi-home, add their reset calls here alongside it.
 //
 // Run: php scripts/setup-database.php
 
@@ -138,6 +138,21 @@ $messages = array_merge($messages, resetCdeContractorClaimsTable());
 
 require_once __DIR__ . '/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
+
+// --------------------------------------------------
+// Project: real-estate-world (rew_ prefixed tables)
+// --------------------------------------------------
+require_once __DIR__ . '/reset/rew-follows.php';
+$messages = array_merge($messages, resetRewFollowsTable());
+
+require_once __DIR__ . '/reset/rew-posts.php';
+$messages = array_merge($messages, resetRewPostsTable());
+
+require_once __DIR__ . '/reset/rew-post-comments.php';
+$messages = array_merge($messages, resetRewPostCommentsTable());
+
+require_once __DIR__ . '/reset/rew-post-likes.php';
+$messages = array_merge($messages, resetRewPostLikesTable());
 
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.

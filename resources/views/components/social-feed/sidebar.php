@@ -1,10 +1,13 @@
 <?php
 // /resources/views/components/social-feed/sidebar.php
 
-/** @var \App\Models\User $currentUser Already available from index.php */
-$currentUserName = $currentUser->full_name ?? $currentUser->name ?? 'User';
+$currentUser = \Src\Service\AuthService::currentUser();
+$currentUserName = $currentUser->full_name ?? 'User';
 $currentUserInitials = strtoupper(substr($currentUserName, 0, 1));
 $currentUserAvatar = $currentUser->avatar_url ?? null;
+$currentUsername = $currentUser
+    ? strtolower(str_replace(' ', '', $currentUserName)) . $currentUser->id
+    : 'user';
 $assetBase = getAssetBase();
 ?>
 
@@ -27,7 +30,7 @@ $assetBase = getAssetBase();
             <h2 class="text-lg font-bold text-gray-900 dark:text-white leading-tight">
                 <?= htmlspecialchars($currentUserName) ?>
             </h2>
-            <p class="text-xs text-gray-500 mb-4">@<?= $currentUser->username ?? 'username' ?></p>
+            <p class="text-xs text-gray-500 mb-4">@<?= htmlspecialchars($currentUsername) ?></p>
 
             <div class="flex items-center space-x-6 border-t border-gray-100 dark:border-gray-800 pt-4">
                 <div class="text-center">

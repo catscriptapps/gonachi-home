@@ -104,6 +104,12 @@ $tablesToDrop = [
     'cde_contractor_sources',
     'cde_job_request_photos',
     'cde_job_requests',
+
+    // Project: real-estate-world
+    'rew_post_likes',
+    'rew_post_comments',
+    'rew_posts',
+    'rew_follows',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -230,7 +236,22 @@ require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
 
 /**
- * 4d. RESTORE PRESERVED DATA
+ * 4d. CREATION PHASE - PROJECT: real-estate-world (rew_ prefixed tables)
+ */
+require_once __DIR__ . '/../../scripts/reset/rew-follows.php';
+$messages = array_merge($messages, resetRewFollowsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-posts.php';
+$messages = array_merge($messages, resetRewPostsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-post-comments.php';
+$messages = array_merge($messages, resetRewPostCommentsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-post-likes.php';
+$messages = array_merge($messages, resetRewPostLikesTable());
+
+/**
+ * 4e. RESTORE PRESERVED DATA
  * Re-attach the leads/contractors snapshotted in step 1, now that their
  * parent tables (sources, categories, locations) have fresh IDs to resolve against.
  */

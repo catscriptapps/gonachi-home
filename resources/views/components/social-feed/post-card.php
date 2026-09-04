@@ -44,16 +44,16 @@ $isOwnPost = ((int)$authorId === (int)$currentUserId);
                     alt="<?= htmlspecialchars($author) ?>"
                     class="h-10 w-10 rounded-full object-cover border border-gray-100 dark:border-gray-800 shadow-sm user-avatar-img">
             <?php else: ?>
-                <div class="h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
+                <div class="avatar-initials h-10 w-10 rounded-full bg-primary-600 flex items-center justify-center text-white font-bold text-lg shadow-sm">
                     <?= $initials ?>
                 </div>
             <?php endif; ?>
 
             <div>
-                <h3 class="text-sm font-bold text-gray-900 dark:text-white font-sans leading-none">
+                <h3 class="post-author-name text-sm font-bold text-gray-900 dark:text-white font-sans leading-none">
                     <?= htmlspecialchars($author) ?>
                 </h3>
-                <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                <p class="post-time-ago text-xs text-gray-500 dark:text-gray-400 mt-1">
                     <?= $timeAgo ?>
                 </p>
             </div>
