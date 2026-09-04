@@ -23,6 +23,16 @@ $isLoggedIn = false; // We force this for the reset screen
 <html lang="en" class="h-full bg-gray-50 dark:bg-gray-950">
 
 <head>
+    <script>
+        // Same anti-flash guard as the other layouts, kept in sync with
+        // dark-mode.js's STORAGE_KEY ('user-theme'), which this layout's
+        // #dark-toggle button already writes to correctly.
+        (function () {
+            if (localStorage.getItem('user-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($title) . ' | ' . htmlspecialchars($appName); ?></title>

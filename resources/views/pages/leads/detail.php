@@ -164,7 +164,7 @@ $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : nu
                     <span class="font-medium text-gray-700 dark:text-gray-300">
                         <?= htmlspecialchars($lead->source->name ?? 'Public Request Board') ?>
                         <?php if ($lead->source_url): ?>
-                            &middot; <a href="<?= htmlspecialchars($lead->source_url) ?>" target="_blank" rel="noopener noreferrer" class="text-primary-600 dark:text-primary-400 hover:underline">View Original</a>
+                            &middot; <a href="<?= htmlspecialchars($lead->source_url) ?>" target="_blank" rel="noopener noreferrer" class="font-bold text-primary-600 dark:text-primary-400 hover:underline hover:text-primary-700 dark:hover:text-primary-300">View Ad</a>
                         <?php endif; ?>
                     </span>
                 </div>

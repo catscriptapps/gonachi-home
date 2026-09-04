@@ -16,8 +16,20 @@ Alpine.effect(() => {
   localStorage.setItem('sidebar-expanded', Alpine.store('sidebar').expanded);
 });
 
+// Reads the same localStorage key + class the anti-flash inline <script> in
+// every layout's <head> already applied before this module ran, so isDark
+// starts in sync with the actually-applied class. toggle() is the single
+// place that both flips the class and persists the choice — every header's
+// dark-mode button calls $store.theme.toggle() instead of duplicating this
+// logic (previously each header toggled the class directly and never wrote
+// to localStorage at all, so the choice never survived a reload).
 Alpine.store('theme', {
   isDark: document.documentElement.classList.contains('dark'),
+  toggle() {
+    this.isDark = !this.isDark;
+    document.documentElement.classList.toggle('dark', this.isDark);
+    localStorage.setItem('user-theme', this.isDark ? 'dark' : 'light');
+  },
 });
 
 // 3. Set global and start

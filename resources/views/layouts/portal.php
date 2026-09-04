@@ -15,6 +15,16 @@ declare(strict_types=1);
 <html lang="en" class="h-full bg-gray-50 dark:bg-gray-950">
 
 <head>
+    <script>
+        // Applies the saved theme before anything else paints, so there's no
+        // light-mode flash on a dark-mode reload, and so Alpine's theme store
+        // (app.js) reads the correct starting class instead of a stale one.
+        (function () {
+            if (localStorage.getItem('user-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($title) . ' | ' . htmlspecialchars($appName); ?></title>
@@ -76,7 +86,7 @@ declare(strict_types=1);
                 <?php endif; ?>
 
                 <button
-                    @click="$store.theme.isDark = !$store.theme.isDark; document.documentElement.classList.toggle('dark', $store.theme.isDark)"
+                    @click="$store.theme.toggle()"
                     class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all focus:outline-none"
                     aria-label="Toggle Dark Mode">
                     <svg x-show="!$store.theme.isDark" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">

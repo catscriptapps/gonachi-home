@@ -12,6 +12,16 @@ declare(strict_types=1);
 <html lang="en" class="h-full bg-gray-50 dark:bg-gray-950">
 
 <head>
+    <script>
+        // Applies the saved theme before anything else paints, so there's no
+        // light-mode flash on a dark-mode reload, and so Alpine's theme store
+        // (app.js) reads the correct starting class instead of a stale one.
+        (function () {
+            if (localStorage.getItem('user-theme') === 'dark') {
+                document.documentElement.classList.add('dark');
+            }
+        })();
+    </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($title) . ' | ' . htmlspecialchars($appName); ?></title>

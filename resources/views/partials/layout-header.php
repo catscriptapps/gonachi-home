@@ -44,7 +44,7 @@ declare(strict_types=1);
         
         <!-- Dark Mode Toggle Trigger Component -->
         <button 
-            @click="$store.theme.isDark = !$store.theme.isDark; document.documentElement.classList.toggle('dark', $store.theme.isDark)"
+            @click="$store.theme.toggle()"
             class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all focus:outline-none"
             aria-label="Toggle Dark Mode">
             <!-- Light icon -->
