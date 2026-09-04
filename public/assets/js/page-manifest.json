@@ -1,5 +1,7 @@
 [
   "about-page",
+  "adverts-admin-page",
+  "adverts-page",
   "contact-page",
   "contractor-discovery-page",
   "contractor-page",
@@ -11,6 +13,7 @@
   "list-rental-property-page",
   "live-chat-page",
   "messages-page",
+  "my-adverts-page",
   "profile-page",
   "report-landlord-page",
   "reset-password-page",

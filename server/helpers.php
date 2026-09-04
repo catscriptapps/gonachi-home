@@ -38,6 +38,19 @@ function getAssetBase()
 }
 
 /**
+ * Cache-busting query value for a built asset (assets/js/app.min.js,
+ * assets/css/app.min.css, etc). Browsers keep serving a stale bundle from
+ * cache after a rebuild since these filenames never change — appending
+ * `?v=<mtime>` forces a fresh fetch whenever the file on disk changes.
+ */
+function assetVersion(string $relativePath): string
+{
+    $full = __DIR__ . '/../public/' . ltrim($relativePath, '/');
+    $mtime = @filemtime($full);
+    return $mtime !== false ? (string)$mtime : '1';
+}
+
+/**
  * Returns the limit for media upload.
  */
 function getMediaLimit()

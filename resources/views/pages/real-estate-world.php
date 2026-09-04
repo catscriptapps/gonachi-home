@@ -84,30 +84,35 @@ $modules = [
         'name' => 'Social Feed',
         'text' => "See what's happening across the network. Share updates, photos, and videos.",
         'slug' => 'social-feed',
+        'live' => true,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />',
     ],
     [
         'name' => 'Adverts',
         'text' => 'Connect with landlords, tenants, and pros — showcase your brand on the largest real estate social hub. Starting at $0.',
         'slug' => 'adverts',
+        'live' => true,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />',
     ],
     [
         'name' => 'Quotations',
         'text' => 'Fill out your request, upload media, and receive competitive bids from verified contractors instantly.',
         'slug' => 'quotations',
+        'live' => false,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />',
     ],
     [
         'name' => 'Mentors',
         'text' => 'Bridge the knowledge gap — connect with seasoned experts, searchable by skill or specialty.',
         'slug' => 'mentors',
+        'live' => false,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />',
     ],
     [
         'name' => 'Listings',
         'text' => 'Explore trending rentals, exclusive sales, and professional services tailored to your location.',
         'slug' => 'listings',
+        'live' => false,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />',
     ],
 ];
@@ -180,18 +185,28 @@ $modules = [
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white">Platform Modules</h3>
                 <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Submitted by people worldwide — not extracted from public sources, like the other Gonachi projects.</p>
             </div>
-            <span class="text-xs text-teal-600 bg-teal-50 dark:bg-teal-950/40 px-2 py-1 rounded font-medium whitespace-nowrap">Rolling Out In Phases</span>
+            <span class="text-xs text-teal-600 bg-teal-50 dark:bg-teal-950/40 px-2 py-1 rounded font-medium whitespace-nowrap"><?= count(array_filter($modules, fn($m) => $m['live'])) ?>/<?= count($modules) ?> Live</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             <?php foreach ($modules as $module): ?>
-                <a href="<?= $baseUrl . $module['slug'] ?>" data-partial class="group bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-5 hover:border-teal-400 dark:hover:border-teal-700 hover:shadow-lg transition-all duration-300">
+                <a href="<?= $baseUrl . $module['slug'] ?>" data-partial class="group bg-white dark:bg-gray-900 border <?= $module['live'] ? 'border-gray-200 dark:border-gray-800' : 'border-dashed border-gray-300 dark:border-gray-800' ?> rounded-2xl p-5 hover:border-teal-400 dark:hover:border-teal-700 hover:shadow-lg transition-all duration-300">
                     <div class="flex items-start justify-between">
                         <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400">
                             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><?= $module['icon'] ?></svg>
                         </div>
-                        <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
-                            Coming Soon
-                        </span>
+                        <?php if ($module['live']): ?>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400">
+                                <span class="relative flex h-1.5 w-1.5">
+                                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                                    <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
+                                </span>
+                                Live
+                            </span>
+                        <?php else: ?>
+                            <span class="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400">
+                                Coming Soon
+                            </span>
+                        <?php endif; ?>
                     </div>
                     <h4 class="text-sm font-bold text-gray-900 dark:text-white mb-1 group-hover:text-teal-600 dark:group-hover:text-teal-400 transition-colors"><?= htmlspecialchars($module['name']) ?></h4>
                     <p class="text-xs text-gray-500 dark:text-gray-400"><?= htmlspecialchars($module['text']) ?></p>

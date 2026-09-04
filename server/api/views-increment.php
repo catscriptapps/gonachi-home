@@ -3,8 +3,10 @@
 
 declare(strict_types=1);
 
+use Src\Controller\AdvertsController;
 use Src\Controller\ListingsController;
 use Src\Controller\QuotationsController;
+use Src\Service\AuthService;
 
 header('Content-Type: application/json');
 
@@ -26,6 +28,9 @@ try {
         switch ($type) {
             case 'listing':
                 $newCount = ListingsController::incrementView((string)$id);
+                break;
+            case 'ad':
+                $newCount = AdvertsController::incrementView((string)$id, (int)(AuthService::userId() ?? 0));
                 break;
             default:
                 json_response(['success' => false, 'messages' => ['Invalid type']], 400);

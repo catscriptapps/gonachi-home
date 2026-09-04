@@ -154,6 +154,18 @@ $messages = array_merge($messages, resetRewPostCommentsTable());
 require_once __DIR__ . '/reset/rew-post-likes.php';
 $messages = array_merge($messages, resetRewPostLikesTable());
 
+require_once __DIR__ . '/reset/rew-advert-ctas.php';
+$messages = array_merge($messages, resetRewAdvertCtasTable());
+
+require_once __DIR__ . '/reset/rew-advert-packages.php';
+$messages = array_merge($messages, resetRewAdvertPackagesTable());
+
+require_once __DIR__ . '/reset/rew-adverts.php';
+$messages = array_merge($messages, resetRewAdvertsTable());
+
+require_once __DIR__ . '/reset/rew-advert-pics.php';
+$messages = array_merge($messages, resetRewAdvertPicsTable());
+
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));

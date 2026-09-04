@@ -7,10 +7,14 @@ export function showToast(message, type = 'success') {
   const toast = document.createElement('div');
   toast.className = `
     fixed bottom-4 left-1/2 transform -translate-x-1/2
-    px-4 py-2 rounded shadow-lg z-[10050]
+    px-4 py-2 rounded shadow-lg
     text-white text-sm font-medium
     ${type === 'success' ? 'bg-green-600' : 'bg-red-600'}
   `;
+  // Modals stack at z-index 2147483647/48 (see modal-factory.js) — inline
+  // style (not a Tailwind class, since arbitrary values this large get
+  // clamped/misparsed) keeps the toast above even an open modal's overlay.
+  toast.style.zIndex = '2147483648';
   toast.textContent = message;
 
   document.body.appendChild(toast);

@@ -59,6 +59,13 @@
       "_delete-factory.min.js"
     ]
   },
+  "_search.min.js": {
+    "file": "js/search.min.js",
+    "name": "search",
+    "imports": [
+      "_animations.min.js"
+    ]
+  },
   "_spa-router.min.js": {
     "file": "js/spa-router.min.js",
     "name": "spa-router"
@@ -82,6 +89,22 @@
     "name": "upload-modal",
     "imports": [
       "resources/js/ui/toast.js"
+    ]
+  },
+  "_video-upload-modal.min.js": {
+    "file": "js/video-upload-modal.min.js",
+    "name": "video-upload-modal",
+    "imports": [
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "_view-advert-modal.min.js": {
+    "file": "js/view-advert-modal.min.js",
+    "name": "view-advert-modal",
+    "imports": [
+      "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_video-upload-modal.min.js"
     ]
   },
   "resources/css/app.css": {
@@ -119,6 +142,33 @@
     "isEntry": true,
     "imports": [
       "_animations.min.js"
+    ]
+  },
+  "resources/js/pages/adverts-admin-page.js": {
+    "file": "js/adverts-admin-page.min.js",
+    "name": "adverts-admin-page",
+    "src": "resources/js/pages/adverts-admin-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_view-advert-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_video-upload-modal.min.js"
+    ]
+  },
+  "resources/js/pages/adverts-page.js": {
+    "file": "js/adverts-page.min.js",
+    "name": "adverts-page",
+    "src": "resources/js/pages/adverts-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_view-advert-modal.min.js",
+      "_search.min.js",
+      "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_video-upload-modal.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -250,6 +300,23 @@
       "_animations.min.js"
     ]
   },
+  "resources/js/pages/my-adverts-page.js": {
+    "file": "js/my-adverts-page.min.js",
+    "name": "my-adverts-page",
+    "src": "resources/js/pages/my-adverts-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_view-advert-modal.min.js",
+      "_modal-factory.min.js",
+      "_form-validator.min.js",
+      "_spinner-utils.min.js",
+      "_search.min.js",
+      "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_video-upload-modal.min.js"
+    ]
+  },
   "resources/js/pages/profile-page.js": {
     "file": "js/profile-page.min.js",
     "name": "profile-page",
@@ -328,6 +395,7 @@
       "_animations.min.js",
       "_modal-factory.min.js",
       "_upload-modal.min.js",
+      "_video-upload-modal.min.js",
       "resources/js/ui/toast.js",
       "_preload-helper.min.js"
     ],

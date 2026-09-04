@@ -110,6 +110,10 @@ $tablesToDrop = [
     'rew_post_comments',
     'rew_posts',
     'rew_follows',
+    'rew_advert_pics',
+    'rew_adverts',
+    'rew_advert_packages',
+    'rew_advert_ctas',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -249,6 +253,18 @@ $messages = array_merge($messages, resetRewPostCommentsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-post-likes.php';
 $messages = array_merge($messages, resetRewPostLikesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-advert-ctas.php';
+$messages = array_merge($messages, resetRewAdvertCtasTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-advert-packages.php';
+$messages = array_merge($messages, resetRewAdvertPackagesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-adverts.php';
+$messages = array_merge($messages, resetRewAdvertsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-advert-pics.php';
+$messages = array_merge($messages, resetRewAdvertPicsTable());
 
 /**
  * 4e. RESTORE PRESERVED DATA

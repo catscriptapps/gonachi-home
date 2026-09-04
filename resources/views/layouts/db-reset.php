@@ -51,7 +51,7 @@ $isLoggedIn = false; // We force this for the reset screen
         };
     </script>
 
-    <link rel="stylesheet" href="<?= $assetBase ?>assets/css/app.min.css">
+    <link rel="stylesheet" href="<?= $assetBase ?>assets/css/app.min.css?v=<?= assetVersion('assets/css/app.min.css') ?>">
 </head>
 
 <body class="font-sans antialiased h-full overflow-x-hidden text-gray-900 dark:text-gray-100 bg-gray-50 dark:bg-gray-950"
@@ -138,7 +138,7 @@ $isLoggedIn = false; // We force this for the reset screen
 
     <?php include __DIR__ . '/../components/scroll-top.php'; ?>
 
-    <script type="module" src="<?= $assetBase ?>assets/js/app.min.js"></script>
+    <script type="module" src="<?= $assetBase ?>assets/js/app.min.js?v=<?= assetVersion('assets/js/app.min.js') ?>"></script>
 </body>
 
 </html>

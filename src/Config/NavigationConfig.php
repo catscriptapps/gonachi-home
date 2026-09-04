@@ -178,6 +178,7 @@ class NavigationConfig
             $base . '/contractor-claims-review',
             $base . '/live-chat',
             $base . '/admin',
+            $base . '/adverts-admin',
         ];
     }
 
@@ -200,6 +201,7 @@ class NavigationConfig
             $base . '/contractor-claims-review',
             $base . '/live-chat',
             $base . '/admin',
+            $base . '/adverts-admin',
         ];
     }
 

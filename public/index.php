@@ -59,6 +59,40 @@ $baseUrl = rtrim($baseUrl, '/') . '/';
 $assetBase = rtrim($assetBase, '/') . '/';
 
 // ------------------------------------------------------------
+// Layout resolution — which project shell (sidebar + header) a path
+// belongs to. Resolved once, up front, so every early-exit branch below
+// (auth-required, etc.) renders inside the SAME shell as the page would
+// have gotten normally, instead of silently defaulting to the Real Estate
+// Leads shell. That mismatch is exactly what happened before this was
+// hoisted here: a path only ever got routed to its real shell in the
+// "Final Step" render at the bottom of this file, so anything that exited
+// earlier (e.g. a logged-out visitor hitting a protected real-estate-world
+// path) fell back to layouts/app.php regardless of which project it was.
+$portalPaths = ['/home'];
+$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
+$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
+$realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin'];
+
+// /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
+// /{resource}/{id} handling) — its path always carries the contractor's ID,
+// so it can never exact-match the static list above. Without this prefix
+// check it silently fell through to the default (Real Estate Leads) shell,
+// showing the wrong project's sidebar on every contractor profile page.
+$isContractorPath = in_array($path, $contractorPaths, true) || str_starts_with($path, '/contractor/');
+
+if (in_array($path, $portalPaths, true)) {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/portal.php';
+} elseif ($isContractorPath) {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/contractor-app.php';
+} elseif (in_array($path, $landlordPaths, true)) {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/landlord-app.php';
+} elseif (in_array($path, $realEstateWorldPaths, true)) {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/real-estate-world-app.php';
+} else {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/app.php';
+}
+
+// ------------------------------------------------------------
 // Protected route handling (The Security Guard)
 // ------------------------------------------------------------
 $protectedPaths = NavigationConfig::getProtectedPaths();
@@ -76,7 +110,7 @@ if (in_array($fullPath, $protectedPaths, true)) {
             include $pageFile;
             exit;
         }
-        include __DIR__ . '/../resources/views/layouts/app.php';
+        include $resolvedLayout;
         exit;
     }
 
@@ -115,31 +149,11 @@ if ($isPartial) {
     exit;
 }
 
-// Final Step: Full layout rendering
-// The portal layout is the umbrella "hub" shell (landing page + cross-project
-// placeholder pages). Each live project renders in its own app shell.
-$portalPaths = ['/home'];
-$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
-$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
-$realEstateWorldPaths = ['/real-estate-world'];
-
-// /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
-// /{resource}/{id} handling) — its path always carries the contractor's ID,
-// so it can never exact-match the static list above. Without this prefix
-// check it silently fell through to the default (Real Estate Leads) shell,
-// showing the wrong project's sidebar on every contractor profile page.
-$isContractorPath = in_array($path, $contractorPaths, true) || str_starts_with($path, '/contractor/');
-
+// Final Step: Full layout rendering — $resolvedLayout was already computed
+// up front (see "Layout resolution" above); db-reset mode overrides it,
+// since that's an orthogonal maintenance mode rather than a project shell.
 if ($isAdminReset) {
     include __DIR__ . '/../resources/views/layouts/db-reset.php';
-} elseif (in_array($path, $portalPaths, true)) {
-    include __DIR__ . '/../resources/views/layouts/portal.php';
-} elseif ($isContractorPath) {
-    include __DIR__ . '/../resources/views/layouts/contractor-app.php';
-} elseif (in_array($path, $landlordPaths, true)) {
-    include __DIR__ . '/../resources/views/layouts/landlord-app.php';
-} elseif (in_array($path, $realEstateWorldPaths, true)) {
-    include __DIR__ . '/../resources/views/layouts/real-estate-world-app.php';
 } else {
-    include __DIR__ . '/../resources/views/layouts/app.php';
+    include $resolvedLayout;
 }

@@ -13,7 +13,11 @@ export const uploadModal = (() => {
 
     modalEl = document.createElement('div');
     modalEl.id = 'upload-modal';
-    modalEl.className = 'fixed inset-0 z-[10010] hidden';
+    modalEl.className = 'fixed inset-0 hidden';
+    // Modal-factory modals (e.g. the Share Post composer) sit at z-index
+    // 2147483647/48 — this can be opened from inside one of those, so it
+    // needs to sit at least as high or it renders behind that overlay.
+    modalEl.style.zIndex = '2147483648';
 
     modalEl.innerHTML = `
       <div class="absolute inset-0 bg-black/60 backdrop-blur-sm" data-backdrop></div>
