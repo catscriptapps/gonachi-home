@@ -49,13 +49,11 @@ export class Modal {
   }
 
   /**
-   * Creates modal HTML and appends it to document body.
-   * If modal with the same ID already exists, it does nothing.
+   * Builds the modal panel's inner HTML (header/title, body, optional
+   * footer) — shared by both the first-time DOM insertion and a same-id
+   * reuse's content refresh.
    */
-  createModal() {
-    if (document.getElementById(this.id)) return;
-
-    // Build footer HTML dynamically if footer is shown and buttons are provided
+  renderPanelHtml() {
     const footerHtml =
       this.showFooter && this.footerButtons.length
         ? `
@@ -76,22 +74,13 @@ export class Modal {
 
     const logo = ``; // `<img src="${window.APP_CONFIG.assetBase}images/logo/favicon.ico" alt="" class="h-10 w-10 mr-2" />`;
 
-    // Build main modal + overlay HTML
-    const modalHtml = `
-      <div id="${this.id}-overlay"
-        class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 hidden opacity-0 transition-opacity duration-300"
-        style="z-index:2147483647">
-      </div>
-
-      <div id="${this.id}"
-        class="fixed inset-0 hidden flex items-start justify-center p-4 transition-all duration-300 transform scale-95 opacity-0 overflow-y-auto"
-        style="z-index:2147483648">
+    return `
         <div class="relative w-full ${this.getSizeClass()} bg-white dark:bg-gray-900 rounded-lg shadow-xl flex flex-col overflow-visible my-12">
 
           <!-- Modal Header -->
           <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center sticky top-0 bg-white dark:bg-gray-900 z-10">
             <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 flex items-center">
-              ${logo}<span>${this.title}</span>
+              ${logo}<span id="${this.id}-title">${this.title}</span>
             </h2>
             <button id="close-${this.id}" aria-label="Close modal" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition">
               <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -106,6 +95,39 @@ export class Modal {
           <!-- Modal Footer (optional) -->
           ${footerHtml}
         </div>
+      `;
+  }
+
+  /**
+   * Creates modal HTML and appends it to document body. If a modal with the
+   * same ID already exists (a previous open() call for this same modal id,
+   * e.g. re-opening "Edit" for a different record), its content is
+   * refreshed in place instead — this.modal/this.overlay MUST still be set
+   * to the existing elements here, otherwise attachBaseListeners() below
+   * captures null references and every open()/close() on this instance
+   * silently no-ops.
+   */
+  createModal() {
+    const existing = document.getElementById(this.id);
+
+    if (existing) {
+      this.modal = existing;
+      this.overlay = document.getElementById(`${this.id}-overlay`);
+      this.modal.innerHTML = this.renderPanelHtml();
+      return;
+    }
+
+    // Build main modal + overlay HTML
+    const modalHtml = `
+      <div id="${this.id}-overlay"
+        class="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 hidden opacity-0 transition-opacity duration-300"
+        style="z-index:2147483647">
+      </div>
+
+      <div id="${this.id}"
+        class="fixed inset-0 hidden flex items-start justify-center p-4 transition-all duration-300 transform scale-95 opacity-0 overflow-y-auto"
+        style="z-index:2147483648">
+        ${this.renderPanelHtml()}
       </div>
     `;
 
@@ -173,18 +195,28 @@ export class Modal {
 
     this.toggle = toggle;
 
-    // Top-right close button
+    // Top-right close button — a fresh element every time (createModal()
+    // replaces this.modal's innerHTML wholesale on reuse), so it always
+    // needs a fresh listener; no risk of stacking duplicates here.
     closeBtn?.addEventListener('click', () => toggle(false));
 
-    // Clicking overlay closes modal
-    overlay?.addEventListener('click', () => toggle(false));
+    // overlay and document, unlike the modal panel's own contents, are NOT
+    // recreated when a modal id is reused — only wire their listeners once
+    // per element, or repeated open() calls for the same modal would stack
+    // one more overlay-click/Escape listener each time.
+    if (overlay && !overlay.dataset.listenersAttached) {
+      overlay.dataset.listenersAttached = 'true';
 
-    // Escape key closes modal safely
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-        toggle(false);
-      }
-    });
+      // Clicking overlay closes modal
+      overlay.addEventListener('click', () => this.toggle(false));
+
+      // Escape key closes modal safely
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.modal && !this.modal.classList.contains('hidden')) {
+          this.toggle(false);
+        }
+      });
+    }
 
     // Footer buttons: bind user-defined onClick or default close behavior
     this.footerButtons.forEach((btn) => {

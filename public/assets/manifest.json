@@ -68,6 +68,8 @@
       "_view-counter.min.js",
       "_upload-modal.min.js",
       "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js",
       "_animations.min.js"
     ]
   },
@@ -349,12 +351,12 @@
     "imports": [
       "_animations.min.js",
       "_quote-search.min.js",
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_form-validator.min.js",
       "resources/js/ui/toast.js",
       "_view-counter.min.js",
-      "_upload-modal.min.js"
+      "_upload-modal.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -387,7 +389,9 @@
       "resources/js/ui/toast.js",
       "_view-counter.min.js",
       "_upload-modal.min.js",
-      "_modal-factory.min.js"
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/report-landlord-page.js": {
