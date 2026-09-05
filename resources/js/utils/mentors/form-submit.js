@@ -16,7 +16,7 @@ function getPayload(form) {
     bio: data.bio?.trim(),
     skills: data.skills?.trim(),
     years_experience: parseInt(data.years_experience || 0, 10),
-    target_user_type_id: parseInt(data.target_user_type_id || 0, 10),
+    target_stakeholder_type_id: parseInt(data.target_stakeholder_type_id || 0, 10),
     country_id: parseInt(data.countryId || 0, 10),
     region_id: parseInt(data.regionId || 0, 10),
     city: data.city?.trim(),

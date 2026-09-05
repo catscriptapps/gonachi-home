@@ -26,8 +26,10 @@ function resetRewMentorsTable(): array
             $table->unsignedInteger('region_id')->nullable()->index();
             $table->string('city', 150)->nullable();
 
-            // The audience this mentor wants to help (e.g. "Tenants", "Landlords").
-            $table->unsignedInteger('target_user_type_id')->nullable()->index();
+            // The stakeholder audience this mentor wants to help (Landlord,
+            // Tenant, Contractor, etc.) — Real Estate World's own category
+            // list (rew_stakeholder_types), not the account-level user types.
+            $table->unsignedBigInteger('target_stakeholder_type_id')->nullable()->index();
 
             $table->string('headline', 300)->nullable();
             $table->text('bio')->nullable();
@@ -53,7 +55,7 @@ function resetRewMentorsTable(): array
             'country_id' => $owner->country_id ?? 1,
             'region_id' => $owner->region_id ?? 0,
             'city' => $owner->city ?? '',
-            'target_user_type_id' => 2,
+            'target_stakeholder_type_id' => 1,
             'headline' => 'Real Estate Investment & Property Management Coach',
             'bio' => 'Over a decade helping landlords and new investors build sustainable rental portfolios — from first purchase to full-time property management.',
             'skills' => ['Property Management', 'Landlord Coaching', 'Real Estate Investing'],

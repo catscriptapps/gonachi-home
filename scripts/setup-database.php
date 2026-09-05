@@ -213,6 +213,9 @@ $messages = array_merge($messages, resetRewQuotationPicsTable());
 require_once __DIR__ . '/reset/rew-quotation-responses.php';
 $messages = array_merge($messages, resetRewQuotationResponsesTable());
 
+require_once __DIR__ . '/reset/rew-stakeholder-types.php';
+$messages = array_merge($messages, resetRewStakeholderTypesTable());
+
 require_once __DIR__ . '/reset/rew-mentors.php';
 $messages = array_merge($messages, resetRewMentorsTable());
 

@@ -20,7 +20,7 @@ class Mentor extends Model
         'country_id',
         'region_id',
         'city',
-        'target_user_type_id',
+        'target_stakeholder_type_id',
         'headline',
         'bio',
         'skills',
@@ -35,7 +35,7 @@ class Mentor extends Model
         'orig_user_id' => 'integer',
         'country_id' => 'integer',
         'region_id' => 'integer',
-        'target_user_type_id' => 'integer',
+        'target_stakeholder_type_id' => 'integer',
         'years_experience' => 'integer',
         'skills' => 'array',
         'is_active' => 'boolean',
@@ -48,10 +48,10 @@ class Mentor extends Model
         return $this->belongsTo(User::class, 'orig_user_id', 'id');
     }
 
-    // No targetUserType() relationship — gonachi-home has no user_types
-    // table (see Src\Controller\UserTypesController's docblock); the
-    // target_user_type_id is just resolved to a label via
-    // UserTypesController::label() wherever it's displayed.
+    public function stakeholderType(): BelongsTo
+    {
+        return $this->belongsTo(StakeholderType::class, 'target_stakeholder_type_id', 'id');
+    }
 
     public function country(): BelongsTo
     {

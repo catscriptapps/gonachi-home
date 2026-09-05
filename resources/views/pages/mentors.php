@@ -18,9 +18,9 @@ declare(strict_types=1);
  * @var string $assetBase
  */
 
+use App\Models\StakeholderType;
 use Src\Controller\MentorsController;
 use Src\Service\AuthService;
-use Src\Controller\UserTypesController;
 
 $breadcrumbs = [['label' => 'Mentors']];
 $breadcrumbAccent = 'teal';
@@ -29,9 +29,9 @@ $viewerId = $isLoggedIn ? AuthService::userId() : null;
 $feedHtml = '';
 $totalActive = MentorsController::totalActiveCount();
 
-// Mentor-category filter options — every user type except Admin, matching
-// legacy's page-level filter exactly.
-$filterTypes = array_filter(UserTypesController::list(), fn ($t) => strtolower($t->user_type) !== 'admin');
+// Mentor-category filter options — Real Estate World's own stakeholder
+// list (Landlord, Tenant, Contractor, etc.), not the account-level user types.
+$filterTypes = StakeholderType::orderBy('id')->get();
 
 if ($isLoggedIn) {
     $result = MentorsController::browse(null, null, $viewerId);
@@ -108,7 +108,7 @@ if ($isLoggedIn) {
                 <select id="mentor-type-filter" class="w-full sm:w-48 py-2 px-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-teal-500 focus:outline-none text-gray-900 dark:text-white">
                     <option value="0">All Mentor Types</option>
                     <?php foreach ($filterTypes as $type): ?>
-                        <option value="<?= $type->user_type_id ?>"><?= htmlspecialchars($type->user_type) ?></option>
+                        <option value="<?= $type->id ?>"><?= htmlspecialchars($type->name) ?></option>
                     <?php endforeach; ?>
                 </select>
             </div>

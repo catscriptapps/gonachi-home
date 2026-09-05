@@ -8,7 +8,6 @@ namespace Src\Controller;
 use App\Models\Mentor;
 use App\Traits\RecentActivityLogger;
 use App\Utils\IdEncoder;
-use Src\Controller\UserTypesController;
 
 /**
  * Owns the Real Estate World Mentors module — ported from the legacy
@@ -29,7 +28,7 @@ class MentorsController
 {
     use RecentActivityLogger;
 
-    private const EAGER = ['user.country', 'user.region', 'country', 'region'];
+    private const EAGER = ['user.country', 'user.region', 'country', 'region', 'stakeholderType'];
 
     /**
      * The shared directory feed — every active mentor, optional search +
@@ -54,7 +53,7 @@ class MentorsController
         }
 
         if ($targetType) {
-            $query->where('target_user_type_id', $targetType);
+            $query->where('target_stakeholder_type_id', $targetType);
         }
 
         $mentors = $query->orderByDesc('created_at')->get();
@@ -96,7 +95,7 @@ class MentorsController
             'bio' => trim((string) ($input['bio'] ?? '')),
             'skills' => $skills,
             'years_experience' => (int) ($input['years_experience'] ?? 0),
-            'target_user_type_id' => (int) ($input['target_user_type_id'] ?? 0) ?: null,
+            'target_stakeholder_type_id' => (int) ($input['target_stakeholder_type_id'] ?? 0) ?: null,
             'country_id' => (int) ($input['country_id'] ?? 0) ?: null,
             'region_id' => (int) ($input['region_id'] ?? 0) ?: null,
             'city' => trim((string) ($input['city'] ?? '')) ?: null,
@@ -165,8 +164,8 @@ class MentorsController
             'country_name' => $mentor->country->country ?? 'N/A',
             'region_id' => $mentor->region_id,
             'region_name' => $mentor->region->region ?? 'N/A',
-            'target_user_type_id' => $mentor->target_user_type_id,
-            'target_user_type_name' => UserTypesController::label($mentor->target_user_type_id),
+            'target_stakeholder_type_id' => $mentor->target_stakeholder_type_id,
+            'target_stakeholder_type_name' => $mentor->stakeholderType->name ?? 'Expert',
             'youtube_url' => $mentor->youtube_url,
             'website_url' => $mentor->website_url,
             'is_active' => $mentor->is_active,

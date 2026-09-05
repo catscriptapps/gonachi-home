@@ -64,3 +64,7 @@ server/storage/
 
 # Lead extraction cron lock file
 scripts/cron/.lead-extraction.lock
+
+# Headless Chrome test profile (CDP-based testing artifacts)
+.chrome-test-profile/
+chrome-log.txt

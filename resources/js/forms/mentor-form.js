@@ -44,9 +44,9 @@ export function mentorForm({ mode, lookups, existing }) {
         <div class="grid sm:grid-cols-2 gap-4 mb-4">
           <div>
             <label for="${idPrefix}-type-input" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">Mentor Category</label>
-            <select id="${idPrefix}-type-input" name="target_user_type_id" required class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 py-2.5 px-4 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:ring-teal-500">
+            <select id="${idPrefix}-type-input" name="target_stakeholder_type_id" required class="w-full rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 py-2.5 px-4 text-sm text-gray-900 dark:text-white focus:border-teal-500 focus:ring-teal-500">
               <option value="">I am a...</option>
-              ${opt(lookups.mentorTypes, 'user_type_id', 'user_type', existing?.targetTypeId)}
+              ${opt(lookups.mentorTypes, 'id', 'name', existing?.targetTypeId)}
             </select>
           </div>
           <div>

@@ -126,6 +126,7 @@ $tablesToDrop = [
     'rew_contractor_types',
     'rew_mentor_requests',
     'rew_mentors',
+    'rew_stakeholder_types',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -307,6 +308,9 @@ $messages = array_merge($messages, resetRewQuotationPicsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-quotation-responses.php';
 $messages = array_merge($messages, resetRewQuotationResponsesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-stakeholder-types.php';
+$messages = array_merge($messages, resetRewStakeholderTypesTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-mentors.php';
 $messages = array_merge($messages, resetRewMentorsTable());

@@ -1,7 +1,7 @@
 // /resources/js/modals/mentors-modal.js
 //
 // Opens the create/edit mentor profile modal: fetches lookups (countries,
-// user types filtered to exclude Admin) in parallel, builds the form
+// Real Estate World stakeholder types) in parallel, builds the form
 // (mentor-form.js), then wires dynamic region loading + submit. Ported
 // from the legacy gonachi/ platform's mentors-modal.js.
 
@@ -16,16 +16,14 @@ async function loadLookups() {
   if (cache) return cache;
 
   const baseUrl = window.APP_CONFIG?.baseUrl || '/';
-  const [countriesRes, userTypesRes] = await Promise.all([
+  const [countriesRes, stakeholderTypesRes] = await Promise.all([
     fetch(`${baseUrl}api/countries`).then((r) => r.json()),
-    fetch(`${baseUrl}api/user-types`).then((r) => r.json()),
+    fetch(`${baseUrl}api/stakeholder-types`).then((r) => r.json()),
   ]);
-
-  const allTypes = userTypesRes.data || [];
 
   cache = {
     countries: countriesRes.data || [],
-    mentorTypes: allTypes.filter((t) => String(t.user_type).toLowerCase() !== 'admin'),
+    mentorTypes: stakeholderTypesRes.data || [],
   };
 
   return cache;

@@ -22,8 +22,8 @@ $skills = $data['skills'] ?: [];
     data-country-name="<?= htmlspecialchars($data['country_name']) ?>"
     data-region-id="<?= (int) $data['region_id'] ?>"
     data-region-name="<?= htmlspecialchars($data['region_name']) ?>"
-    data-target-type-id="<?= (int) $data['target_user_type_id'] ?>"
-    data-target-user-type="<?= htmlspecialchars($data['target_user_type_name']) ?>"
+    data-target-type-id="<?= (int) $data['target_stakeholder_type_id'] ?>"
+    data-target-user-type="<?= htmlspecialchars($data['target_stakeholder_type_name']) ?>"
     data-experience-years="<?= (int) $data['years_experience'] ?>"
     data-youtube-url="<?= htmlspecialchars((string) $data['youtube_url']) ?>"
     data-website-url="<?= htmlspecialchars((string) $data['website_url']) ?>"
@@ -39,7 +39,7 @@ $skills = $data['skills'] ?: [];
 
     <div class="px-5 pt-5 flex justify-between items-start">
         <span class="inline-flex items-center rounded-full bg-teal-50 dark:bg-teal-950/40 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-teal-600 dark:text-teal-400 border border-teal-100 dark:border-teal-900/40">
-            <?= htmlspecialchars($data['target_user_type_name']) ?>
+            <?= htmlspecialchars($data['target_stakeholder_type_name']) ?>
         </span>
 
         <?php if ($data['is_card_owner']): ?>
@@ -87,7 +87,7 @@ $skills = $data['skills'] ?: [];
             </button>
         <?php else: ?>
             <button type="button" class="connect-mentor-trigger w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm active:scale-95"
-                data-encoded-id="<?= $data['encoded_id'] ?>" data-id="<?= (int) $data['id'] ?>" data-owner-id="<?= (int) $data['owner_id'] ?>" data-owner-name="<?= htmlspecialchars($data['owner_name']) ?>" data-target-user-type="<?= htmlspecialchars($data['target_user_type_name']) ?>">
+                data-encoded-id="<?= $data['encoded_id'] ?>" data-id="<?= (int) $data['id'] ?>" data-owner-id="<?= (int) $data['owner_id'] ?>" data-owner-name="<?= htmlspecialchars($data['owner_name']) ?>" data-target-user-type="<?= htmlspecialchars($data['target_stakeholder_type_name']) ?>">
                 Connect with Mentor
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </button>
