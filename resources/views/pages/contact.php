@@ -13,10 +13,10 @@ declare(strict_types=1);
 
     <div class="mb-12">
         <h1 class="text-3xl lg:text-4xl font-black text-secondary-900 dark:text-white mb-3 tracking-tight">
-            Connect with <span class="text-primary-600">PMB Partner Support.</span>
+            Get in <span class="text-primary-600">Touch.</span>
         </h1>
         <p class="text-base text-gray-500 dark:text-gray-400 max-w-xl font-medium">
-            Have questions about integrating our modules, scaling your subscription tier, or tailoring workflows to your portfolio? We are here to help.
+            Have a question about Gonachi? We're here to help you.
         </p>
     </div>
 
@@ -28,9 +28,9 @@ declare(strict_types=1);
 
                 <div class="space-y-8">
                     <div class="group/item">
-                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2">Enterprise & Platform Desk</p>
-                        <a href="mailto:info@pmbtracker.com" class="text-gray-900 dark:text-white font-bold text-lg hover:text-primary-600 transition-colors">
-                            info@pmbtracker.com
+                        <p class="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2">Direct Channel</p>
+                        <a href="mailto:info@gonachi.com" class="text-gray-900 dark:text-white font-bold text-lg hover:text-primary-600 transition-colors">
+                            info@gonachi.com
                         </a>
                     </div>
 
@@ -40,10 +40,10 @@ declare(strict_types=1);
                                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
                             </span>
-                            <h4 class="font-black text-xs uppercase tracking-widest text-gray-900 dark:text-white">API & Module Status</h4>
+                            <h4 class="font-black text-xs uppercase tracking-widest text-gray-900 dark:text-white">Engine Status</h4>
                         </div>
                         <p class="text-gray-500 dark:text-gray-400 text-sm font-medium leading-relaxed">
-                            All operational cores are fully green. Background screening endpoints, webhook processing, and dashboard routing layouts are entirely stable.
+                            API nodes are 100% operational. Outbound mail queue is healthy.
                         </p>
                     </div>
                 </div>
@@ -54,12 +54,11 @@ declare(strict_types=1);
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z" />
                 </svg>
 
-                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Custom Integrations</p>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mb-2">Guaranteed Response</p>
                 <div class="flex items-baseline gap-2">
-                    <span class="text-3xl font-black tracking-tighter">Enterprise</span>
-                    <span class="text-sm font-medium text-slate-400">Scale</span>
+                    <span class="text-3xl font-black tracking-tighter">&lt; 24</span>
+                    <span class="text-sm font-medium text-slate-400">Hours</span>
                 </div>
-                <p class="text-xs mt-2 text-slate-400 leading-relaxed">Managing more than 200 units? Get in touch for dedicated system deployment parameters and custom multi-user infrastructure configurations.</p>
             </div>
         </div>
 
@@ -76,7 +75,7 @@ declare(strict_types=1);
                         </div>
 
                         <div class="group">
-                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Business Email Address</label>
+                            <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Email Address</label>
                             <input type="email" name="email"
                                 class="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none font-semibold text-sm placeholder-gray-400"
                                 placeholder="alex@company.com" required>
@@ -84,29 +83,24 @@ declare(strict_types=1);
                     </div>
 
                     <div class="group">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Inquiry Category</label>
-                        <select name="subject"
-                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none font-semibold text-sm appearance-none cursor-pointer">
-                            <option value="subscription-billing" selected>Subscription Plans & Billing</option>
-                            <option value="module-onboarding">App Component Configuration</option>
-                            <option value="custom-integration">Enterprise API Request</option>
-                            <option value="technical-support">Technical Platform Issue</option>
-                            <option value="other">General B2B Inquiry</option>
-                        </select>
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Subject</label>
+                        <input type="text" name="subject"
+                            class="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none font-semibold text-sm placeholder-gray-400"
+                            placeholder="What's this about?" required>
                     </div>
 
                     <div class="group">
-                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Inquiry Details</label>
+                        <label class="text-[10px] font-black uppercase tracking-widest text-gray-400 dark:text-gray-500 ml-1 mb-2 block">Message</label>
                         <textarea name="message" rows="5"
                             class="w-full px-5 py-4 rounded-2xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/50 text-gray-900 dark:text-white focus:ring-4 focus:ring-primary-500/10 focus:border-primary-500 transition-all outline-none resize-none font-semibold text-sm placeholder-gray-400"
-                            placeholder="Please provide details about your property portfolio scale, or tell us about any specific tools you are trying to configure..." required></textarea>
+                            placeholder="How can we help you today?" required></textarea>
                     </div>
 
                     <div class="pt-4">
                         <button type="submit" id="contact-submit"
-                            class="group w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl shadow-lg shadow-secondary-400/20 text-white bg-orange-900 dark:bg-primary-600 hover:bg-orange-800 dark:hover:bg-primary-500 transition-all duration-300 font-black uppercase tracking-widest text-xs active:scale-[0.97]">
+                            class="group w-full sm:w-auto inline-flex items-center justify-center py-4 px-10 rounded-xl shadow-lg shadow-secondary-400/20 text-white bg-secondary-400 hover:bg-secondary-500 transition-all duration-300 font-black uppercase tracking-widest text-xs active:scale-[0.97]">
                             <span class="flex items-center gap-3">
-                                Submit Inquiry
+                                Send Message
                                 <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M14 5l7 7m0 0l-7 7m7-7H3" />
                                 </svg>
