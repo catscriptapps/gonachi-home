@@ -16,6 +16,7 @@ require_once __DIR__ . '/../../server/bootstrap.php';
 
 use App\Models\LeadExtractionRun;
 use App\Models\LeadSource;
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Src\Service\LeadIngestionService;
 
@@ -28,6 +29,13 @@ if (!$lockHandle || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
 }
 
 try {
+    // Global admin pause switch (Settings page) — checked before touching
+    // any individual source's own is_active flag.
+    if (!SystemSetting::isLeadsScrapingEnabled()) {
+        echo "Lead scraping is paused in Settings. Exiting.\n";
+        exit(0);
+    }
+
     $sources = LeadSource::where('is_active', true)
         ->get()
         ->filter(fn (LeadSource $source) => $source->isDueForPoll());

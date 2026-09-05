@@ -69,6 +69,7 @@ $tablesToDrop = [
     'chat_messages',
     'chat_conversations',
     'chat_ai_settings',
+    'system_settings',
     'messages',
     'recent_activities',
     'users',
@@ -114,6 +115,15 @@ $tablesToDrop = [
     'rew_adverts',
     'rew_advert_packages',
     'rew_advert_ctas',
+    'rew_quotation_responses',
+    'rew_quotation_pics',
+    'rew_quotations',
+    'rew_quotation_destinations',
+    'rew_quotation_types',
+    'rew_house_types',
+    'rew_unit_types',
+    'rew_skilled_trades',
+    'rew_contractor_types',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -157,6 +167,9 @@ $messages = array_merge($messages, resetChatMessagesTable());
 
 require_once __DIR__ . '/../../scripts/reset/chat-ai-settings.php';
 $messages = array_merge($messages, resetChatAiSettingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/system-settings.php';
+$messages = array_merge($messages, resetSystemSettingsTable());
 
 /**
  * 4. CREATION PHASE - PROJECT: real-estate-leads (rel_ prefixed tables)
@@ -265,6 +278,33 @@ $messages = array_merge($messages, resetRewAdvertsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-advert-pics.php';
 $messages = array_merge($messages, resetRewAdvertPicsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-contractor-types.php';
+$messages = array_merge($messages, resetRewContractorTypesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-skilled-trades.php';
+$messages = array_merge($messages, resetRewSkilledTradesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-unit-types.php';
+$messages = array_merge($messages, resetRewUnitTypesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-house-types.php';
+$messages = array_merge($messages, resetRewHouseTypesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-quotation-types.php';
+$messages = array_merge($messages, resetRewQuotationTypesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-quotation-destinations.php';
+$messages = array_merge($messages, resetRewQuotationDestinationsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-quotations.php';
+$messages = array_merge($messages, resetRewQuotationsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-quotation-pics.php';
+$messages = array_merge($messages, resetRewQuotationPicsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-quotation-responses.php';
+$messages = array_merge($messages, resetRewQuotationResponsesTable());
 
 /**
  * 4e. RESTORE PRESERVED DATA

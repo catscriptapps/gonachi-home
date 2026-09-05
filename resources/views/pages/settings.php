@@ -125,6 +125,40 @@ $pageIcon = '<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24
                     </div>
                 </section>
 
+                <?php if (\Src\Service\AuthService::isAdmin()): ?>
+                <section class="bg-white dark:bg-gray-900/50 rounded-[2.5rem] p-8 lg:p-12 shadow-xl border border-gray-100 dark:border-white/5">
+                    <h2 class="text-2xl font-black text-secondary-900 dark:text-white mb-2 flex items-center gap-3">
+                        <span class="w-2 h-8 bg-secondary-500 rounded-full"></span>
+                        Scraping Controls
+                    </h2>
+                    <p class="text-sm text-gray-500 mb-10 font-medium">Pause a scraping engine system-wide without touching any individual source's own settings.</p>
+
+                    <div id="scraping-controls" class="space-y-4">
+                        <div class="flex items-center justify-between p-6 rounded-3xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                            <div>
+                                <span class="block font-black uppercase tracking-widest text-xs text-secondary-900 dark:text-white">Real Estate Leads Scraping</span>
+                                <span class="text-[10px] text-gray-400 font-medium" data-status-label="leads_scraping_enabled">Loading&hellip;</span>
+                            </div>
+                            <button type="button" data-scraping-toggle="leads_scraping_enabled" disabled
+                                class="w-14 h-8 relative rounded-full bg-gray-300 dark:bg-gray-700 transition-colors disabled:opacity-50">
+                                <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all"></div>
+                            </button>
+                        </div>
+
+                        <div class="flex items-center justify-between p-6 rounded-3xl bg-gray-50 dark:bg-white/5 border border-gray-100 dark:border-white/5">
+                            <div>
+                                <span class="block font-black uppercase tracking-widest text-xs text-secondary-900 dark:text-white">Contractor Discovery Scraping</span>
+                                <span class="text-[10px] text-gray-400 font-medium" data-status-label="contractor_discovery_enabled">Loading&hellip;</span>
+                            </div>
+                            <button type="button" data-scraping-toggle="contractor_discovery_enabled" disabled
+                                class="w-14 h-8 relative rounded-full bg-gray-300 dark:bg-gray-700 transition-colors disabled:opacity-50">
+                                <div class="absolute left-1 top-1 w-6 h-6 bg-white rounded-full shadow-md transition-all"></div>
+                            </button>
+                        </div>
+                    </div>
+                </section>
+                <?php endif; ?>
+
             </main>
         </div>
     </div>

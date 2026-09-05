@@ -18,6 +18,7 @@ require_once __DIR__ . '/../../server/bootstrap.php';
 
 use App\Models\ContractorDiscoveryRun;
 use App\Models\ContractorSource;
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Src\Service\ContractorIngestionService;
 
@@ -30,6 +31,13 @@ if (!$lockHandle || !flock($lockHandle, LOCK_EX | LOCK_NB)) {
 }
 
 try {
+    // Global admin pause switch (Settings page) — checked before touching
+    // any individual source's own is_active flag.
+    if (!SystemSetting::isContractorDiscoveryEnabled()) {
+        echo "Contractor discovery is paused in Settings. Exiting.\n";
+        exit(0);
+    }
+
     $sources = ContractorSource::where('is_active', true)
         ->get()
         ->filter(fn (ContractorSource $source) => $source->isDueForPoll());

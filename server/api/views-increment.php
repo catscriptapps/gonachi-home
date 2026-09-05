@@ -32,6 +32,9 @@ try {
             case 'ad':
                 $newCount = AdvertsController::incrementView((string)$id, (int)(AuthService::userId() ?? 0));
                 break;
+            case 'quotation':
+                $newCount = QuotationsController::incrementView((string)$id, (int)(AuthService::userId() ?? 0));
+                break;
             default:
                 json_response(['success' => false, 'messages' => ['Invalid type']], 400);
         }

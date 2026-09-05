@@ -54,10 +54,26 @@
     "name": "profile-modal",
     "imports": [
       "_modal-factory.min.js",
+      "_regions-component.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_delete-factory.min.js"
     ]
+  },
+  "_quote-search.min.js": {
+    "file": "js/quote-search.min.js",
+    "name": "quote-search",
+    "imports": [
+      "resources/js/ui/toast.js",
+      "_view-counter.min.js",
+      "_upload-modal.min.js",
+      "_modal-factory.min.js",
+      "_animations.min.js"
+    ]
+  },
+  "_regions-component.min.js": {
+    "file": "js/regions-component.min.js",
+    "name": "regions-component"
   },
   "_search.min.js": {
     "file": "js/search.min.js",
@@ -103,9 +119,14 @@
     "name": "view-advert-modal",
     "imports": [
       "resources/js/ui/toast.js",
+      "_view-counter.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js"
     ]
+  },
+  "_view-counter.min.js": {
+    "file": "js/view-counter.min.js",
+    "name": "view-counter"
   },
   "resources/css/app.css": {
     "file": "css/app.min.css",
@@ -153,6 +174,7 @@
       "_animations.min.js",
       "_view-advert-modal.min.js",
       "resources/js/ui/toast.js",
+      "_view-counter.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js"
     ]
@@ -167,6 +189,7 @@
       "_view-advert-modal.min.js",
       "_search.min.js",
       "resources/js/ui/toast.js",
+      "_view-counter.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js"
     ]
@@ -313,8 +336,25 @@
       "_spinner-utils.min.js",
       "_search.min.js",
       "resources/js/ui/toast.js",
+      "_view-counter.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js"
+    ]
+  },
+  "resources/js/pages/my-quotations-page.js": {
+    "file": "js/my-quotations-page.min.js",
+    "name": "my-quotations-page",
+    "src": "resources/js/pages/my-quotations-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_quote-search.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js",
+      "resources/js/ui/toast.js",
+      "_view-counter.min.js",
+      "_upload-modal.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -331,8 +371,23 @@
       "_preview.min.js",
       "_animations.min.js",
       "_modal-factory.min.js",
+      "_regions-component.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js"
+    ]
+  },
+  "resources/js/pages/quotations-page.js": {
+    "file": "js/quotations-page.min.js",
+    "name": "quotations-page",
+    "src": "resources/js/pages/quotations-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_quote-search.min.js",
+      "resources/js/ui/toast.js",
+      "_view-counter.min.js",
+      "_upload-modal.min.js",
+      "_modal-factory.min.js"
     ]
   },
   "resources/js/pages/report-landlord-page.js": {
@@ -373,7 +428,8 @@
     "src": "resources/js/pages/settings-page.js",
     "isEntry": true,
     "imports": [
-      "_animations.min.js"
+      "_animations.min.js",
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/signup-page.js": {
@@ -414,6 +470,7 @@
       "resources/js/ui/toast.js",
       "_table-search.min.js",
       "_modal-factory.min.js",
+      "_regions-component.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_preload-helper.min.js"

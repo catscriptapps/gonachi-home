@@ -11,6 +11,8 @@
 
 declare(strict_types=1);
 
+use Illuminate\Database\Capsule\Manager as Capsule;
+
 require_once __DIR__ . '/../server/bootstrap.php';
 require_once __DIR__ . '/reset/preserve-scraped-data.php';
 
@@ -21,6 +23,14 @@ $messages = [];
 // "skip dropping those tables" (their foreign keys point at parent tables
 // that DO get reseeded with new IDs).
 $scrapedDataBackup = backupScrapedData();
+
+// Each reset*Table() function below drops and recreates one table in
+// isolation, without regard for cross-table FK ordering (e.g. rew_posts vs.
+// its own rew_post_comments/rew_post_likes children) — so a plain DROP TABLE
+// on a parent fails once a child table from a previous run still holds a
+// live FK reference to it. Disabling FK checks for the whole reset sidesteps
+// ordering entirely, same as server/api/reset.php's UI-triggered reset does.
+Capsule::schema()->disableForeignKeyConstraints();
 
 // --------------------------------------------------
 // Shared: tables every project/page in gonachi-home still depends on
@@ -33,6 +43,13 @@ $messages = array_merge($messages, resetRegionsTable());
 
 require_once __DIR__ . '/reset/users.php';
 $messages = array_merge($messages, resetUsersTable());
+
+// countries.php/regions.php/users.php each locally disable-then-re-enable
+// FK checks around their own drop+create, which clobbers the disable set
+// above the moment resetUsersTable() returns — re-assert it here so every
+// reset*Table() call after this point (which all assume FK checks are still
+// off) actually gets that.
+Capsule::schema()->disableForeignKeyConstraints();
 
 require_once __DIR__ . '/reset/recent-activities.php';
 $messages = array_merge($messages, resetRecentActivitiesTable());
@@ -57,6 +74,9 @@ $messages = array_merge($messages, resetChatMessagesTable());
 
 require_once __DIR__ . '/reset/chat-ai-settings.php';
 $messages = array_merge($messages, resetChatAiSettingsTable());
+
+require_once __DIR__ . '/reset/system-settings.php';
+$messages = array_merge($messages, resetSystemSettingsTable());
 
 // --------------------------------------------------
 // Project: real-estate-leads (rel_ prefixed tables)
@@ -166,9 +186,38 @@ $messages = array_merge($messages, resetRewAdvertsTable());
 require_once __DIR__ . '/reset/rew-advert-pics.php';
 $messages = array_merge($messages, resetRewAdvertPicsTable());
 
+require_once __DIR__ . '/reset/rew-contractor-types.php';
+$messages = array_merge($messages, resetRewContractorTypesTable());
+
+require_once __DIR__ . '/reset/rew-skilled-trades.php';
+$messages = array_merge($messages, resetRewSkilledTradesTable());
+
+require_once __DIR__ . '/reset/rew-unit-types.php';
+$messages = array_merge($messages, resetRewUnitTypesTable());
+
+require_once __DIR__ . '/reset/rew-house-types.php';
+$messages = array_merge($messages, resetRewHouseTypesTable());
+
+require_once __DIR__ . '/reset/rew-quotation-types.php';
+$messages = array_merge($messages, resetRewQuotationTypesTable());
+
+require_once __DIR__ . '/reset/rew-quotation-destinations.php';
+$messages = array_merge($messages, resetRewQuotationDestinationsTable());
+
+require_once __DIR__ . '/reset/rew-quotations.php';
+$messages = array_merge($messages, resetRewQuotationsTable());
+
+require_once __DIR__ . '/reset/rew-quotation-pics.php';
+$messages = array_merge($messages, resetRewQuotationPicsTable());
+
+require_once __DIR__ . '/reset/rew-quotation-responses.php';
+$messages = array_merge($messages, resetRewQuotationResponsesTable());
+
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
+
+Capsule::schema()->enableForeignKeyConstraints();
 
 foreach ($messages as $message) {
     echo $message . PHP_EOL;
