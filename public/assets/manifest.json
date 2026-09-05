@@ -57,7 +57,7 @@
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_delete-factory.min.js"
+      "_table-pagination-count.min.js"
     ]
   },
   "_quote-search.min.js": {
@@ -91,6 +91,10 @@
   "_spinner-utils.min.js": {
     "file": "js/spinner-utils.min.js",
     "name": "spinner-utils"
+  },
+  "_table-pagination-count.min.js": {
+    "file": "js/table-pagination-count.min.js",
+    "name": "table-pagination-count"
   },
   "_table-search.min.js": {
     "file": "js/table-search.min.js",
@@ -151,6 +155,7 @@
       "_spinner-utils.min.js",
       "resources/js/ui/toast.js",
       "resources/js/pages/messages-page.js",
+      "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js"
     ],
@@ -239,8 +244,9 @@
       "_modal-factory.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
-      "_delete-factory.min.js",
+      "_table-pagination-count.min.js",
       "resources/js/utils/faqs/faq-accordion.js",
+      "_delete-factory.min.js",
       "resources/js/ui/toast.js",
       "_table-search.min.js",
       "_preload-helper.min.js"
@@ -263,8 +269,9 @@
     "isEntry": true,
     "imports": [
       "_table-search.min.js",
-      "_delete-factory.min.js",
+      "_table-pagination-count.min.js",
       "resources/js/ui/toast.js",
+      "_delete-factory.min.js",
       "_preload-helper.min.js"
     ]
   },
@@ -318,10 +325,11 @@
     "isEntry": true,
     "imports": [
       "resources/js/ui/toast.js",
-      "_delete-factory.min.js",
+      "_table-pagination-count.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_modal-factory.min.js",
+      "_delete-factory.min.js",
       "_animations.min.js"
     ]
   },
@@ -375,7 +383,8 @@
       "_modal-factory.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js"
+      "_spinner-utils.min.js",
+      "_table-pagination-count.min.js"
     ]
   },
   "resources/js/pages/quotations-page.js": {
@@ -433,7 +442,13 @@
     "isEntry": true,
     "imports": [
       "_animations.min.js",
-      "resources/js/ui/toast.js"
+      "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_spa-router.min.js",
+      "_delete-factory.min.js",
+      "_preview.min.js",
+      "_modal-factory.min.js",
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/signup-page.js": {
@@ -470,6 +485,7 @@
     "isEntry": true,
     "imports": [
       "_profile-modal.min.js",
+      "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "resources/js/ui/toast.js",
       "_table-search.min.js",

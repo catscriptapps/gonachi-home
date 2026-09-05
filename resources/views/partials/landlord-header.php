@@ -68,6 +68,16 @@ declare(strict_types=1);
             </a>
         <?php endif; ?>
 
+        <!-- Admin Dashboard (admin only) -->
+        <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
+            <a href="<?= $baseUrl ?>admin" data-partial title="Admin Dashboard"
+                class="p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all focus:outline-none">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                </svg>
+            </a>
+        <?php endif; ?>
+
         <!-- DB Reset Trigger (Cat only) -->
         <?php if ($isLoggedIn && \Src\Service\AuthService::isCat()): ?>
             <button data-reset-button data-tooltip="DB Reset" title="Reset Database"

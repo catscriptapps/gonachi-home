@@ -1,9 +1,13 @@
 // /resources/js/pages/settings-page.js
 import { AnimationEngine } from '../utils/animations';
 import { showToast } from '../ui/toast.js';
+import { initSettingsAvatar } from '../utils/settings/settings-avatar.js';
+import { initChangePasswordTrigger } from '../modals/change-password-modal.js';
 
 export function init() {
     AnimationEngine.refresh();
+    initSettingsAvatar();
+    initChangePasswordTrigger();
 
     // Toggle logic for Settings (decorative mockup toggles elsewhere on
     // this page — not the real, API-backed Scraping Controls toggles below).
