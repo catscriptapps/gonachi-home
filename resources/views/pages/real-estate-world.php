@@ -105,7 +105,7 @@ $modules = [
         'name' => 'Mentors',
         'text' => 'Bridge the knowledge gap — connect with seasoned experts, searchable by skill or specialty.',
         'slug' => 'mentors',
-        'live' => false,
+        'live' => true,
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />',
     ],
     [

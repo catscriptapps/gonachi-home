@@ -35,4 +35,9 @@ class UserTypesController
         }
         return $types;
     }
+
+    public static function label(?int $id): string
+    {
+        return self::TYPES[$id] ?? 'Expert';
+    }
 }

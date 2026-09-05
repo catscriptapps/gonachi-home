@@ -124,6 +124,8 @@ $tablesToDrop = [
     'rew_unit_types',
     'rew_skilled_trades',
     'rew_contractor_types',
+    'rew_mentor_requests',
+    'rew_mentors',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -305,6 +307,12 @@ $messages = array_merge($messages, resetRewQuotationPicsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-quotation-responses.php';
 $messages = array_merge($messages, resetRewQuotationResponsesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-mentors.php';
+$messages = array_merge($messages, resetRewMentorsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-mentor-requests.php';
+$messages = array_merge($messages, resetRewMentorRequestsTable());
 
 /**
  * 4e. RESTORE PRESERVED DATA
