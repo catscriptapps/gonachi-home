@@ -45,6 +45,10 @@ export function initViewListingModal() {
 
   document.getElementById('view-listing-primary-btn')?.addEventListener('click', () => handlePrimaryAction(modal));
 
+  document.getElementById('view-listing-inquiries-banner')?.addEventListener('click', () => {
+    document.getElementById('view-listing-inquiries-wrapper')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   // Capture phase: the card's own edit/delete/deactivate buttons sit inside
   // wrappers with onclick="event.stopPropagation()" (so clicking them
   // doesn't also open the view modal underneath) — that stops the click
@@ -154,9 +158,11 @@ async function openModal(el) {
   const inquiriesWrapper = document.getElementById('view-listing-inquiries-wrapper');
   if (canManage) {
     inquiriesWrapper.classList.remove('hidden');
+    renderInquiriesBanner(parseInt(d.pendingInquiriesCount || '0', 10));
     await loadInquiries(d.encodedId);
   } else {
     inquiriesWrapper.classList.add('hidden');
+    renderInquiriesBanner(0);
   }
 
   await loadPictures(d.encodedId, canManage);
@@ -319,9 +325,52 @@ async function loadInquiries(encodedId) {
     const responses = result.responses || [];
 
     list.innerHTML = responses.map(renderInquiryRow).join('') || '<p class="text-xs text-gray-400">No inquiries yet.</p>';
+
+    const pendingCount = responses.filter((r) => r.status === 'pending').length;
+    renderInquiriesBanner(pendingCount);
+    updateCardInquiriesBadge(encodedId, pendingCount);
   } catch (err) {
     console.error('Load listing inquiries error:', err);
     list.innerHTML = '<p class="text-xs text-gray-400">Couldn\'t load inquiries.</p>';
+  }
+}
+
+function renderInquiriesBanner(pendingCount) {
+  const banner = document.getElementById('view-listing-inquiries-banner');
+  const text = document.getElementById('view-listing-inquiries-banner-text');
+  if (!banner || !text) return;
+
+  if (pendingCount > 0) {
+    text.textContent = `🔔 ${pendingCount} pending ${pendingCount === 1 ? 'inquiry' : 'inquiries'} — click to review`;
+    banner.classList.remove('hidden');
+    banner.classList.add('flex');
+  } else {
+    banner.classList.add('hidden');
+    banner.classList.remove('flex');
+  }
+}
+
+// Keeps the grid card's own badge (see data-card.php's
+// .listing-inquiries-badge) in sync after an accept/decline processed from
+// inside the modal, so the count doesn't go stale until the next full
+// re-render — no fetch needed, the modal already has the live count.
+function updateCardInquiriesBadge(encodedId, pendingCount) {
+  const card = document.querySelector(`.listing-card-wrapper[data-encoded-id="${encodedId}"]`);
+  if (!card) return;
+
+  let badge = card.querySelector('.listing-inquiries-badge');
+
+  if (pendingCount > 0) {
+    if (badge) {
+      badge.querySelector('.listing-inquiries-badge-count').textContent = pendingCount;
+      badge.lastChild.textContent = ` ${pendingCount === 1 ? 'Inquiry' : 'Inquiries'}`;
+    }
+    // If it didn't exist before (count went from 0 to >0), leave it be —
+    // the card will pick it up on the next natural re-render (search,
+    // page load); inserting the exact markup here isn't worth the
+    // duplication for what's a rare mid-session edge case.
+  } else if (badge) {
+    badge.remove();
   }
 }
 

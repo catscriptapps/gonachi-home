@@ -6,6 +6,7 @@ declare(strict_types=1);
 namespace Src\Controller;
 
 use App\Models\Listing;
+use App\Models\ListingResponse;
 use App\Models\User;
 use App\Traits\RecentActivityLogger;
 use App\Utils\IdEncoder;
@@ -279,6 +280,29 @@ class ListingsController
     {
         $owner = $listing->user;
         $firstPic = $listing->pictures->sortBy('pos_index')->first();
+        $isOwner = (int) $listing->orig_user_id === $viewerId;
+
+        // Owner: how many inquiries are still awaiting a decision — shown as
+        // a badge on the card and a "scroll to review" banner in the modal.
+        // Non-owner: their own most recent inquiry's status on this
+        // listing, if any — shown in place of "Contact Owner" so they don't
+        // have to remember to check back; marking it read is a side effect
+        // of ListingResponsesController::myStatusFor() itself.
+        $pendingInquiriesCount = 0;
+        $myResponseStatus = null;
+        $myResponseUnread = false;
+
+        if ($isOwner) {
+            $pendingInquiriesCount = ListingResponse::where('listing_id', $listing->listing_id)
+                ->where('status', ListingResponse::STATUS_PENDING)
+                ->count();
+        } elseif ($viewerId) {
+            $myStatus = ListingResponsesController::myStatusFor((int) $listing->listing_id, $viewerId);
+            if ($myStatus) {
+                $myResponseStatus = $myStatus['status'];
+                $myResponseUnread = $myStatus['unread'];
+            }
+        }
 
         return [
             'listing_id' => $listing->listing_id,
@@ -328,7 +352,10 @@ class ListingsController
             'owner_region' => $owner->region->region ?? 'Unknown Region',
             'owner_country' => $owner->country->country ?? 'Unknown Country',
             'owner_location' => $owner ? trim(($owner->city ?: 'Remote') . ', ' . ($owner->country->country ?? '')) : 'Unknown',
-            'is_card_owner' => (int) $listing->orig_user_id === $viewerId,
+            'is_card_owner' => $isOwner,
+            'pending_inquiries_count' => $pendingInquiriesCount,
+            'my_response_status' => $myResponseStatus,
+            'my_response_unread' => $myResponseUnread,
         ];
     }
 

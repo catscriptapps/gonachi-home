@@ -67,6 +67,36 @@ class ListingResponsesController
     }
 
     /**
+     * A non-owner's own most recent inquiry status on this listing, for
+     * surfacing on the card/view modal in place of "Contact Owner" — e.g.
+     * "Pending" / "Accepted" / "Declined", with an unread flag the first
+     * time an accept/decline is shown to them. Marking it read is a side
+     * effect of this call (it's being shown to them right now), so a
+     * second render of the same card no longer flags it as new.
+     *
+     * @return array{status: string, unread: bool}|null
+     */
+    public static function myStatusFor(int $listingId, int $senderId): ?array
+    {
+        $response = ListingResponse::where('listing_id', $listingId)
+            ->where('sender_id', $senderId)
+            ->orderByDesc('created_at')
+            ->first();
+
+        if (!$response) {
+            return null;
+        }
+
+        $wasUnread = !$response->is_read;
+        if ($wasUnread) {
+            $response->is_read = true;
+            $response->save();
+        }
+
+        return ['status' => $response->status, 'unread' => $wasUnread];
+    }
+
+    /**
      * Owner-only: every inquiry on one of their listings, newest first.
      */
     public static function listForListing(string $encodedListingId, int $ownerId): array
@@ -112,6 +142,9 @@ class ListingResponsesController
         }
 
         $response->status = $status;
+        // The sender hasn't seen this decision yet — flips back to true the
+        // next time ListingsController::buildItemArray() surfaces it to them.
+        $response->is_read = false;
         $response->save();
 
         return ['success' => true, 'status' => $status];

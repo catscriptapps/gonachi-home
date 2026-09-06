@@ -35,6 +35,11 @@ $modalDetailOwnerTitle = 'Listing Owner';
                 </div>
             </div>
 
+            <button type="button" id="view-listing-inquiries-banner" class="hidden w-full text-left px-6 py-3 bg-teal-50 dark:bg-teal-950/30 border-b border-teal-100 dark:border-teal-900/40 text-teal-700 dark:text-teal-400 text-xs font-bold flex items-center justify-between gap-2 hover:bg-teal-100 dark:hover:bg-teal-950/50 transition-colors">
+                <span id="view-listing-inquiries-banner-text"></span>
+                <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 14l-7 7m0 0l-7-7m7 7V3" /></svg>
+            </button>
+
             <div class="px-6 py-5 space-y-5 max-h-[70vh] overflow-y-auto custom-scrollbar">
                 <?php include __DIR__ . '/../ui/modal-detail-owner.php'; ?>
 

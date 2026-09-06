@@ -12,15 +12,11 @@ declare(strict_types=1);
     :class="[$store.sidebar.expanded ? 'lg:w-64' : 'lg:w-24', mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']"
     x-cloak>
 
-    <!-- Back to the Gonachi project hub -->
-    <a href="<?= $baseUrl ?>" x-show="$store.sidebar.expanded || mobileMenuOpen" class="mx-4 mt-4 flex items-center gap-2 px-3 py-2 rounded-xl bg-gray-50 dark:bg-gray-800/60 hover:bg-secondary-50 dark:hover:bg-secondary-950/40 text-sm font-semibold text-gray-600 dark:text-gray-300 hover:text-secondary-600 dark:hover:text-secondary-400 transition-colors">
-        <svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-        Gonachi Home
-    </a>
-
-    <!-- Sidebar Header: Identity & Brand Logo -->
-    <div class="h-28 relative flex items-center justify-center px-6 border-b border-gray-200 dark:border-gray-800">
-        <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="flex items-center justify-center">
+    <!-- Sidebar Header: Identity & Brand Logo — doubles as the "back to the
+         Gonachi project hub" link (previously a separate "Gonachi Home"
+         button above the logo; now the logo itself carries that link). -->
+    <div class="relative flex items-center justify-center px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <a href="<?= $baseUrl ?>" data-partial class="flex items-center justify-center">
             <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
         </a>
 

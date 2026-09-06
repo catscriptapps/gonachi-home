@@ -34,6 +34,17 @@ $avatarUrl = $ownerAvatarUrl ?? '';
 
 $locationLabel = trim(($data['city'] ? $data['city'] . ', ' : '') . $data['region_name']);
 $priceDisplay = $data['price'] ? $data['price'] : 'Contact for Price';
+
+$pendingInquiriesCount = (int) ($data['pending_inquiries_count'] ?? 0);
+$myResponseStatus = $data['my_response_status'] ?? null;
+$myResponseUnread = (bool) ($data['my_response_unread'] ?? false);
+
+$myResponseBadge = match ($myResponseStatus) {
+    'pending' => '<span class="inline-flex items-center gap-1 rounded-full bg-yellow-50 dark:bg-yellow-900/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-yellow-700 dark:text-yellow-400 border border-yellow-100 dark:border-yellow-800/30">Inquiry Pending</span>',
+    'accepted' => '<span class="inline-flex items-center gap-1 rounded-full bg-green-50 dark:bg-green-900/20 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-green-600 dark:text-green-400 border border-green-100 dark:border-green-800/30">Inquiry Accepted</span>',
+    'declined' => '<span class="inline-flex items-center gap-1 rounded-full bg-gray-100 dark:bg-gray-800 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">Inquiry Declined</span>',
+    default => '',
+};
 ?>
 <div class="listing-card-wrapper group relative flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-sm overflow-hidden hover:shadow-lg transition-all cursor-pointer view-listing-trigger"
     data-encoded-id="<?= $data['encoded_id'] ?>"
@@ -79,7 +90,10 @@ $priceDisplay = $data['price'] ? $data['price'] : 'Contact for Price';
     data-owner-avatar="<?= htmlspecialchars($ownerAvatarUrl ?? '') ?>"
     data-owner-initial="<?= htmlspecialchars($data['owner_initial']) ?>"
     data-owner-location="<?= htmlspecialchars($data['owner_location']) ?>"
-    data-is-card-owner="<?= $data['is_card_owner'] ? '1' : '0' ?>">
+    data-is-card-owner="<?= $data['is_card_owner'] ? '1' : '0' ?>"
+    data-pending-inquiries-count="<?= $pendingInquiriesCount ?>"
+    data-my-response-status="<?= htmlspecialchars((string) $myResponseStatus) ?>"
+    data-my-response-unread="<?= $myResponseUnread ? '1' : '0' ?>">
 
     <div class="p-5 pb-0">
         <?php include __DIR__ . '/../ui/card-owner.php'; ?>
@@ -97,8 +111,14 @@ $priceDisplay = $data['price'] ? $data['price'] : 'Contact for Price';
     <?php endif; ?>
 
     <div class="px-5 pt-3">
-        <div class="mb-2">
+        <div class="mb-2 flex items-center justify-between gap-2">
             <?php $viewsCountId = 'listing-views-count-' . $data['listing_id']; include __DIR__ . '/../ui/status-badge-and-views-count.php'; ?>
+            <?php if ($data['is_card_owner'] && $pendingInquiriesCount > 0): ?>
+                <span class="listing-inquiries-badge inline-flex items-center gap-1 rounded-full bg-teal-600 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-white shadow-sm" data-encoded-id="<?= $data['encoded_id'] ?>">
+                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a2 2 0 001.995-1.85L12 16H8a2 2 0 001.85 1.995L10 18z"/></svg>
+                    <span class="listing-inquiries-badge-count"><?= $pendingInquiriesCount ?></span> <?= $pendingInquiriesCount === 1 ? 'Inquiry' : 'Inquiries' ?>
+                </span>
+            <?php endif; ?>
         </div>
         <span class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest"><?= htmlspecialchars($data['category_name']) ?></span>
         <h3 class="text-base font-bold text-gray-900 dark:text-white leading-snug mt-0.5 mb-1.5"><?= htmlspecialchars($title) ?></h3>
@@ -151,12 +171,23 @@ $priceDisplay = $data['price'] ? $data['price'] : 'Contact for Price';
             <button type="button" data-encoded-id="<?= $data['encoded_id'] ?>" class="<?= $triggerClass ?> w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 <?= $btnStyles ?> border transition-all font-bold text-xs rounded-lg active:scale-95">
                 <?= $isArchived ? 'Reactivate Listing' : 'End Listing' ?>
             </button>
+        <?php elseif ($myResponseStatus === 'pending'): ?>
+            <div class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-yellow-50 dark:bg-yellow-900/10 border border-yellow-100 dark:border-yellow-900/30 text-yellow-700 dark:text-yellow-400 font-bold text-xs rounded-lg <?= $myResponseUnread ? 'ring-2 ring-yellow-400' : '' ?>">
+                Inquiry Sent — Awaiting Reply
+            </div>
+        <?php elseif ($myResponseStatus === 'accepted'): ?>
+            <div class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-green-50 dark:bg-green-900/10 border border-green-100 dark:border-green-900/30 text-green-600 dark:text-green-400 font-bold text-xs rounded-lg <?= $myResponseUnread ? 'ring-2 ring-green-400' : '' ?>">
+                <?= $myResponseUnread ? 'New: ' : '' ?>Inquiry Accepted
+            </div>
         <?php else: ?>
             <button type="button" class="connect-listing-trigger w-full inline-flex justify-center items-center gap-2 px-4 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm active:scale-95"
                 data-encoded-id="<?= $data['encoded_id'] ?>" data-owner-id="<?= (int) $data['owner_id'] ?>" data-listing-title="<?= htmlspecialchars($title) ?>">
-                Contact Owner
+                <?= $myResponseStatus === 'declined' ? 'Contact Owner Again' : 'Contact Owner' ?>
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" /></svg>
             </button>
+            <?php if ($myResponseStatus === 'declined'): ?>
+                <p class="text-center text-[10px] text-gray-400 mt-1.5 <?= $myResponseUnread ? 'font-bold text-gray-600 dark:text-gray-300' : '' ?>"><?= $myResponseUnread ? 'New: ' : '' ?>Your previous inquiry was declined.</p>
+            <?php endif; ?>
         <?php endif; ?>
     </div>
 </div>

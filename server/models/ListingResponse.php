@@ -14,7 +14,7 @@ class ListingResponse extends Model
 
     public $timestamps = true;
 
-    protected $fillable = ['sender_id', 'listing_id', 'status', 'message'];
+    protected $fillable = ['sender_id', 'listing_id', 'status', 'message', 'is_read'];
 
     public const STATUS_PENDING = 'pending';
     public const STATUS_ACCEPTED = 'accepted';
@@ -24,6 +24,7 @@ class ListingResponse extends Model
         'id' => 'integer',
         'sender_id' => 'integer',
         'listing_id' => 'integer',
+        'is_read' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

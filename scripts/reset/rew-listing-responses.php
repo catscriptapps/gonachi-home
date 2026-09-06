@@ -22,6 +22,10 @@ function resetRewListingResponsesTable(): array
             $table->unsignedBigInteger('listing_id')->index();
             $table->string('status', 20)->default('pending');
             $table->text('message')->nullable();
+            // Flips to false when the owner accepts/declines, so the sender
+            // can be shown a "new" indicator the next time they see this
+            // listing — flips back to true once that's been surfaced to them.
+            $table->boolean('is_read')->default(true);
             $table->timestamps();
 
             $table->foreign('sender_id')->references('id')->on('users')->onDelete('cascade');
