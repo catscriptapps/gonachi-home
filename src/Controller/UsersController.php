@@ -276,9 +276,26 @@ class UsersController
                 $user->password = password_hash($data['password'], PASSWORD_BCRYPT);
             }
 
-            // Role Compilation
+            // Role Compilation — anyone (guest self-registering, or a user
+            // editing their own profile) may freely pick their own
+            // non-admin stakeholder role(s) (Landlord, Tenant, Contractor,
+            // etc.), but only an authenticated admin caller may grant or
+            // keep the Admin role (user_type_id 1). The Admin checkbox is
+            // already hidden from non-admin viewers client-side (see
+            // users-modal.js's visibleRoles()) — this is the actual
+            // enforcement, since the UI hiding it is not itself a
+            // safeguard against a hand-crafted request.
             if (isset($data['user_type_ids']) && is_array($data['user_type_ids'])) {
-                $user->user_type_ids = array_map('intval', $data['user_type_ids']);
+                $submittedRoles = array_map('intval', $data['user_type_ids']);
+                if (!AuthService::isAdmin()) {
+                    $submittedRoles = array_values(array_diff($submittedRoles, [1]));
+                }
+
+                // Never leave a user with zero roles — falls back to the
+                // default rather than wiping an existing account's roles
+                // (only reachable via a hand-crafted request; the UI always
+                // keeps at least one checkbox checked).
+                $user->user_type_ids = $submittedRoles ?: ($isNew ? [2] : $user->user_type_ids);
             } elseif ($isNew) {
                 $user->user_type_ids = [2];
             }

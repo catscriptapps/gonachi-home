@@ -68,17 +68,6 @@
     "file": "js/preview.min.js",
     "name": "preview"
   },
-  "_profile-modal.min.js": {
-    "file": "js/profile-modal.min.js",
-    "name": "profile-modal",
-    "imports": [
-      "_modal-factory.min.js",
-      "_regions-component.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_table-pagination-count.min.js"
-    ]
-  },
   "_quote-search.min.js": {
     "file": "js/quote-search.min.js",
     "name": "quote-search",
@@ -134,6 +123,17 @@
       "resources/js/ui/toast.js"
     ]
   },
+  "_users-modal.min.js": {
+    "file": "js/users-modal.min.js",
+    "name": "users-modal",
+    "imports": [
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js",
+      "_spinner-utils.min.js",
+      "_table-pagination-count.min.js"
+    ]
+  },
   "_video-upload-modal.min.js": {
     "file": "js/video-upload-modal.min.js",
     "name": "video-upload-modal",
@@ -178,9 +178,11 @@
       "_spinner-utils.min.js",
       "resources/js/ui/toast.js",
       "resources/js/pages/messages-page.js",
+      "_users-modal.min.js",
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
-      "_animations.min.js"
+      "_animations.min.js",
+      "_regions-component.min.js"
     ],
     "css": [
       "css/app.min.css"
@@ -455,7 +457,7 @@
     "src": "resources/js/pages/profile-page.js",
     "isEntry": true,
     "imports": [
-      "_profile-modal.min.js",
+      "_users-modal.min.js",
       "_upload-modal.min.js",
       "resources/js/ui/toast.js",
       "_spa-router.min.js",
@@ -535,16 +537,6 @@
       "_form-validator.min.js"
     ]
   },
-  "resources/js/pages/signup-page.js": {
-    "file": "js/signup-page.min.js",
-    "name": "signup-page",
-    "src": "resources/js/pages/signup-page.js",
-    "isEntry": true,
-    "imports": [
-      "_form-validator.min.js",
-      "resources/js/ui/toast.js"
-    ]
-  },
   "resources/js/pages/social-feed-page.js": {
     "file": "js/social-feed-page.min.js",
     "name": "social-feed-page",
@@ -568,7 +560,7 @@
     "src": "resources/js/pages/users-page.js",
     "isEntry": true,
     "imports": [
-      "_profile-modal.min.js",
+      "_users-modal.min.js",
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "resources/js/ui/toast.js",

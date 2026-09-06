@@ -73,6 +73,7 @@ $tablesToDrop = [
     'messages',
     'recent_activities',
     'users',
+    'users_types',
 
     // Static/Lookup Tables
     'regions',
@@ -153,6 +154,9 @@ $messages = array_merge($messages, resetCountriesTable());
 
 require_once __DIR__ . '/../../scripts/reset/regions.php';
 $messages = array_merge($messages, resetRegionsTable());
+
+require_once __DIR__ . '/../../scripts/reset/user-types.php';
+$messages = array_merge($messages, resetUserTypesTable());
 
 require_once __DIR__ . '/../../scripts/reset/users.php';
 $messages = array_merge($messages, resetUsersTable());

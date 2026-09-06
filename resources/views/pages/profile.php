@@ -102,6 +102,7 @@ $primaryRole = 'User Profile';
                             data-region-id="<?= $user->region_id ?? 0; ?>"
                             data-is-active="<?= $statusIsActive ? '1' : '0'; ?>"
                             data-avatar-url="<?= htmlspecialchars($user->avatar_url ?? ''); ?>"
+                            data-is-protected="<?= in_array((int) $user->id, [1, 2], true) ? '1' : '0'; ?>"
                             data-user-type-ids='<?= json_encode($user->user_type_ids ?? []); ?>'
                             class="px-5 py-2.5 bg-secondary-900 dark:bg-gray-400 text-white dark:text-secondary-900 rounded-xl font-black text-xs transition-all hover:-translate-y-0.5 shadow-lg flex items-center gap-2 group">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -2,12 +2,6 @@
 // /resources/views/components/social-feed/guest-landing.php
 
 /** @var string $baseUrl */
-/** @var string|null $path */
-
-// No registration modal in this codebase (unlike the legacy platform) —
-// route to the real /signup page instead, matching job-requests.php,
-// list-rental-property.php, and report-landlord.php's guest CTAs.
-$signupRedirect = ltrim($path ?? '/social-feed', '/');
 ?>
 
 <div class="relative min-h-[80vh] flex items-center justify-center px-4 overflow-hidden">
@@ -40,8 +34,7 @@ $signupRedirect = ltrim($path ?? '/social-feed', '/');
                 </svg>
             </a>
 
-            <a href="<?= $baseUrl ?>signup?redirect=<?= urlencode($signupRedirect) ?>" data-partial
-                class="inline-flex items-center justify-center px-8 py-4 bg-gray-300 dark:bg-gray-800 font-black text-secondary-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all active:scale-95">
+            <button type="button" class="register-btn inline-flex items-center justify-center px-8 py-4 bg-gray-300 dark:bg-gray-800 font-black text-secondary-900 dark:text-white hover:bg-gray-100 dark:hover:bg-white/5 rounded-2xl transition-all active:scale-95">
                 Create an Account
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
                     stroke-linecap="round" stroke-linejoin="round" class="ml-2 w-5 h-5 transition-transform duration-300 group-hover:translate-x-1">
@@ -50,7 +43,7 @@ $signupRedirect = ltrim($path ?? '/social-feed', '/');
                     <line x1="19" y1="8" x2="19" y2="14" />
                     <line x1="16" y1="11" x2="22" y2="11" />
                 </svg>
-            </a>
+            </button>
         </div>
 
         <div class="grid grid-cols-3 gap-8 pt-12 border-t border-gray-100 dark:border-white/5 max-w-2xl mx-auto">

@@ -41,6 +41,9 @@ $messages = array_merge($messages, resetCountriesTable());
 require_once __DIR__ . '/reset/regions.php';
 $messages = array_merge($messages, resetRegionsTable());
 
+require_once __DIR__ . '/reset/user-types.php';
+$messages = array_merge($messages, resetUserTypesTable());
+
 require_once __DIR__ . '/reset/users.php';
 $messages = array_merge($messages, resetUsersTable());
 

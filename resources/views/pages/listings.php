@@ -57,9 +57,9 @@ if ($isLoggedIn) {
                         <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center px-6 py-2.5 bg-teal-600 hover:bg-teal-700 text-white font-bold text-sm rounded-lg transition-colors shadow-sm">
                             View My Listings
                         </a>
-                        <a href="<?= $baseUrl ?>signup?redirect=listings" data-partial class="inline-flex items-center px-6 py-2.5 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
+                        <button type="button" class="register-btn inline-flex items-center px-6 py-2.5 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-colors">
                             Register Now
-                        </a>
+                        </button>
                     <?php endif; ?>
                 </div>
             </div>

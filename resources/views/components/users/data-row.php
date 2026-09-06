@@ -20,6 +20,13 @@ $avatarUrl = $hasAvatar ? htmlspecialchars($AVATAR_DIR_PREFIX . $rowItem['avatar
 $fullName = $rowItem['full_name'] ?? trim(($rowItem['first_name'] ?? '') . ' ' . ($rowItem['last_name'] ?? ''));
 if (empty($fullName)) $fullName = 'Unknown User';
 
+// Core seeded accounts (Cat, Elas) — every reset script recreates these two;
+// the real enforcement is UsersController::PROTECTED_USER_IDS. Surfaced as
+// a data attribute so the edit modal can disable the Admin checkbox for
+// these two specifically (they can never lose Admin, so let the UI say so
+// honestly instead of silently reverting an unchecked box on save).
+$isProtectedAccount = in_array((int) ($rowItem['id'] ?? 0), [1, 2], true);
+
 // Prepare data attributes - user-type-ids is passed as a JSON string
 $userDataAttrs = [
     'encoded-id'    => $rowItem['encoded_id'] ?? '',
@@ -35,6 +42,7 @@ $userDataAttrs = [
     'avatar-url'    => $avatarUrl,
     'joined'        => $rowItem['created_at_formatted'] ?? 'N/A',
     'is-active'     => (int)($rowItem['status_id'] ?? 0) === 1 ? '1' : '0',
+    'is-protected'  => $isProtectedAccount ? '1' : '0',
     'user-type-ids' => json_encode($rowItem['user_type_ids'] ?? []),
     // Pass the actual names for the View Modal badges
     'user-types'    => json_encode(array_map(function ($tid) {
@@ -44,10 +52,6 @@ $userDataAttrs = [
 
 $editClass = 'edit-user-btn';
 $deleteClass = 'delete-user-btn';
-// Core seeded accounts (Cat, Elas) — every reset script recreates these two;
-// the real enforcement is UsersController::PROTECTED_USER_IDS, this just
-// keeps the admin from attempting (and getting) a blocked delete.
-$isProtectedAccount = in_array((int) ($rowItem['id'] ?? 0), [1, 2], true);
 
 $statusBadge = (int)($rowItem['status_id'] ?? 0) === 1
     ? '<span class="inline-flex items-center rounded-full bg-primary-50 dark:bg-primary-900/20 px-2.5 py-0.5 text-xs font-bold text-primary-600 dark:text-primary-400 border border-primary-100 dark:border-primary-800/30">Current</span>'

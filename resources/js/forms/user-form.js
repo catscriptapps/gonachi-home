@@ -19,7 +19,8 @@ export function userForm({
     formId = 'users-form',
     countries = [],
     regions = [],
-    encodedId = null
+    encodedId = null,
+    isProtected = false
 }) {
     const idPrefix = mode === 'edit' ? 'users-edit' : 'users';
     const dataEncodedIdAttr = encodedId ? `data-encoded-id="${encodedId}"` : '';
@@ -92,11 +93,6 @@ export function userForm({
             <h3 class="text-[10px] font-black uppercase tracking-[0.2em] text-secondary-400 ml-1">Location Details</h3>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label for="${idPrefix}-city" class="${labelClasses}">City</label>
-                    <input type="text" id="${idPrefix}-city" name="city" required
-                        placeholder="Barrie" value="${city}" class="${inputClasses}" />
-                </div>
-                <div>
                     <label for="${idPrefix}-country" class="${labelClasses}">Country</label>
                     <select id="${idPrefix}-country" name="countryId" required class="${inputClasses}">
                         <option value="">Select Country</option>
@@ -110,6 +106,11 @@ export function userForm({
                         ${regions.map(r => `<option value="${r.id}" ${r.id == regionId ? 'selected' : ''}>${r.name}</option>`).join('')}
                     </select>
                 </div>
+                <div>
+                    <label for="${idPrefix}-city" class="${labelClasses}">City</label>
+                    <input type="text" id="${idPrefix}-city" name="city" required
+                        placeholder="Barrie" value="${city}" class="${inputClasses}" />
+                </div>
             </div>
         </div>
 
@@ -118,11 +119,18 @@ export function userForm({
             <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
                 ${availableRoles.map(role => {
                     const checked = mode === 'add' ? role.id === 2 : userTypes.includes(role.id);
+                    // ids 1 and 2 are core accounts that must always stay
+                    // Admin — the server re-enforces this regardless, but
+                    // the checkbox is locked here too so the UI doesn't
+                    // pretend it's actually optional for them.
+                    const locked = isProtected && role.id === 1;
                     return `
-                    <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 cursor-pointer hover:border-primary-300 dark:hover:border-primary-700 transition-colors">
-                        <input type="checkbox" name="userTypeIds[]" value="${role.id}" ${checked ? 'checked' : ''}
+                    <label class="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-gray-200 dark:border-gray-700 transition-colors ${locked ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer hover:border-primary-300 dark:hover:border-primary-700'}">
+                        <input type="checkbox" name="userTypeIds[]" value="${role.id}" ${checked ? 'checked' : ''} ${locked ? 'disabled' : ''}
                             class="rounded border-gray-300 dark:border-gray-600 text-primary-500 focus:ring-primary-400" />
+                        ${locked ? `<input type="hidden" name="userTypeIds[]" value="1" />` : ''}
                         <span class="text-sm font-medium text-gray-700 dark:text-gray-300">${role.name}</span>
+                        ${locked ? '<span class="text-[10px] font-bold text-gray-400 uppercase tracking-wide ml-auto">Locked</span>' : ''}
                     </label>
                 `;}).join('')}
             </div>

@@ -93,7 +93,7 @@ $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : nu
                     Budget, exact contact details, and the original source post unlock with an account.
                 </p>
                 <div class="flex items-center justify-center space-x-3">
-                    <a href="<?= $baseUrl ?>login" data-login-button class="px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">Start Free Trial</a>
+                    <button type="button" class="register-btn px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">Start Free Trial</button>
                     <a href="<?= $baseUrl ?>login" data-login-button class="px-5 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-lg transition-all">Sign In</a>
                 </div>
             </div>

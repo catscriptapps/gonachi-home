@@ -31,7 +31,6 @@ use Src\Service\AuthService;
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 
 $registered = isset($_GET['registered']);
-$signupRedirect = ltrim($path ?? '/job-requests', '/');
 
 $category = trim($_GET['category'] ?? '');
 $location = trim($_GET['location'] ?? '');
@@ -100,9 +99,9 @@ $totalOpen = JobRequestController::totalOpenCount();
                     <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center px-5 py-2 bg-secondary-600 hover:bg-secondary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
                         Sign In
                     </a>
-                    <a href="<?= $baseUrl ?>signup?redirect=<?= urlencode($signupRedirect) ?>" data-partial class="inline-flex items-center px-5 py-2 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-sm font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-all">
+                    <button type="button" class="register-btn inline-flex items-center px-5 py-2 border border-gray-200 dark:border-gray-800 text-gray-700 dark:text-gray-300 text-sm font-bold rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800/60 transition-all">
                         Create Account
-                    </a>
+                    </button>
                 </div>
             </div>
         <?php else: ?>

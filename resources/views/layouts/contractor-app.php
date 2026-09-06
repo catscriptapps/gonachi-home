@@ -42,6 +42,7 @@ declare(strict_types=1);
             protectedPaths: <?= json_encode($protectedPaths ?? []) ?>,
             mediaLimit: <?= getMediaLimit() ?>,
             isLoggedIn: <?= json_encode($isLoggedIn ?? false) ?>,
+            isAdmin: <?= json_encode($isAdmin ?? false) ?>,
         };
     </script>
 

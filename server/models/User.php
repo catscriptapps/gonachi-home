@@ -104,8 +104,10 @@ class User extends Model
     }
 
     /**
-     * Helper to check for a specific role/type.
-     * Admin = 1, Registered = 2, Staff = 3, Landlord = 4, Tenant = 5, Agent = 6
+     * Helper to check for a specific role/type. See the users_types table
+     * (App\Models\UserType) for the current id -> name mapping — Admin = 1,
+     * Landlord = 2, Tenant = 3, Property Manager = 4, Real Estate Agent = 5,
+     * Contractor = 6, Mortgage Broker = 7, User = 8.
      */
     public function hasType(int $typeId): bool
     {

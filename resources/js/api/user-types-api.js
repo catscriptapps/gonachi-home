@@ -1,8 +1,9 @@
 // /resources/js/api/user-types-api.js
 
 /**
- * Fetches the fixed account-type/role list (Admin, Registered, Staff,
- * Landlord, Tenant, Agent) for the user create/edit form's role picker.
+ * Fetches the account-type/role list (Admin, Landlord, Tenant, Property
+ * Manager, Real Estate Agent, Contractor, Mortgage Broker, User) for the
+ * user create/edit form's role picker.
  */
 export async function fetchUserTypes() {
     const baseUrl = window.APP_CONFIG?.baseUrl || '/';

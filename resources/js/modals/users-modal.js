@@ -10,6 +10,18 @@ import { handleUserFormSubmission } from '../utils/users/form-submit.js';
 
 let userModal = null;
 
+// The Admin role (user_type_id 1) is never shown to a non-admin caller —
+// not on the guest "Create Account" modal (self-registration reuses this
+// same form), and not when a regular user edits their own profile. Only an
+// already-admin viewer, editing a user from /users, sees it (and can then
+// grant it to someone else). UsersController::save() enforces this
+// server-side too — this is just keeping the UI honest about what's
+// actually possible.
+function visibleRoles(availableRoles) {
+    if (window.APP_CONFIG?.isAdmin) return availableRoles;
+    return availableRoles.filter((role) => role.id !== 1);
+}
+
 /**
  * Initialize form features after the modal opens
  */
@@ -44,7 +56,7 @@ export async function openAddUserModal() {
             buttonLabel: 'Register',
             countries,
             regions,
-            availableRoles,
+            availableRoles: visibleRoles(availableRoles),
             countryId
         }),
         size: 'lg',
@@ -101,9 +113,10 @@ export async function openEditUserModal(trigger) {
             userTypes: userTypeIds,
             countries,
             regions,
-            availableRoles,
+            availableRoles: visibleRoles(availableRoles),
             buttonLabel: 'Save Changes',
-            encodedId: data.encodedId
+            encodedId: data.encodedId,
+            isProtected: data.isProtected === '1'
         }),
         size: 'lg',
         showFooter: false,

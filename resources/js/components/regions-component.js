@@ -20,6 +20,15 @@ export function enableDynamicRegionLoading(formId) {
         // Grab the pre-selected ID if it was passed via CustomEvent
         const preSelectedId = e.detail?.preSelectedRegionId;
 
+        // Only wipe the city on a genuine user-driven country switch — not
+        // on the synthetic dispatch used to pre-load regions when an edit
+        // modal first opens (that one always carries preSelectedRegionId),
+        // which should leave the already-saved city alone.
+        if (!preSelectedId) {
+            const cityInput = form.querySelector('input[name="city"]');
+            if (cityInput) cityInput.value = '';
+        }
+
         if (!countryId) {
             regionSelect.innerHTML = '<option value="">Select Region</option>';
             return;

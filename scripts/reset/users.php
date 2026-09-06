@@ -43,12 +43,16 @@ function resetUsersTable(): array
         $messages[] = "recreated 'users' table with correct legacy fields.";
 
         // 3. IDEAL MAPPING ARRAY
+        // Admin (1) + the generic "User" type (8) — matches the corrected
+        // users_types list (Admin, Landlord, Tenant, Property Manager, Real
+        // Estate Agent, Contractor, Mortgage Broker, User); these two seed
+        // accounts aren't meant to represent a specific stakeholder role.
         $legacyMappings = [
 
             [1, 1],
-            [1, 2],
+            [1, 8],
             [2, 1],
-            [2, 2],
+            [2, 8],
         ];
 
         // 4. Convert pairs into a lookup dictionary

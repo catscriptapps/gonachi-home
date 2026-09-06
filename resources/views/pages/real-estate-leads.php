@@ -158,9 +158,9 @@ $spotlight = LeadsController::spotlight();
                                     View Full Details
                                 </a>
                             <?php else: ?>
-                                <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                                <button type="button" class="auth-gate-btn inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                                     View Full Details
-                                </a>
+                                </button>
                             <?php endif; ?>
                         </div>
                     </div>

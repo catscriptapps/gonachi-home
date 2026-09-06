@@ -37,9 +37,9 @@ $currentUserId = $isLoggedIn ? AuthService::userId() : null;
             <svg class="h-10 w-10 text-gray-300 dark:text-gray-700 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L7 21V5z"/></svg>
             <h1 class="text-xl font-bold text-gray-900 dark:text-white">Sign In To Save Alerts</h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Saved alerts and match notifications live on your account.</p>
-            <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center mt-6 px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
+            <button type="button" class="auth-gate-btn inline-flex items-center mt-6 px-5 py-2 bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
                 Sign In
-            </a>
+            </button>
         </div>
     <?php else: ?>
         <?php

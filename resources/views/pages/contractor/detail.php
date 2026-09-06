@@ -118,9 +118,9 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
                     Claim Pending
                 </button>
             <?php elseif (!$currentUserId): ?>
-                <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center px-4 py-2 bg-secondary-600 hover:bg-secondary-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                <button type="button" class="auth-gate-btn inline-flex items-center px-4 py-2 bg-secondary-600 hover:bg-secondary-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                     Claim This Profile
-                </a>
+                </button>
             <?php else: ?>
                 <button type="button" data-claim-contractor="<?= $contractor->id ?>" class="inline-flex items-center px-4 py-2 bg-secondary-600 hover:bg-secondary-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                     Claim This Profile

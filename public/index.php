@@ -38,9 +38,11 @@ $isAdminReset = filter_var($_ENV['ADMIN_RESET'] ?? false, FILTER_VALIDATE_BOOLEA
 if ($isAdminReset === true) {
     $isLoggedIn = false;
     $currentUser = null;
+    $isAdmin = false;
 } else {
     $isLoggedIn = AuthService::isLoggedIn();
     $currentUser = $isLoggedIn ? AuthService::currentUser() : null;
+    $isAdmin = $isLoggedIn && AuthService::isAdmin();
 }
 
 // Serve static assets directly
