@@ -50,6 +50,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_animations.min.js"
@@ -87,6 +88,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_animations.min.js"
@@ -147,7 +149,8 @@
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
-      "_view-counter.min.js"
+      "_view-counter.min.js",
+      "_preview.min.js"
     ]
   },
   "_view-counter.min.js": {
@@ -204,7 +207,8 @@
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
-      "_view-counter.min.js"
+      "_view-counter.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/adverts-page.js": {
@@ -220,7 +224,8 @@
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
-      "_view-counter.min.js"
+      "_view-counter.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -345,6 +350,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -403,7 +409,8 @@
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
-      "_view-counter.min.js"
+      "_view-counter.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/my-listings-page.js": {
@@ -419,6 +426,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -436,6 +444,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -473,6 +482,7 @@
       "_upload-modal.min.js",
       "_view-counter.min.js",
       "_modal-factory.min.js",
+      "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]

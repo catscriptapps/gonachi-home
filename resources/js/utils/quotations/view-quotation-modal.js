@@ -14,11 +14,14 @@ import { confirmDialog } from '../../ui/confirm.js';
 import { uploadModal, createUploadHandler } from '../../modals/upload-modal.js';
 import { ViewCounter } from '../globals/view-counter.js';
 import { openQuotationResponseModal } from '../../modals/quotation-response-modal.js';
+import { registerImagePreview } from '../globals/preview.js';
 
 export function initViewQuotationModal() {
   const modal = document.getElementById('view-quote-modal');
   if (!modal || modal.dataset.initialized) return;
   modal.dataset.initialized = 'true';
+
+  registerImagePreview();
 
   document.body.addEventListener('click', (e) => {
     const trigger = e.target.closest('.view-quote-trigger');
@@ -228,7 +231,7 @@ async function loadPictures(encodedId, canManage) {
       .map(
         (pic) => `
         <div class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20 group">
-          <img src="${pic.url}" class="w-full h-full object-cover">
+          <img src="${pic.url}" data-img-src="${pic.url}" class="w-full h-full object-cover cursor-pointer">
           ${canManage ? `<button type="button" data-delete-pic="${pic.entry_id}" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>` : ''}
         </div>`
       )
