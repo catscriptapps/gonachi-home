@@ -222,6 +222,33 @@ $messages = array_merge($messages, resetRewMentorsTable());
 require_once __DIR__ . '/reset/rew-mentor-requests.php';
 $messages = array_merge($messages, resetRewMentorRequestsTable());
 
+require_once __DIR__ . '/reset/rew-bedrooms.php';
+$messages = array_merge($messages, resetRewBedroomsTable());
+
+require_once __DIR__ . '/reset/rew-bathrooms.php';
+$messages = array_merge($messages, resetRewBathroomsTable());
+
+require_once __DIR__ . '/reset/rew-agreement-types.php';
+$messages = array_merge($messages, resetRewAgreementTypesTable());
+
+require_once __DIR__ . '/reset/rew-amenities.php';
+$messages = array_merge($messages, resetRewAmenitiesTables());
+
+require_once __DIR__ . '/reset/rew-listing-categories.php';
+$messages = array_merge($messages, resetRewListingCategoriesTable());
+
+require_once __DIR__ . '/reset/rew-listing-category-types.php';
+$messages = array_merge($messages, resetRewListingCategoryTypesTable());
+
+require_once __DIR__ . '/reset/rew-listings.php';
+$messages = array_merge($messages, resetRewListingsTable());
+
+require_once __DIR__ . '/reset/rew-listing-pics.php';
+$messages = array_merge($messages, resetRewListingPicsTable());
+
+require_once __DIR__ . '/reset/rew-listing-responses.php';
+$messages = array_merge($messages, resetRewListingResponsesTable());
+
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));

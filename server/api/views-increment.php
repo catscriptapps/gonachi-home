@@ -27,7 +27,7 @@ try {
         // 💎 THE SWITCH: Route to the existing controllers
         switch ($type) {
             case 'listing':
-                $newCount = ListingsController::incrementView((string)$id);
+                $newCount = ListingsController::incrementView((string)$id, (int)(AuthService::userId() ?? 0));
                 break;
             case 'ad':
                 $newCount = AdvertsController::incrementView((string)$id, (int)(AuthService::userId() ?? 0));

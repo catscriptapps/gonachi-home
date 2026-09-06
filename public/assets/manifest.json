@@ -41,6 +41,20 @@
       "_animations.min.js"
     ]
   },
+  "_listing-infinite-scroll.min.js": {
+    "file": "js/listing-infinite-scroll.min.js",
+    "name": "listing-infinite-scroll",
+    "imports": [
+      "resources/js/ui/toast.js",
+      "_confirm.min.js",
+      "_upload-modal.min.js",
+      "_view-counter.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js",
+      "_animations.min.js"
+    ]
+  },
   "_modal-factory.min.js": {
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
@@ -317,6 +331,24 @@
       "_preview.min.js"
     ]
   },
+  "resources/js/pages/listings-page.js": {
+    "file": "js/listings-page.min.js",
+    "name": "listings-page",
+    "src": "resources/js/pages/listings-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_listing-infinite-scroll.min.js",
+      "_spa-router.min.js",
+      "resources/js/ui/toast.js",
+      "_confirm.min.js",
+      "_upload-modal.min.js",
+      "_view-counter.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js"
+    ]
+  },
   "resources/js/pages/live-chat-page.js": {
     "file": "js/live-chat-page.min.js",
     "name": "live-chat-page",
@@ -372,6 +404,23 @@
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js"
+    ]
+  },
+  "resources/js/pages/my-listings-page.js": {
+    "file": "js/my-listings-page.min.js",
+    "name": "my-listings-page",
+    "src": "resources/js/pages/my-listings-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_listing-infinite-scroll.min.js",
+      "resources/js/ui/toast.js",
+      "_confirm.min.js",
+      "_upload-modal.min.js",
+      "_view-counter.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/my-quotations-page.js": {
