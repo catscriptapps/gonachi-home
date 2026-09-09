@@ -35,16 +35,7 @@ $registered = isset($_GET['registered']);
 $category = trim($_GET['category'] ?? '');
 $location = trim($_GET['location'] ?? '');
 
-$categoryLabels = [
-    'plumbing' => 'Plumbing',
-    'electrical' => 'Electrical',
-    'painting' => 'Painting',
-    'building_construction' => 'Building Construction',
-    'interior_design' => 'Interior Design',
-    'renovation' => 'Renovation',
-    'solar_installation' => 'Solar Installation',
-    'other' => 'Other',
-];
+$categoryLabels = JobRequestController::categoryLabels();
 
 $openRequests = JobRequestController::openRequests($category ?: null, $location ?: null)
     ->appends(['category' => $category, 'location' => $location]);
@@ -239,14 +230,30 @@ $totalOpen = JobRequestController::totalOpenCount();
 
                     <div class="flex items-center justify-end gap-3 pt-2">
                         <?php if ($currentUserId && $job->user_id === $currentUserId): ?>
+                            <button type="button" class="view-bids-toggle inline-flex items-center gap-1.5 px-4 py-2 bg-secondary-50 dark:bg-secondary-950/40 hover:bg-secondary-100 dark:hover:bg-secondary-900/40 text-secondary-700 dark:text-secondary-400 font-bold text-xs rounded-lg transition-colors" data-job-id="<?= $job->id ?>">
+                                View Bids
+                                <?php if (($job->pending_bids_count ?? 0) > 0): ?>
+                                    <span class="inline-flex items-center justify-center min-w-[1rem] h-4 px-1 rounded-full bg-secondary-600 text-white text-[10px]"><?= $job->pending_bids_count ?></span>
+                                <?php endif; ?>
+                            </button>
                             <button type="button" data-mark-filled="<?= $job->id ?>" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors">
                                 Mark As Filled
                             </button>
+                        <?php elseif ($currentUserId): ?>
+                            <button type="button" class="submit-quote-trigger inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-secondary-600 dark:hover:bg-secondary-500 text-white font-bold text-xs rounded-lg transition-colors tracking-wide"
+                                data-job-id="<?= $job->id ?>" data-owner-id="<?= (int) $job->user_id ?>" data-job-title="<?= htmlspecialchars(($categoryLabels[$job->service_category] ?? ucfirst($job->service_category)) . ' — ' . $job->location) ?>">
+                                Submit A Quote
+                            </button>
+                        <?php else: ?>
+                            <button type="button" class="auth-gate-btn inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors tracking-wide">
+                                Submit A Quote
+                            </button>
                         <?php endif; ?>
-                        <button disabled title="Coming soon" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed font-bold text-xs rounded-lg transition-colors tracking-wide">
-                            Submit A Quote
-                        </button>
                     </div>
+
+                    <?php if ($currentUserId && $job->user_id === $currentUserId): ?>
+                        <div class="job-request-bids-list hidden mt-3 pt-3 border-t border-gray-100 dark:border-gray-800 space-y-2" data-job-id="<?= $job->id ?>"></div>
+                    <?php endif; ?>
                 </div>
             <?php endforeach; ?>
         <?php endif; ?>

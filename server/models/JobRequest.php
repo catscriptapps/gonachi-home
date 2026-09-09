@@ -39,6 +39,11 @@ class JobRequest extends Model
         return $this->hasMany(JobRequestPhoto::class, 'job_request_id');
     }
 
+    public function bids()
+    {
+        return $this->hasMany(JobRequestBid::class, 'job_request_id');
+    }
+
     public function scopeOpen($query)
     {
         return $query->where('status', 'open');

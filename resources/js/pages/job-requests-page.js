@@ -22,6 +22,8 @@ import { FormValidator } from '../utils/form-validator.js';
 import { uploadModal, createUploadHandler } from '../modals/upload-modal.js';
 import { showToast } from '../ui/toast.js';
 import { registerImagePreview } from '../utils/globals/preview.js';
+import { initJobRequestBidTriggers } from '../modals/job-request-bid-modal.js';
+import { initJobRequestBids } from '../utils/contractor/job-request-bids.js';
 
 const MAX_PICTURES = 6;
 
@@ -29,6 +31,8 @@ export function init() {
   registerImagePreview();
   wireToggleButton();
   wireMarkAsFilled();
+  initJobRequestBidTriggers();
+  initJobRequestBids();
 
   const form = document.getElementById('job-request-form');
   if (!form || form.dataset.initialized) return;

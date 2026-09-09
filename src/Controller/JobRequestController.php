@@ -25,6 +25,26 @@ class JobRequestController
         'interior_design', 'renovation', 'solar_installation', 'other',
     ];
 
+    private const CATEGORY_LABELS = [
+        'plumbing' => 'Plumbing',
+        'electrical' => 'Electrical',
+        'painting' => 'Painting',
+        'building_construction' => 'Building Construction',
+        'interior_design' => 'Interior Design',
+        'renovation' => 'Renovation',
+        'solar_installation' => 'Solar Installation',
+        'other' => 'Other',
+    ];
+
+    /**
+     * @return array<string, string> service_category value => display label,
+     *                               shared by job-requests.php and bidding.php.
+     */
+    public static function categoryLabels(): array
+    {
+        return self::CATEGORY_LABELS;
+    }
+
     /**
      * Only URLs under this path are trusted when attaching photos — guards
      * against a crafted payload smuggling in an external URL. See
@@ -78,7 +98,10 @@ class JobRequestController
      */
     public static function openRequests(?string $category, ?string $location, int $perPage = 10): LengthAwarePaginator
     {
-        $query = JobRequest::open()->with(['photos', 'user'])->orderByDesc('created_at');
+        $query = JobRequest::open()
+            ->with(['photos', 'user'])
+            ->withCount(['bids as pending_bids_count' => fn ($q) => $q->where('status', 'pending')])
+            ->orderByDesc('created_at');
 
         if ($category) {
             $query->where('service_category', $category);

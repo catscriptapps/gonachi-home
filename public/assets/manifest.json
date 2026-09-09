@@ -323,7 +323,9 @@
       "_form-validator.min.js",
       "_upload-modal.min.js",
       "resources/js/ui/toast.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_modal-factory.min.js",
+      "_confirm.min.js"
     ]
   },
   "resources/js/pages/list-rental-property-page.js": {

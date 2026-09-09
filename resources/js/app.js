@@ -213,7 +213,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     initUnreadPolling();
     initHeaderIcons();
     initMessagesPage();
-    initLiveChatBadge();
+
+    // Admin-only endpoint (server/api/chat-admin-unread-count.php 403s
+    // anyone else) — only start polling it for an actual admin session, so
+    // a regular user's console doesn't pick up a "Failed to load resource:
+    // 403" on every page load before the poller's own first response
+    // tells it to stop.
+    if (window.APP_CONFIG?.isAdmin) {
+      initLiveChatBadge();
+    }
   }
 
   // 🔑 Load manifest first

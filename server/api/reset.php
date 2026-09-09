@@ -104,6 +104,7 @@ $tablesToDrop = [
     'cde_contractor_discovery_runs',
     'cde_contractors',
     'cde_contractor_sources',
+    'cde_job_request_bids',
     'cde_job_request_photos',
     'cde_job_requests',
 
@@ -253,6 +254,9 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-job-request-bids.php';
+$messages = array_merge($messages, resetCdeJobRequestBidsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-contractor-sources.php';
 $messages = array_merge($messages, resetCdeContractorSourcesTable());

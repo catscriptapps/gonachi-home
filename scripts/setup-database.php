@@ -147,6 +147,9 @@ $messages = array_merge($messages, resetCdeJobRequestsTable());
 require_once __DIR__ . '/reset/cde-job-request-photos.php';
 $messages = array_merge($messages, resetCdeJobRequestPhotosTable());
 
+require_once __DIR__ . '/reset/cde-job-request-bids.php';
+$messages = array_merge($messages, resetCdeJobRequestBidsTable());
+
 require_once __DIR__ . '/reset/cde-contractor-sources.php';
 $messages = array_merge($messages, resetCdeContractorSourcesTable());
 
