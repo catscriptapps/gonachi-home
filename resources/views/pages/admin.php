@@ -15,6 +15,7 @@
 
 declare(strict_types=1);
 
+use Src\Controller\AdvertsController;
 use Src\Controller\ChatController;
 use Src\Controller\ContractorClaimController;
 use Src\Controller\LandlordReportReviewController;
@@ -38,6 +39,7 @@ $unreadChats = ChatController::unreadCountForAdmin();
 $pendingLeads = LeadReviewController::pending()->total();
 $pendingReports = LandlordReportReviewController::pending()->total();
 $pendingClaims = ContractorClaimController::pending()->total();
+$pendingAdverts = AdvertsController::pendingCount();
 
 $tabs = [
     ['label' => 'Overview', 'href' => 'admin'],
@@ -46,6 +48,15 @@ $tabs = [
     ['label' => 'Lead Review', 'href' => 'lead-review', 'badge' => $pendingLeads],
     ['label' => 'Landlord Reports', 'href' => 'landlord-report-review', 'badge' => $pendingReports],
     ['label' => 'Contractor Claims', 'href' => 'contractor-claims-review', 'badge' => $pendingClaims],
+    // crossShell: true — Adverts Admin lives under Real Estate World's own
+    // sidebar shell (layouts/real-estate-world-app.php), unlike every other
+    // tab here which stays inside this dashboard's app.php shell. A
+    // data-partial swap only replaces #main-content, so a partial nav here
+    // would show the adverts moderation table under the WRONG sidebar —
+    // same reasoning as layouts/portal.php's own admin link, which omits
+    // data-partial for the same cross-shell reason. A real navigation
+    // (full page load) picks up the correct shell instead.
+    ['label' => 'Adverts Admin', 'href' => 'adverts-admin', 'badge' => $pendingAdverts, 'crossShell' => true],
 ];
 
 $statCards = [
@@ -81,6 +92,15 @@ $statCards = [
         'accent' => 'text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-950/40',
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
     ],
+    [
+        'label' => 'Pending Adverts',
+        'value' => $pendingAdverts,
+        'sub' => 'Real Estate World',
+        'href' => 'adverts-admin',
+        'accent' => 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40',
+        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
+        'crossShell' => true,
+    ],
 ];
 ?>
 <div class="space-y-6">
@@ -93,7 +113,7 @@ $statCards = [
     <div class="flex items-center gap-1 border-b border-gray-200 dark:border-gray-800 overflow-x-auto">
         <?php foreach ($tabs as $tab): ?>
             <?php $isActive = $currentPath === '/' . $tab['href']; ?>
-            <a href="<?= $baseUrl . $tab['href'] ?>" data-partial
+            <a href="<?= $baseUrl . $tab['href'] ?>" <?= empty($tab['crossShell']) ? 'data-partial' : '' ?>
                 class="relative flex items-center gap-2 px-4 py-3 text-sm font-semibold whitespace-nowrap border-b-2 transition-colors <?= $isActive
                     ? 'border-primary-600 text-primary-600 dark:text-primary-400'
                     : 'border-transparent text-gray-500 hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200' ?>">
@@ -106,9 +126,9 @@ $statCards = [
     </div>
 
     <!-- Overview stat cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         <?php foreach ($statCards as $card): ?>
-            <a href="<?= $baseUrl . $card['href'] ?>" data-partial class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
+            <a href="<?= $baseUrl . $card['href'] ?>" <?= empty($card['crossShell']) ? 'data-partial' : '' ?> class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center <?= $card['accent'] ?>">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><?= $card['icon'] ?></svg>
                 </div>
@@ -119,11 +139,11 @@ $statCards = [
         <?php endforeach; ?>
     </div>
 
-    <?php if ($openConversations === 0 && $pendingLeads === 0 && $pendingReports === 0 && $pendingClaims === 0): ?>
+    <?php if ($openConversations === 0 && $pendingLeads === 0 && $pendingReports === 0 && $pendingClaims === 0 && $pendingAdverts === 0): ?>
         <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-10 text-center">
             <svg class="h-10 w-10 text-emerald-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">All caught up</h4>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Nothing pending across chats, leads, reports, or claims right now.</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Nothing pending across chats, leads, reports, claims, or adverts right now.</p>
         </div>
     <?php endif; ?>
 </div>

@@ -293,6 +293,12 @@ class AdvertsController
         return Advert::where('status', Advert::STATUS_ACTIVE)->count();
     }
 
+    /** For the admin dashboard's tab badge/stat card — same convention as LeadReviewController::pending()->total(). */
+    public static function pendingCount(): int
+    {
+        return Advert::where('status', Advert::STATUS_PENDING)->count();
+    }
+
     /**
      * Picks one active, targeting-matched advert to show in the layout's
      * "Sponsored Advertisement" slot (see resources/js/components/sponsored-ad.js).
