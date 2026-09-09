@@ -44,7 +44,7 @@ class ListingsController
 {
     use RecentActivityLogger;
 
-    private const EAGER = [
+    public const EAGER = [
         'user.country',
         'user.region',
         'category',
@@ -199,6 +199,59 @@ class ListingsController
     }
 
     /**
+     * Owner-only. At most one video per listing — this always replaces
+     * whichever video is already attached (deleting its file first), which
+     * is what enforces the "1 video" cap rather than a separate count check.
+     * Mirrors AdvertsController::attachVideo() exactly.
+     */
+    public static function attachVideo(string $encodedId, int $userId, string $fileName): array
+    {
+        $id = self::decodeId($encodedId);
+        $listing = $id ? Listing::where('listing_id', $id)->where('orig_user_id', $userId)->first() : null;
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        if ($listing->video_name) {
+            $oldPath = __DIR__ . '/../../public/videos/listings/' . basename($listing->video_name);
+            if (file_exists($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        $listing->video_name = $fileName;
+        $listing->save();
+
+        return ['success' => true, 'listing' => $listing];
+    }
+
+    /**
+     * Owner-only.
+     */
+    public static function removeVideo(string $encodedId, int $userId): array
+    {
+        $id = self::decodeId($encodedId);
+        $listing = $id ? Listing::where('listing_id', $id)->where('orig_user_id', $userId)->first() : null;
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        if ($listing->video_name) {
+            $path = __DIR__ . '/../../public/videos/listings/' . basename($listing->video_name);
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        $listing->video_name = null;
+        $listing->save();
+
+        return ['success' => true];
+    }
+
+    /**
      * Owner-only toggle between Active and Archived ("End Listing" / "Reactivate Listing").
      */
     public static function setStatus(string $encodedId, int $statusId, int $userId): array
@@ -340,6 +393,7 @@ class ListingsController
             'amenities_data' => $listing->getAmenityModels(),
             'contact_phone' => $listing->contact_phone,
             'youtube_url' => $listing->youtube_url,
+            'video_name' => $listing->video_name,
             'status_id' => $listing->status_id,
             'views' => $listing->views,
             'created_at' => $listing->created_at,

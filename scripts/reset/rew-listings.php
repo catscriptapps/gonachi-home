@@ -52,6 +52,10 @@ function resetRewListingsTable(): array
             $table->json('amenities')->nullable();
 
             $table->text('youtube_url')->nullable();
+            // Uploaded video (owner-only, max 1) — distinct from youtube_url
+            // above (an external link); this is a real file under
+            // public/videos/listings/, matching Adverts' video_name column.
+            $table->string('video_name', 300)->nullable();
             $table->string('contact_phone', 30)->nullable();
 
             // 1=Active, 2=Archived — matches Quotations/Adverts status convention.

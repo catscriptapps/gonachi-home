@@ -83,7 +83,11 @@ class AdvertsPicturesController
             return ['success' => false, 'message' => 'Upload failed.'];
         }
 
-        return ['success' => true, 'files' => $uploaded];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the newly-added picture.
+        $advert->load(['owner', 'cta', 'package', 'pictures']);
+
+        return ['success' => true, 'files' => $uploaded, 'cardHtml' => AdvertsController::renderCard($advert, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array
@@ -94,8 +98,13 @@ class AdvertsPicturesController
             return ['success' => false, 'message' => 'Picture not found, or not yours to manage.'];
         }
 
+        $advert = $pic->advert;
         $pic->delete();
 
-        return ['success' => true];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the picture is gone.
+        $advert->load(['owner', 'cta', 'package', 'pictures']);
+
+        return ['success' => true, 'cardHtml' => AdvertsController::renderCard($advert, $userId)];
     }
 }

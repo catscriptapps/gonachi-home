@@ -49,6 +49,22 @@ $modalDetailOwnerTitle = 'Posted By';
                 </div>
 
                 <div>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-[10px] font-bold uppercase tracking-widest text-teal-600">Video</label>
+                        <span class="text-[10px] font-bold text-gray-400">Max 1</span>
+                    </div>
+                    <div id="quote-video-wrapper" class="mb-2"></div>
+                    <button type="button" id="quote-add-video-btn" class="hidden text-xs font-bold text-teal-600 hover:text-teal-700 items-center gap-1.5">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" /></svg>
+                        Add Video
+                    </button>
+                    <button type="button" id="quote-remove-video-btn" class="hidden text-xs font-bold text-red-500 hover:text-red-600 items-center gap-1.5 mt-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        Remove Video
+                    </button>
+                </div>
+
+                <div>
                     <label class="block text-[10px] font-bold uppercase tracking-widest text-teal-600 mb-1">Work Description</label>
                     <p id="view-quote-description" class="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-line"></p>
                 </div>

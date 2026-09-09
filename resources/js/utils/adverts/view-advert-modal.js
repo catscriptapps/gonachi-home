@@ -186,6 +186,17 @@ function safeParse(json) {
 // Media management
 // -------------------------------
 
+// Keeps the grid card behind the modal in sync with picture add/delete —
+// no F5 needed to see the new/removed thumbnail. No-ops if the current page
+// doesn't have a matching card in the DOM (e.g. the admin table view, which
+// renders rows rather than cards — a picture edit there is a rare enough
+// path that it isn't worth a separate row-render).
+function updateCardInGrid(encodedId, cardHtml) {
+  if (!cardHtml) return;
+  const card = document.querySelector(`.ad-card-wrapper[data-encoded-id="${encodedId}"]`);
+  if (card) card.outerHTML = cardHtml;
+}
+
 async function loadPictures(encodedId, canManage) {
   const wrapper = document.getElementById('ad-pics-wrapper');
   const countEl = document.getElementById('view-ad-pics-count');
@@ -224,9 +235,10 @@ function triggerPhotoUpload(modal) {
     createUploadHandler(
       `${baseUrl}api/advert-upload-pics?id=${encodeURIComponent(encodedId)}`,
       'advert-pics',
-      () => {
+      (_files, cardHtml) => {
         showToast('Picture(s) added.', 'success');
         loadPictures(encodedId, true);
+        updateCardInGrid(encodedId, cardHtml);
       },
       6,
       true,
@@ -252,6 +264,7 @@ async function deletePicture(btn, modal) {
 
     if (result.success) {
       loadPictures(modal.dataset.activeEncodedId, true);
+      updateCardInGrid(modal.dataset.activeEncodedId, result.cardHtml);
     } else {
       showToast(result.message || 'Could not remove picture.', 'error');
     }

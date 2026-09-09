@@ -14,6 +14,7 @@
 import { showToast } from '../../ui/toast.js';
 import { confirmDialog } from '../../ui/confirm.js';
 import { uploadModal, createUploadHandler } from '../../modals/upload-modal.js';
+import { videoUploadModal, createVideoUploadHandler } from '../../modals/video-upload-modal.js';
 import { ViewCounter } from '../globals/view-counter.js';
 import { openListingResponseModal } from '../../modals/listing-response-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
@@ -37,6 +38,9 @@ export function initViewListingModal() {
     const delBtn = e.target.closest('[data-delete-pic]');
     if (delBtn) deletePicture(delBtn, modal);
   });
+
+  document.getElementById('listing-add-video-btn')?.addEventListener('click', () => triggerVideoUpload(modal));
+  document.getElementById('listing-remove-video-btn')?.addEventListener('click', () => removeVideo(modal));
 
   document.getElementById('view-listing-inquiries-list')?.addEventListener('click', (e) => {
     const btn = e.target.closest('[data-response-action]');
@@ -166,6 +170,7 @@ async function openModal(el) {
   }
 
   await loadPictures(d.encodedId, canManage);
+  renderVideo(modal, d.videoUrl || '', canManage);
 
   modal.classList.remove('hidden');
   ViewCounter.increment('listing', d.encodedId);
@@ -234,6 +239,14 @@ function formatDate(iso) {
 // Pictures
 // -------------------------------
 
+// Keeps the grid card behind the modal in sync with picture add/delete —
+// no F5 needed to see the new/removed thumbnail.
+function updateCardInGrid(encodedId, cardHtml) {
+  if (!cardHtml) return;
+  const card = document.querySelector(`.listing-card-wrapper[data-encoded-id="${encodedId}"]`);
+  if (card) card.outerHTML = cardHtml;
+}
+
 async function loadPictures(encodedId, canManage) {
   const wrapper = document.getElementById('listing-pics-wrapper');
   const countEl = document.getElementById('view-listing-pics-count');
@@ -272,9 +285,10 @@ function triggerPhotoUpload(modal) {
     createUploadHandler(
       `${baseUrl}api/listing-upload-pics?id=${encodeURIComponent(encodedId)}`,
       'listing-pics',
-      () => {
+      (_files, cardHtml) => {
         showToast('Picture(s) added.', 'success');
         loadPictures(encodedId, true);
+        updateCardInGrid(encodedId, cardHtml);
       },
       6,
       true,
@@ -300,11 +314,78 @@ async function deletePicture(btn, modal) {
 
     if (result.success) {
       loadPictures(modal.dataset.activeEncodedId, true);
+      updateCardInGrid(modal.dataset.activeEncodedId, result.cardHtml);
     } else {
       showToast(result.message || 'Could not remove picture.', 'error');
     }
   } catch (err) {
     console.error('Delete listing picture error:', err);
+    showToast('Unexpected error.', 'error');
+  }
+}
+
+// -------------------------------
+// Video (owner-only, max 1 — same cap enforced by ListingsController::attachVideo()
+// always replacing whichever video already exists). Mirrors Adverts' video section.
+// -------------------------------
+
+function renderVideo(modal, videoUrl, canManage) {
+  const wrapper = document.getElementById('listing-video-wrapper');
+  const addBtn = document.getElementById('listing-add-video-btn');
+  const removeBtn = document.getElementById('listing-remove-video-btn');
+  if (!wrapper || !addBtn || !removeBtn) return;
+
+  modal.dataset.hasVideo = videoUrl ? '1' : '0';
+
+  wrapper.innerHTML = videoUrl
+    ? `<video src="${videoUrl}" controls class="w-full max-h-48 rounded-lg bg-black"></video>`
+    : '<p class="text-xs text-gray-400">No video yet.</p>';
+
+  addBtn.classList.toggle('hidden', !(canManage && !videoUrl));
+  addBtn.classList.toggle('flex', canManage && !videoUrl);
+  removeBtn.classList.toggle('hidden', !(canManage && videoUrl));
+  removeBtn.classList.toggle('flex', canManage && !!videoUrl);
+}
+
+function triggerVideoUpload(modal) {
+  const encodedId = modal.dataset.activeEncodedId;
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  videoUploadModal.open();
+  setTimeout(() => {
+    createVideoUploadHandler(`${baseUrl}api/listing-upload-video?id=${encodeURIComponent(encodedId)}`, (files) => {
+      const url = files[0]?.url;
+      if (url) {
+        showToast('Video added.', 'success');
+        renderVideo(modal, url, true);
+      }
+    });
+  }, 50);
+}
+
+async function removeVideo(modal) {
+  const confirmed = await confirmDialog('Remove this video?', 'Remove', 'Cancel', 'bg-red-600 hover:bg-red-700');
+  if (!confirmed) return;
+
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+  const encodedId = modal.dataset.activeEncodedId;
+
+  try {
+    const response = await fetch(`${baseUrl}api/listing-video-delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: encodedId }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      renderVideo(modal, '', true);
+      showToast('Video removed.', 'success');
+    } else {
+      showToast(result.message || 'Could not remove video.', 'error');
+    }
+  } catch (err) {
+    console.error('Remove listing video error:', err);
     showToast('Unexpected error.', 'error');
   }
 }

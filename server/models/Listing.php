@@ -43,6 +43,7 @@ class Listing extends Model
         'pets_allowed',
         'amenities',
         'youtube_url',
+        'video_name',
         'contact_phone',
         'status_id',
         'views',

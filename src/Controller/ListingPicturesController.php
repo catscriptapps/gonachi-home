@@ -84,7 +84,11 @@ class ListingPicturesController
             return ['success' => false, 'message' => 'Upload failed.'];
         }
 
-        return ['success' => true, 'files' => $uploaded];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the newly-added picture.
+        $listing->load(ListingsController::EAGER);
+
+        return ['success' => true, 'files' => $uploaded, 'cardHtml' => ListingsController::renderCard($listing, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array
@@ -95,8 +99,13 @@ class ListingPicturesController
             return ['success' => false, 'message' => 'Picture not found, or not yours to manage.'];
         }
 
+        $listing = $pic->listing;
         $pic->delete();
 
-        return ['success' => true];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the picture is gone.
+        $listing->load(ListingsController::EAGER);
+
+        return ['success' => true, 'cardHtml' => ListingsController::renderCard($listing, $userId)];
     }
 }

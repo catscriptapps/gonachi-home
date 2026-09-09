@@ -287,6 +287,7 @@ export function createUploadHandler(endpointUrl, context, onComplete, concurrenc
 
     finalBtn.disabled = true;
     const allUploadedFiles = [];
+    let lastCardHtml = null;
 
     // BATCH PROCESSING LOOP
     for (let i = 0; i < readyItems.length; i += BATCH_SIZE) {
@@ -310,6 +311,10 @@ export function createUploadHandler(endpointUrl, context, onComplete, concurrenc
           // 🍊 FIX: Check for 'files' OR 'uploadedFiles' to match your PHP response
           const newFiles = data.files || data.uploadedFiles || [];
           allUploadedFiles.push(...newFiles);
+          // Owner-only picture endpoints (adverts/quotations/listings) also
+          // return a freshly-rendered cardHtml reflecting every picture
+          // uploaded so far — the last batch's is the complete, current state.
+          if (data.cardHtml) lastCardHtml = data.cardHtml;
 
           chunk.forEach(item => item.tile.remove());
         }
@@ -323,7 +328,7 @@ export function createUploadHandler(endpointUrl, context, onComplete, concurrenc
     items.forEach(i => i.tile.remove()); // Physically remove tiles
     items = [];
     updateUI();
-    onComplete(allUploadedFiles);
+    onComplete(allUploadedFiles, lastCardHtml);
     closeHandler();
   };
 

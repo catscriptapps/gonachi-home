@@ -15,6 +15,7 @@
 $title = $data['listing_title'];
 $description = $data['listing_description'];
 $thumbnail = $data['thumbnail'] ? $assetBase . 'images/uploads/listings/' . htmlspecialchars($data['thumbnail']) : null;
+$videoUrl = $data['video_name'] ? $assetBase . 'videos/listings/' . htmlspecialchars($data['video_name']) : null;
 $ownerAvatarUrl = $data['owner_avatar'] ? $assetBase . 'images/uploads/avatars/' . htmlspecialchars($data['owner_avatar']) : null;
 
 $categoryId = (int) $data['category_id'];
@@ -81,6 +82,8 @@ $myResponseBadge = match ($myResponseStatus) {
     data-amenities-collection='<?= htmlspecialchars(json_encode($data['amenities_data']), ENT_QUOTES) ?>'
     data-contact-phone="<?= htmlspecialchars((string) $data['contact_phone']) ?>"
     data-youtube-url="<?= htmlspecialchars((string) $data['youtube_url']) ?>"
+    data-video-name="<?= htmlspecialchars((string) $data['video_name']) ?>"
+    data-video-url="<?= htmlspecialchars($videoUrl ?? '') ?>"
     data-status-id="<?= (int) $data['status_id'] ?>"
     data-views-count="<?= (int) $data['views'] ?>"
     data-created="<?= $data['created_at']?->format('M j, Y') ?>"

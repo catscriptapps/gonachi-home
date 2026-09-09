@@ -38,6 +38,7 @@ class Quotation extends Model
         'quotation_type_id',
         'quotation_dest_id',
         'youtube_url',
+        'video_name',
         'contact_phone',
         'status_id',
         'views',

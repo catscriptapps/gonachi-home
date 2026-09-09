@@ -27,7 +27,7 @@ class QuotationsController
 {
     use RecentActivityLogger;
 
-    private const EAGER = [
+    public const EAGER = [
         'owner.country',
         'owner.region',
         'country',
@@ -176,6 +176,59 @@ class QuotationsController
     }
 
     /**
+     * Owner-only. At most one video per quotation — this always replaces
+     * whichever video is already attached (deleting its file first), which
+     * is what enforces the "1 video" cap rather than a separate count check.
+     * Mirrors AdvertsController::attachVideo() exactly.
+     */
+    public static function attachVideo(string $encodedId, int $userId, string $fileName): array
+    {
+        $id = self::decodeId($encodedId);
+        $quote = $id ? Quotation::where('quotation_id', $id)->where('orig_user_id', $userId)->first() : null;
+
+        if (!$quote) {
+            return ['success' => false, 'message' => 'Quotation not found, or not yours to manage.'];
+        }
+
+        if ($quote->video_name) {
+            $oldPath = __DIR__ . '/../../public/videos/quotations/' . basename($quote->video_name);
+            if (file_exists($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        $quote->video_name = $fileName;
+        $quote->save();
+
+        return ['success' => true, 'quotation' => $quote];
+    }
+
+    /**
+     * Owner-only.
+     */
+    public static function removeVideo(string $encodedId, int $userId): array
+    {
+        $id = self::decodeId($encodedId);
+        $quote = $id ? Quotation::where('quotation_id', $id)->where('orig_user_id', $userId)->first() : null;
+
+        if (!$quote) {
+            return ['success' => false, 'message' => 'Quotation not found, or not yours to manage.'];
+        }
+
+        if ($quote->video_name) {
+            $path = __DIR__ . '/../../public/videos/quotations/' . basename($quote->video_name);
+            if (file_exists($path)) {
+                @unlink($path);
+            }
+        }
+
+        $quote->video_name = null;
+        $quote->save();
+
+        return ['success' => true];
+    }
+
+    /**
      * Owner-only toggle between Active and Archived.
      */
     public static function setStatus(string $encodedId, int $statusId, int $userId): array
@@ -274,6 +327,7 @@ class QuotationsController
             'finish_time' => $quote->finish_time,
             'contact_phone' => $quote->contact_phone,
             'youtube_url' => $quote->youtube_url,
+            'video_name' => $quote->video_name,
             'status_id' => $quote->status_id,
             'views' => $quote->views,
             'created_at' => $quote->created_at,

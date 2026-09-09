@@ -12,6 +12,7 @@
 $title = $data['title'];
 $description = $data['description'];
 $thumbnail = $data['thumbnail'] ? $assetBase . 'images/uploads/quotations/' . htmlspecialchars($data['thumbnail']) : null;
+$videoUrl = $data['video_name'] ? $assetBase . 'videos/quotations/' . htmlspecialchars($data['video_name']) : null;
 $ownerAvatarUrl = $data['owner_avatar'] ? $assetBase . 'images/uploads/avatars/' . htmlspecialchars($data['owner_avatar']) : null;
 
 $isArchived = (int) $data['status_id'] === 2;
@@ -59,6 +60,8 @@ $fTime = $data['finish_time'] ? date('g:i A', strtotime($data['finish_time'])) :
     data-finish-time="<?= htmlspecialchars((string) $data['finish_time']) ?>"
     data-contact-phone="<?= htmlspecialchars((string) $data['contact_phone']) ?>"
     data-youtube-url="<?= htmlspecialchars((string) $data['youtube_url']) ?>"
+    data-video-name="<?= htmlspecialchars((string) $data['video_name']) ?>"
+    data-video-url="<?= htmlspecialchars($videoUrl ?? '') ?>"
     data-status-id="<?= (int) $data['status_id'] ?>"
     data-views-count="<?= (int) $data['views'] ?>"
     data-created="<?= $data['created_at']?->format('M j, Y') ?>"

@@ -44,6 +44,10 @@ function resetRewQuotationsTable(): array
             $table->unsignedInteger('quotation_dest_id')->nullable();
 
             $table->text('youtube_url')->nullable();
+            // Uploaded video (owner-only, max 1) — distinct from youtube_url
+            // above (an external link); this is a real file under
+            // public/videos/quotations/, matching Adverts' video_name column.
+            $table->string('video_name', 300)->nullable();
             $table->string('contact_phone', 30)->nullable();
             $table->integer('views')->default(0);
 

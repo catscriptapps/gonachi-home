@@ -84,7 +84,11 @@ class QuotationPicturesController
             return ['success' => false, 'message' => 'Upload failed.'];
         }
 
-        return ['success' => true, 'files' => $uploaded];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the newly-added picture.
+        $quote->load(QuotationsController::EAGER);
+
+        return ['success' => true, 'files' => $uploaded, 'cardHtml' => QuotationsController::renderCard($quote, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array
@@ -95,8 +99,13 @@ class QuotationPicturesController
             return ['success' => false, 'message' => 'Picture not found, or not yours to manage.'];
         }
 
+        $quote = $pic->quotation;
         $pic->delete();
 
-        return ['success' => true];
+        // Fresh cardHtml so the grid behind the modal updates its thumbnail
+        // live — no F5 needed to see the picture is gone.
+        $quote->load(QuotationsController::EAGER);
+
+        return ['success' => true, 'cardHtml' => QuotationsController::renderCard($quote, $userId)];
     }
 }
