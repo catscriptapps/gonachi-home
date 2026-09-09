@@ -139,6 +139,10 @@ $tablesToDrop = [
     'rew_agreement_types',
     'rew_bathrooms',
     'rew_bedrooms',
+    'rew_recommendations',
+    'rew_rating_criteria_scores',
+    'rew_ratings',
+    'rew_rating_criteria',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -362,6 +366,18 @@ $messages = array_merge($messages, resetRewListingPicsTable());
 
 require_once __DIR__ . '/../../scripts/reset/rew-listing-responses.php';
 $messages = array_merge($messages, resetRewListingResponsesTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-rating-criteria.php';
+$messages = array_merge($messages, resetRewRatingCriteriaTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-ratings.php';
+$messages = array_merge($messages, resetRewRatingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-rating-criteria-scores.php';
+$messages = array_merge($messages, resetRewRatingCriteriaScoresTable());
+
+require_once __DIR__ . '/../../scripts/reset/rew-recommendations.php';
+$messages = array_merge($messages, resetRewRecommendationsTable());
 
 /**
  * 4e. RESTORE PRESERVED DATA

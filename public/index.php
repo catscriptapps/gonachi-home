@@ -73,7 +73,7 @@ $assetBase = rtrim($assetBase, '/') . '/';
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
 $landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
-$realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings'];
+$realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings', '/ratings', '/recommendations'];
 
 // /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
 // /{resource}/{id} handling) — its path always carries the contractor's ID,

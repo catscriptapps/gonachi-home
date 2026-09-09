@@ -23,6 +23,10 @@
       "_form-validator.min.js"
     ]
   },
+  "_countries-api.min.js": {
+    "file": "js/countries-api.min.js",
+    "name": "countries-api"
+  },
   "_delete-factory.min.js": {
     "file": "js/delete-factory.min.js",
     "name": "delete-factory"
@@ -131,6 +135,7 @@
     "imports": [
       "_modal-factory.min.js",
       "_regions-component.min.js",
+      "_countries-api.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_table-pagination-count.min.js"
@@ -184,7 +189,8 @@
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js",
-      "_regions-component.min.js"
+      "_regions-component.min.js",
+      "_countries-api.min.js"
     ],
     "css": [
       "css/app.min.css"
@@ -473,6 +479,7 @@
       "_animations.min.js",
       "_modal-factory.min.js",
       "_regions-component.min.js",
+      "_countries-api.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_table-pagination-count.min.js"
@@ -495,6 +502,32 @@
       "_preview.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
+    ]
+  },
+  "resources/js/pages/ratings-page.js": {
+    "file": "js/ratings-page.min.js",
+    "name": "ratings-page",
+    "src": "resources/js/pages/ratings-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_countries-api.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/recommendations-page.js": {
+    "file": "js/recommendations-page.min.js",
+    "name": "recommendations-page",
+    "src": "resources/js/pages/recommendations-page.js",
+    "isEntry": true,
+    "imports": [
+      "_animations.min.js",
+      "_modal-factory.min.js",
+      "_regions-component.min.js",
+      "_countries-api.min.js",
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/report-landlord-page.js": {
@@ -575,6 +608,7 @@
       "_table-search.min.js",
       "_modal-factory.min.js",
       "_regions-component.min.js",
+      "_countries-api.min.js",
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_preload-helper.min.js"

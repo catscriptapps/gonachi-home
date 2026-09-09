@@ -9,9 +9,11 @@ declare(strict_types=1);
  * Nav items are adapted from the legacy gonachi/ platform's guest menu
  * (see gonachi/src/Config/NavigationConfig.php::publicLinks()) — Home,
  * Social Feed, Adverts, Quotations, Mentors, Listings, Contact. "About"
- * is deliberately dropped (not needed here). Only Home and Contact have
- * pages ported over so far; the rest are placeholders until those modules
- * are built out here.
+ * is deliberately dropped (not needed here). Ratings and Recommendations
+ * (inserted between Listings and Contact) are ported separately from a
+ * different legacy codebase, gonachi-old/{ratings,recommend}/ — see
+ * Src\Controller\RatingsController / RecommendationsController for that
+ * source's full mapping.
  */
 ?>
 <aside
@@ -48,6 +50,8 @@ declare(strict_types=1);
         ['label' => 'Quotations', 'slug' => 'quotations', 'strokeWidth' => '1.75', 'icon' => 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z'],
         ['label' => 'Mentors', 'slug' => 'mentors', 'strokeWidth' => '2', 'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'],
         ['label' => 'Listings', 'slug' => 'listings', 'strokeWidth' => '2', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
+        ['label' => 'Ratings', 'slug' => 'ratings', 'strokeWidth' => '2', 'icon' => 'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.54 1.118l-3.976-2.888a1 1 0 00-1.175 0l-3.976 2.888c-.784.57-1.838-.196-1.539-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z'],
+        ['label' => 'Recommendations', 'slug' => 'recommendations', 'strokeWidth' => '2', 'icon' => 'M14 10h4.757c1.246 0 2.25 1.004 2.25 2.25 0 .594-.232 1.164-.644 1.588l-7.02 7.153a1.5 1.5 0 01-2.11 0l-7.02-7.153A2.25 2.25 0 015.243 10H10V3a1 1 0 011-1h2a1 1 0 011 1v7z'],
         ['label' => 'Contact', 'slug' => 'contact', 'strokeWidth' => '1', 'icon' => 'M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75'],
     ];
     ?>

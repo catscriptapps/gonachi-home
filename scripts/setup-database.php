@@ -255,6 +255,18 @@ $messages = array_merge($messages, resetRewListingPicsTable());
 require_once __DIR__ . '/reset/rew-listing-responses.php';
 $messages = array_merge($messages, resetRewListingResponsesTable());
 
+require_once __DIR__ . '/reset/rew-rating-criteria.php';
+$messages = array_merge($messages, resetRewRatingCriteriaTable());
+
+require_once __DIR__ . '/reset/rew-ratings.php';
+$messages = array_merge($messages, resetRewRatingsTable());
+
+require_once __DIR__ . '/reset/rew-rating-criteria-scores.php';
+$messages = array_merge($messages, resetRewRatingCriteriaScoresTable());
+
+require_once __DIR__ . '/reset/rew-recommendations.php';
+$messages = array_merge($messages, resetRewRecommendationsTable());
+
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
