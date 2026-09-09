@@ -39,6 +39,12 @@ class SocialFeedController
             ->paginate($perPage);
     }
 
+    /** For the guest landing hero's stat counter — matches AdvertsController::totalActiveCount()'s convention. */
+    public static function totalPostsCount(): int
+    {
+        return Post::count();
+    }
+
     /**
      * @param array $input content, media_url, media_type (all optional individually,
      *                      but at least one of content/media_url is required)

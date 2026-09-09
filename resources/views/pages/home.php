@@ -115,7 +115,7 @@ if (is_dir($heroImagesPath)) {
             <div class="relative flex flex-col sm:flex-row items-center justify-between gap-6">
                 <div class="text-center sm:text-left">
                     <h2 class="text-xl sm:text-2xl font-bold text-white">New here? Join Gonachi today.</h2>
-                    <p class="text-sm text-white/80 mt-1">Create a free account to unlock every project above — or sign in if you're already one of us.</p>
+                    <p class="text-sm text-white/80 mt-1">Create a free account to unlock every project below — or sign in if you're already one of us.</p>
                 </div>
                 <div class="flex flex-col sm:flex-row items-center gap-3 flex-shrink-0">
                     <button type="button" class="register-btn inline-flex items-center justify-center px-6 py-3 bg-white text-primary-700 font-bold text-sm rounded-xl shadow-sm hover:bg-gray-50 transition-colors w-full sm:w-auto">

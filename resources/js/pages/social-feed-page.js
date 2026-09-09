@@ -7,9 +7,10 @@
  *  - View-post modal (comments, add/delete comment)
  *  - Follow graph (stats, suggestions, search, follow/unfollow)
  *
- * Guests never reach this — the page renders guest-landing.php instead,
- * which has none of the elements these modules look for, so each init()
- * below simply no-ops when its target elements aren't present.
+ * Guests get the compact marketing hero instead (see social-feed.php's
+ * (!$isLoggedIn) branch), which has none of the elements these modules
+ * look for, so each init() below simply no-ops when its target elements
+ * aren't present.
  *
  * Exported `init()` is called by app.js on full load and after partial-load
  * navigation (see spa-router.js).
