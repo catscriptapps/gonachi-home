@@ -186,6 +186,7 @@
       "resources/js/ui/toast.js",
       "resources/js/pages/messages-page.js",
       "_users-modal.min.js",
+      "_confirm.min.js",
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js",
@@ -592,6 +593,15 @@
       "_preload-helper.min.js"
     ],
     "dynamicImports": [
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/transactions-page.js": {
+    "file": "js/transactions-page.min.js",
+    "name": "transactions-page",
+    "src": "resources/js/pages/transactions-page.js",
+    "isEntry": true,
+    "imports": [
       "resources/js/ui/toast.js"
     ]
   },

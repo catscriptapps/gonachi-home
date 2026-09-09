@@ -39,11 +39,16 @@ function initFormFeatures(formId, mode, modalInstance) {
 // --- Add User ---
 export async function openAddUserModal() {
     const countryId = ''; // No country selected by default for Add form
-    const [countries, regions, availableRoles] = await Promise.all([
+
+    // fetchRegions requires a country_id (server 400s without one, by
+    // design — see server/api/regions.php) — skip the call entirely rather
+    // than firing a call we know will fail; the region select starts empty
+    // and populates once enableDynamicRegionLoading() sees a country chosen.
+    const [countries, availableRoles] = await Promise.all([
         fetchCountries(),
-        fetchRegions(countryId),
         fetchUserTypes()
     ]);
+    const regions = [];
 
     if (userModal) userModal.destroy();
 

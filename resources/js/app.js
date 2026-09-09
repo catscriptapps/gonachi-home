@@ -59,6 +59,7 @@ import { init as initChatWidget } from './components/chat-widget.js';
 import { wireReviewQueue } from './utils/review-queue.js';
 import { initRegisterNewUser } from './utils/home/register-new-user.js';
 import { initAuthGateTriggers } from './modals/auth-gate-modal.js';
+import { initSponsoredAd } from './components/sponsored-ad.js';
 
 // === Page Manifest ===
 let PAGE_MANIFEST = [];
@@ -207,6 +208,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 
   initHeaderSearch();
+  initSponsoredAd();
 
   const sessionUserId = window.sessionUserId;
   if (sessionUserId) {
@@ -259,6 +261,7 @@ document.body.addEventListener('partial-load', (e) => {
         cleanupModals();            // 🧹 Remove old modals & MutationObservers
         await initPageScript(parsedUrl.pathname); // 🚀 Load & init the new page script
         initGlobalModals();         // 🔁 Rebind login/logout/reset modals
+        initSponsoredAd();          // 🔁 Fresh sponsored-ad impression per page view
       } catch (err) {
         console.error('Failed to initialize page script after partial load:', err);
       }

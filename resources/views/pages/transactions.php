@@ -1,8 +1,11 @@
 <?php
 // /resources/views/pages/transactions.php
 //
-// Billing & Credits page — balance, transaction history, and (placeholder,
-// no payment gateway wired in yet) credit packs to purchase.
+// Billing & Credits page — balance, transaction history, and credit packs
+// purchasable via Paystack's inline checkout (Src\Service\PaystackService /
+// Src\Service\CreditService::initiatePurchase()/confirmPurchase()). Buying
+// stays disabled with a "Coming soon" tooltip until PAYSTACK_SECRET_KEY /
+// PAYSTACK_PUBLIC_KEY are set in .env — see CreditService::isPurchasingEnabled().
 
 declare(strict_types=1);
 
@@ -29,18 +32,15 @@ endif;
 
 $balance = CreditService::getBalance($currentUserId);
 $history = CreditService::history($currentUserId);
+$purchasingEnabled = CreditService::isPurchasingEnabled();
+$packs = CreditService::packs();
+$currentUser = AuthService::currentUser();
 
 $reasonLabels = [
     'trial_grant' => ['label' => 'Free Trial Grant', 'classes' => 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-400'],
     'lead_unlock' => ['label' => 'Lead Unlock', 'classes' => 'bg-primary-100 text-primary-800 dark:bg-primary-950 dark:text-primary-400'],
     'purchase' => ['label' => 'Purchase', 'classes' => 'bg-indigo-100 text-indigo-800 dark:bg-indigo-950 dark:text-indigo-400'],
     'admin_adjustment' => ['label' => 'Adjustment', 'classes' => 'bg-gray-100 text-gray-700 dark:bg-gray-800 dark:text-gray-300'],
-];
-
-$packs = [
-    ['credits' => 10, 'price' => '₦5,000'],
-    ['credits' => 25, 'price' => '₦11,000'],
-    ['credits' => 60, 'price' => '₦24,000'],
 ];
 ?>
 <div class="space-y-6">
@@ -64,19 +64,28 @@ $packs = [
         </div>
     </div>
 
-    <!-- Credit Packs (placeholder — no payment gateway wired in yet) -->
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <!-- Credit Packs -->
+    <div id="credit-packs" data-user-email="<?= htmlspecialchars($currentUser->email ?? '') ?>" data-purchasing-enabled="<?= $purchasingEnabled ? '1' : '0' ?>" class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <?php foreach ($packs as $pack): ?>
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 text-center shadow-sm">
                 <span class="block text-2xl font-bold text-gray-900 dark:text-white"><?= $pack['credits'] ?></span>
                 <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Credits</span>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2"><?= $pack['price'] ?></p>
-                <button disabled title="Coming soon" class="mt-3 w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 font-bold text-xs rounded-lg cursor-not-allowed">
-                    Buy Credits
-                </button>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2"><?= htmlspecialchars($pack['price_label']) ?></p>
+                <?php if ($purchasingEnabled): ?>
+                    <button type="button" class="buy-credits-btn mt-3 w-full px-4 py-2 bg-primary-600 hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors" data-pack-id="<?= (int) $pack['id'] ?>">
+                        Buy Credits
+                    </button>
+                <?php else: ?>
+                    <button disabled title="Coming soon" class="mt-3 w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 dark:text-gray-600 font-bold text-xs rounded-lg cursor-not-allowed">
+                        Buy Credits
+                    </button>
+                <?php endif; ?>
             </div>
         <?php endforeach; ?>
     </div>
+    <?php if (!$purchasingEnabled): ?>
+        <p class="text-xs text-gray-400 dark:text-gray-600 -mt-2">Credit purchases aren't live yet — check back soon.</p>
+    <?php endif; ?>
 
     <!-- Transaction History -->
     <div class="space-y-3">

@@ -105,6 +105,9 @@ $messages = array_merge($messages, resetRelCreditAccountsTable());
 require_once __DIR__ . '/reset/rel-credit-transactions.php';
 $messages = array_merge($messages, resetRelCreditTransactionsTable());
 
+require_once __DIR__ . '/reset/rel-credit-purchases.php';
+$messages = array_merge($messages, resetRelCreditPurchasesTable());
+
 require_once __DIR__ . '/reset/rel-lead-unlocks.php';
 $messages = array_merge($messages, resetRelLeadUnlocksTable());
 

@@ -84,7 +84,7 @@ declare(strict_types=1);
                             <span class="inline-flex items-center gap-1.5 text-xs font-semibold tracking-wider text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-950/40 px-2 py-0.5 rounded-full uppercase">
                                 Sponsored Advertisement
                             </span>
-                            <span class="text-xs text-gray-400 dark:text-gray-600 hover:text-primary-600 dark:hover:text-primary-400 hover:underline cursor-pointer transition-colors">Report Ad</span>
+                            <span class="report-ad-link text-xs text-gray-400 dark:text-gray-600 hover:text-primary-600 dark:hover:text-primary-400 hover:underline cursor-pointer transition-colors">Report Ad</span>
                         </div>
                         <div class="w-full min-h-[90px] flex items-center justify-center bg-gradient-to-br from-primary-50/60 via-gray-50 to-secondary-50/60 dark:from-primary-950/20 dark:via-zinc-950 dark:to-secondary-950/20 rounded-lg border border-dashed border-primary-200 dark:border-gray-800 overflow-hidden">
                             <div id="ad-placement-slot-1"></div>

@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 use Src\Config\ProjectsConfig;
 
+/** @var bool $isLoggedIn */
+
 // The three data-engine sub-apps hosted under gonachi-home — used for the
 // top card grid below and drive ProjectsConfig (icons/nav links/sidebar
 // switcher).
@@ -87,20 +89,48 @@ if (is_dir($heroImagesPath)) {
         <div class="absolute inset-0 bg-gray-50/90 dark:bg-gray-950/90"></div>
     <?php endif; ?>
 
-    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 sm:pt-28 pb-32 sm:pb-44">
+    <div class="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 sm:pt-16 pb-24 sm:pb-28">
         <div class="text-center max-w-2xl mx-auto" data-aos="fade-up" data-aos-duration="800">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-44 w-44 sm:h-52 sm:w-52 mx-auto mb-6 rounded-full object-contain bg-white ring-1 ring-black/5 dark:ring-white/10 shadow-lg" />
-            <h1 class="text-4xl sm:text-5xl font-bold tracking-tight text-gray-900 dark:text-white">
+            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-32 w-32 sm:h-40 sm:w-40 mx-auto mb-5 rounded-full object-contain bg-white ring-1 ring-black/5 dark:ring-white/10 shadow-lg" />
+            <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                 One platform. Built to find opportunity.
             </h1>
-            <p class="mt-4 text-base text-gray-500 dark:text-gray-400">
+            <p class="mt-3 text-base text-gray-500 dark:text-gray-400">
                 Choose a project to get started.
             </p>
         </div>
     </div>
 </section>
 
-<div class="relative -mt-20 sm:-mt-28 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
+<?php if (!$isLoggedIn): ?>
+    <!-- Guest CTA: a visible, unmissable "get started" prompt that doesn't
+         rely on a visitor noticing the header's Sign In button. Two direct
+         actions (not routed through the combined auth-gate choice modal
+         used elsewhere) so both read as equally bold, standalone options. -->
+    <div class="relative -mt-16 sm:-mt-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
+        <div data-aos="fade-up" data-aos-duration="700" class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-primary-600 to-secondary-600 px-6 sm:px-10 py-8 shadow-xl">
+            <div class="absolute -top-10 -right-10 h-40 w-40 rounded-full bg-white/10"></div>
+            <div class="absolute -bottom-12 -left-8 h-32 w-32 rounded-full bg-white/10"></div>
+
+            <div class="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="text-center sm:text-left">
+                    <h2 class="text-xl sm:text-2xl font-bold text-white">New here? Join Gonachi today.</h2>
+                    <p class="text-sm text-white/80 mt-1">Create a free account to unlock every project above — or sign in if you're already one of us.</p>
+                </div>
+                <div class="flex flex-col sm:flex-row items-center gap-3 flex-shrink-0">
+                    <button type="button" class="register-btn inline-flex items-center justify-center px-6 py-3 bg-white text-primary-700 font-bold text-sm rounded-xl shadow-sm hover:bg-gray-50 transition-colors w-full sm:w-auto">
+                        Create Free Account
+                    </button>
+                    <a href="javascript:void(0)" data-login-button class="inline-flex items-center justify-center px-6 py-3 border-2 border-white/70 text-white font-bold text-sm rounded-xl hover:bg-white/10 transition-colors w-full sm:w-auto">
+                        Sign In
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="relative <?= $isLoggedIn ? '-mt-8 sm:-mt-10' : '' ?> max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
         <?php foreach ($projects as $index => $project): ?>
             <?php $accent = $accentClasses[$project['accent']]; ?>

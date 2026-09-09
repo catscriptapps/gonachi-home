@@ -294,6 +294,74 @@ class AdvertsController
     }
 
     /**
+     * Picks one active, targeting-matched advert to show in the layout's
+     * "Sponsored Advertisement" slot (see resources/js/components/sponsored-ad.js).
+     * Never shows a viewer their own ad. Weighted by package tier
+     * (package_order) so a higher package genuinely earns more impressions —
+     * the one place package tier drives real behavior rather than being
+     * purely cosmetic.
+     */
+    public static function sponsoredFor(int $viewerId): ?array
+    {
+        $viewer = User::find($viewerId);
+        if (!$viewer) {
+            return null;
+        }
+
+        $candidates = Advert::where('status', Advert::STATUS_ACTIVE)
+            ->where('user_id', '!=', $viewerId)
+            ->with(['owner', 'cta', 'package', 'pictures'])
+            ->get()
+            ->filter(fn(Advert $ad) => self::matchesTargeting($ad, $viewer))
+            ->values();
+
+        if ($candidates->isEmpty()) {
+            return null;
+        }
+
+        return self::buildItemArray(self::weightedRandomAdvert($candidates), $viewerId);
+    }
+
+    /**
+     * Owner-only action is not required here — reporting is open to any
+     * signed-in viewer. Logs to the shared activity feed so an admin can
+     * review it; there's no dedicated moderation queue for ad reports yet.
+     */
+    public static function report(string $encodedId, int $reporterId): array
+    {
+        $id = self::decodeId($encodedId);
+        $advert = $id ? Advert::find($id) : null;
+
+        if (!$advert) {
+            return ['success' => false, 'message' => 'Advert not found.'];
+        }
+
+        self::logActivity('Advert reported by a user', 'Advert', $advert->id, $reporterId);
+
+        return ['success' => true, 'message' => "Thanks — our team will review this ad."];
+    }
+
+    /**
+     * @param \Illuminate\Support\Collection<int, Advert> $candidates
+     */
+    private static function weightedRandomAdvert($candidates): Advert
+    {
+        $weights = $candidates->map(fn(Advert $ad) => max(1, (int) ($ad->package->package_order ?? 1)));
+        $total = $weights->sum();
+        $roll = random_int(1, $total);
+
+        $running = 0;
+        foreach ($candidates as $i => $ad) {
+            $running += $weights[$i];
+            if ($roll <= $running) {
+                return $ad;
+            }
+        }
+
+        return $candidates->last();
+    }
+
+    /**
      * True if the ad's targeting allows the given viewer to see it —
      * 'ALL' (or an empty/missing array) means untargeted; otherwise the
      * viewer's own country_id / user_type_ids must intersect.
