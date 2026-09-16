@@ -11,15 +11,24 @@ use Src\Service\ContractorSources\ContractorCandidate;
 
 /**
  * Takes raw candidates from a ContractorSourceConnector, dedups against
- * existing contractors, and stores new ones. Unlike LeadIngestionService,
- * there is no classification/review step — contractor_discovery.pdf's
- * Phase 1 spec calls for profiles to publish immediately ("ensures the
- * platform appears active and searchable from day one"), matching how the
- * existing admin-curated seed contractors already work (status=active,
- * claim_status=unclaimed on creation).
+ * existing contractors, filters out informational content (blog posts,
+ * "Top Ten..." listicles — see ContractorListingClassifier) that a
+ * web-search connector turns up alongside real listings, and stores new
+ * ones. Profiles that pass publish immediately — contractor_discovery.pdf's
+ * Phase 1 spec calls for that ("ensures the platform appears active and
+ * searchable from day one"), matching how the existing admin-curated seed
+ * contractors already work (status=active, claim_status=unclaimed on
+ * creation) — there's just no *manual* review queue, unlike Leads.
  */
 final class ContractorIngestionService
 {
+    private ContractorListingClassifier $classifier;
+
+    public function __construct(?ContractorListingClassifier $classifier = null)
+    {
+        $this->classifier = $classifier ?? new ContractorListingClassifier();
+    }
+
     /**
      * @param iterable<ContractorCandidate> $candidates
      * @return array{found: int, new: int, duplicate: int, rejected: int}
@@ -32,6 +41,11 @@ final class ContractorIngestionService
             $stats['found']++;
 
             if (trim($candidate->businessName) === '') {
+                $stats['rejected']++;
+                continue;
+            }
+
+            if (!$this->classifier->isListing($candidate->businessName, $candidate->description)) {
                 $stats['rejected']++;
                 continue;
             }

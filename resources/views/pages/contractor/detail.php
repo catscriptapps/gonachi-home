@@ -3,9 +3,15 @@
 //
 // Full contractor profile — the "View Profile" destination linked from the
 // directory. Resolved dynamically via resolvePageRoute()'s /{resource}/{id}
-// handling (same mechanism as leads/detail.php). Contact details are shown
-// here (not on the directory card), matching the card's "Contact details
-// unlock with a full profile view" copy — no credit-gating on this project.
+// handling (same mechanism as leads/detail.php). Contact details are
+// credit-gated here (not on the directory card) — matches Real Estate
+// Leads' contact-reveal mechanic exactly (ContractorCreditService is its
+// own separate wallet, same shape as CreditService): viewing this page
+// auto-spends 1 credit the first time, unless already unlocked. Even once
+// unlocked, non-admin viewers see the phone number partly masked (see
+// Src\Utils\ContactMasker) and never see the "website" field at all — that
+// field doubles as our own sourcing link, same reasoning as Real Estate
+// Leads' Origin Source hiding.
 
 declare(strict_types=1);
 
@@ -16,6 +22,8 @@ declare(strict_types=1);
 
 use Src\Controller\ContractorController;
 use Src\Service\AuthService;
+use Src\Service\ContractorCreditService;
+use Src\Utils\ContactMasker;
 
 $contractorId = (int) ($GLOBALS['encodedId'] ?? 0);
 $contractor = $contractorId ? ContractorController::find($contractorId) : null;
@@ -36,6 +44,8 @@ return;
 endif;
 
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
+$unlock = $currentUserId ? ContractorCreditService::unlockContractor($currentUserId, $contractor) : null;
+$isAdmin = AuthService::isAdmin();
 $isClaimed = $contractor->claim_status === 'claimed';
 $categoryLabels = ContractorController::CATEGORY_LABELS;
 ?>
@@ -76,7 +86,7 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
             <?php endif; ?>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-4">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 my-4 text-sm border-t border-gray-100 dark:border-gray-800/80 pt-4">
             <div>
                 <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Location</span>
                 <span class="font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($contractor->location) ?></span>
@@ -85,21 +95,61 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
                 <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Operating Areas</span>
                 <span class="font-medium text-gray-700 dark:text-gray-300"><?= $contractor->operating_areas ? htmlspecialchars($contractor->operating_areas) : '—' ?></span>
             </div>
-            <div>
-                <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Phone</span>
-                <span class="font-medium text-gray-700 dark:text-gray-300"><?= $contractor->phone ? htmlspecialchars($contractor->phone) : 'Not publicly listed' ?></span>
-            </div>
-            <div>
-                <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Website</span>
-                <span class="font-medium text-gray-700 dark:text-gray-300">
-                    <?php if ($contractor->website): ?>
-                        <a href="<?= htmlspecialchars($contractor->website) ?>" target="_blank" rel="noopener noreferrer" class="text-secondary-600 dark:text-secondary-400 hover:underline"><?= htmlspecialchars($contractor->website) ?></a>
-                    <?php else: ?>
-                        —
-                    <?php endif; ?>
-                </span>
-            </div>
         </div>
+
+        <?php if (!$currentUserId): ?>
+            <!-- Conversion Gate: matches leads/detail.php's guest gate exactly -->
+            <div class="mt-2 bg-gray-50 dark:bg-gray-950 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-6 text-center">
+                <svg class="h-8 w-8 text-secondary-600 mb-2 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <h5 class="text-sm font-bold text-gray-900 dark:text-white">Contact Details Gated</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-1 mb-4">
+                    This contractor's phone number unlocks with an account.
+                </p>
+                <div class="flex items-center justify-center space-x-3">
+                    <button type="button" class="register-btn px-5 py-2 bg-secondary-600 hover:bg-secondary-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">Start Free Trial</button>
+                    <a href="<?= $baseUrl ?>login" data-login-button class="px-5 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-semibold rounded-lg transition-all">Sign In</a>
+                </div>
+            </div>
+        <?php elseif (!$unlock['success']): ?>
+            <!-- Out of Credits Gate -->
+            <div class="mt-2 bg-gray-50 dark:bg-gray-950 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-6 text-center">
+                <svg class="h-8 w-8 text-amber-500 mb-2 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M5.07 19h13.86a2 2 0 001.75-2.97l-6.93-12a2 2 0 00-3.5 0l-6.93 12A2 2 0 005.07 19z"/></svg>
+                <h5 class="text-sm font-bold text-gray-900 dark:text-white">Out Of Credits</h5>
+                <p class="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-1">
+                    You have <?= $unlock['balance'] ?> credits left. Top up to unlock this contractor's phone number.
+                </p>
+            </div>
+        <?php else: ?>
+            <!-- Full Contact -->
+            <div class="grid grid-cols-1 <?= $isAdmin ? 'sm:grid-cols-2' : '' ?> gap-4 mb-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-4">
+                <div>
+                    <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Phone</span>
+                    <span class="font-medium text-gray-700 dark:text-gray-300">
+                        <?php
+                        $phoneDisplay = $isAdmin ? $contractor->phone : ContactMasker::mask($contractor->phone);
+                        echo $phoneDisplay ? htmlspecialchars($phoneDisplay) : 'Not publicly listed';
+                        ?>
+                    </span>
+                </div>
+                <?php if ($isAdmin): ?>
+                    <!-- Website: admin-only — this doubles as our own sourcing link
+                         (which page we found this business on). Showing it to
+                         regular users would let them bypass us entirely on future
+                         contractors from that same source, same reasoning as Real
+                         Estate Leads' Origin Source hiding. -->
+                    <div>
+                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Website</span>
+                        <span class="font-medium text-gray-700 dark:text-gray-300">
+                            <?php if ($contractor->website): ?>
+                                <a href="<?= htmlspecialchars($contractor->website) ?>" target="_blank" rel="noopener noreferrer" class="text-secondary-600 dark:text-secondary-400 hover:underline"><?= htmlspecialchars($contractor->website) ?></a>
+                            <?php else: ?>
+                                —
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
+            </div>
+        <?php endif; ?>
 
         <?php if ($contractor->description): ?>
             <div class="mb-4">

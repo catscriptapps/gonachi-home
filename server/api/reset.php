@@ -103,6 +103,9 @@ $tablesToDrop = [
     // Project: contractor-discovery
     'cde_contractor_claims',
     'cde_contractor_discovery_runs',
+    'cde_contractor_unlocks',
+    'cde_credit_transactions',
+    'cde_credit_accounts',
     'cde_contractors',
     'cde_contractor_sources',
     'cde_job_request_bids',
@@ -271,6 +274,15 @@ $messages = array_merge($messages, resetCdeContractorSourcesTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-contractors.php';
 $messages = array_merge($messages, resetCdeContractorsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-credit-accounts.php';
+$messages = array_merge($messages, resetCdeCreditAccountsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-credit-transactions.php';
+$messages = array_merge($messages, resetCdeCreditTransactionsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-contractor-unlocks.php';
+$messages = array_merge($messages, resetCdeContractorUnlocksTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-contractor-discovery-runs.php';
 $messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());

@@ -7,10 +7,12 @@ declare(strict_types=1);
  * Gonachi Contractor Discovery & Opportunity Engine - Main Discovery Viewport
  *
  * Real directory backed by Src\Controller\ContractorController — admin-
- * curated contractor records (see scripts/reset/cde-seed.php), searchable
- * and filterable by category/location. No auto-collection pipeline yet
- * (contractor_discovery.pdf's Phase 1 "Data Collection" is future scope);
- * an admin adds/edits records directly for now.
+ * curated contractor records (see scripts/reset/cde-seed.php) plus
+ * auto-collected ones from SerperContractorConnector, searchable and
+ * filterable by category/location. Contact details (phone) are
+ * credit-gated on the detail page (see resources/views/pages/contractor/
+ * detail.php + Src\Service\ContractorCreditService) — this card only ever
+ * shows "Contact details unlock with a full profile view."
  *
  * "Claim This Profile" is a real (basic) flow: a logged-in user submits a
  * claim (server/api/contractor-claim.php), which lands as claim_status =

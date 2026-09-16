@@ -159,6 +159,15 @@ $messages = array_merge($messages, resetCdeContractorSourcesTable());
 require_once __DIR__ . '/reset/cde-contractors.php';
 $messages = array_merge($messages, resetCdeContractorsTable());
 
+require_once __DIR__ . '/reset/cde-credit-accounts.php';
+$messages = array_merge($messages, resetCdeCreditAccountsTable());
+
+require_once __DIR__ . '/reset/cde-credit-transactions.php';
+$messages = array_merge($messages, resetCdeCreditTransactionsTable());
+
+require_once __DIR__ . '/reset/cde-contractor-unlocks.php';
+$messages = array_merge($messages, resetCdeContractorUnlocksTable());
+
 require_once __DIR__ . '/reset/cde-contractor-discovery-runs.php';
 $messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());
 

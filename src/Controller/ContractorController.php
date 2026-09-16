@@ -10,10 +10,11 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 /**
  * ContractorController
- * Owns the Contractor Discovery directory: real, admin-curated contractor
- * records (see scripts/reset/cde-seed.php) browsable by category/location
- * and searchable by business name/description. No auto-collection pipeline
- * yet — see contractor_discovery.pdf's Phase 1 for that future scope.
+ * Owns the Contractor Discovery directory: admin-curated seed contractors
+ * (see scripts/reset/cde-seed.php) plus auto-collected ones from
+ * SerperContractorConnector/ContractorIngestionService (see
+ * scripts/cron/run-contractor-discovery.php) — browsable by
+ * category/location and searchable by business name/description.
  */
 class ContractorController
 {
