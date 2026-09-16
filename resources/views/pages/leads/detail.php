@@ -42,6 +42,7 @@ $budgetLabel = LeadsController::budgetLabel($lead);
 // back to the same sign-in gate as a guest.
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : null;
+$isAdmin = AuthService::isAdmin();
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
     <?php
@@ -152,22 +153,31 @@ $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : nu
                 </blockquote>
             </div>
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
+            <div class="grid grid-cols-1 <?= $isAdmin ? 'sm:grid-cols-2' : '' ?> gap-4 mb-4">
                 <div>
                     <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Contact Details</span>
                     <span class="font-medium text-gray-700 dark:text-gray-300">
-                        <?= $lead->contact_info_raw ? nl2br(htmlspecialchars($lead->contact_info_raw)) : 'Not publicly available for this lead.' ?>
+                        <?php
+                        $contactDisplay = $isAdmin ? $lead->contact_info_raw : LeadsController::maskedContact($lead->contact_info_raw);
+                        echo $contactDisplay ? nl2br(htmlspecialchars($contactDisplay)) : 'Not publicly available for this lead.';
+                        ?>
                     </span>
                 </div>
-                <div>
-                    <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Origin Source</span>
-                    <span class="font-medium text-gray-700 dark:text-gray-300">
-                        <?= htmlspecialchars($lead->source->name ?? 'Public Request Board') ?>
-                        <?php if ($lead->source_url): ?>
-                            &middot; <a href="<?= htmlspecialchars($lead->source_url) ?>" target="_blank" rel="noopener noreferrer" class="font-bold text-primary-600 dark:text-primary-400 hover:underline hover:text-primary-700 dark:hover:text-primary-300">View Ad</a>
-                        <?php endif; ?>
-                    </span>
-                </div>
+                <?php if ($isAdmin): ?>
+                    <!-- Origin Source: admin-only — this is our sourcing pipeline's own
+                         intel (which board/site a lead came from, and a direct link to
+                         the original post). Showing it to regular users would let them
+                         bypass us entirely on future leads from that same source. -->
+                    <div>
+                        <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Origin Source</span>
+                        <span class="font-medium text-gray-700 dark:text-gray-300">
+                            <?= htmlspecialchars($lead->source->name ?? 'Public Request Board') ?>
+                            <?php if ($lead->source_url): ?>
+                                &middot; <a href="<?= htmlspecialchars($lead->source_url) ?>" target="_blank" rel="noopener noreferrer" class="font-bold text-primary-600 dark:text-primary-400 hover:underline hover:text-primary-700 dark:hover:text-primary-300">View Ad</a>
+                            <?php endif; ?>
+                        </span>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <div class="flex items-center justify-between pt-4 border-t border-gray-100 dark:border-gray-800/80">

@@ -12,12 +12,14 @@ declare(strict_types=1);
 
 use Src\Controller\LeadCategoryController;
 use Src\Controller\LeadsController;
+use Src\Service\AuthService;
 
 /** @var array{category: \App\Models\LeadCategory, location: \App\Models\Location} $match */
 $match = $GLOBALS['leadCategoryMatch'];
 $category = $match['category'];
 $location = $match['location'];
 
+$isAdmin = AuthService::isAdmin();
 $leads = LeadCategoryController::leadsFor($category, $location);
 ?>
 <div class="space-y-6">
@@ -74,7 +76,7 @@ $leads = LeadCategoryController::leadsFor($category, $location);
                         <span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap"><?= htmlspecialchars($postedAt->diffForHumans()) ?></span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-3 gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-3">
+                    <div class="grid grid-cols-2 <?= $isAdmin ? 'sm:grid-cols-3' : '' ?> gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-3">
                         <div>
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Target Location</span>
                             <span class="font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars(LeadsController::locationLabel($lead)) ?></span>
@@ -83,10 +85,12 @@ $leads = LeadCategoryController::leadsFor($category, $location);
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Intent Score</span>
                             <span class="font-medium <?= $intent['classes'] ?>"><?= htmlspecialchars($intent['label']) ?></span>
                         </div>
-                        <div class="col-span-2 sm:col-span-1">
-                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Origin Source</span>
-                            <span class="font-medium text-gray-500 dark:text-gray-400"><?= htmlspecialchars($lead->source->name ?? 'Public Request Board') ?></span>
-                        </div>
+                        <?php if ($isAdmin): ?>
+                            <div class="col-span-2 sm:col-span-1">
+                                <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Origin Source</span>
+                                <span class="font-medium text-gray-500 dark:text-gray-400"><?= htmlspecialchars($lead->source->name ?? 'Public Request Board') ?></span>
+                            </div>
+                        <?php endif; ?>
                     </div>
 
                     <div class="flex items-center justify-between pt-2">

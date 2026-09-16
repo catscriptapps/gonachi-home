@@ -18,7 +18,7 @@ use GuzzleHttp\Client;
  * are present this connector yields nothing rather than failing the run —
  * it's safe to leave the lead_sources row active before credentials exist.
  */
-final class GoogleCseConnector implements LeadSourceConnector
+final class GoogleCseConnector implements LeadSourceConnector, RequiresCompleteListingInfo
 {
     private const ENDPOINT = 'https://www.googleapis.com/customsearch/v1';
 

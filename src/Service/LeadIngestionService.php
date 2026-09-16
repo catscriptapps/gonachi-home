@@ -11,6 +11,7 @@ use App\Models\LeadSource;
 use App\Models\Location;
 use Carbon\Carbon;
 use Src\Service\LeadSources\LeadCandidate;
+use Src\Service\LeadSources\RequiresCompleteListingInfo;
 
 /**
  * Takes raw candidates from a connector, dedups against existing leads,
@@ -35,6 +36,13 @@ final class LeadIngestionService
     {
         $stats = ['found' => 0, 'new' => 0, 'duplicate' => 0, 'rejected' => 0];
 
+        // Web-search connectors (Serper/Google CSE) crawl arbitrary public
+        // pages, where blog posts and news articles turn up alongside real
+        // listings/requests — held to a stricter bar (a detected budget is
+        // mandatory) than a single dedicated forum board's own threads. See
+        // RequiresCompleteListingInfo's own doc comment for the full reasoning.
+        $requireBudget = is_a($source->connector_class, RequiresCompleteListingInfo::class, true);
+
         foreach ($candidates as $candidate) {
             $stats['found']++;
 
@@ -47,7 +55,7 @@ final class LeadIngestionService
                 continue;
             }
 
-            $classified = $this->classifier->classify($candidate->text);
+            $classified = $this->classifier->classify($candidate->text, $requireBudget);
 
             if ($classified === null) {
                 $stats['rejected']++;

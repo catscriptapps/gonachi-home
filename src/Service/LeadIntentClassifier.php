@@ -42,6 +42,28 @@ final class LeadIntentClassifier
 
     private const PROPERTY_NOUN_PATTERN = '/\b(house|home|land|plot|property|apartment|flat|duplex|bungalow|office|shop|warehouse|terrace|estate)\b/i';
 
+    /**
+     * Signals that a page is informational content about real estate in
+     * general (a blog post, a news article, a market-trends/guide piece)
+     * rather than one specific buyer/seller/renter's own request — the kind
+     * of thing a broad web-search connector (see RequiresCompleteListingInfo)
+     * turns up alongside actual listings/requests. Checked before intent
+     * detection, since these often also happen to contain buy/sell/invest
+     * phrasing (e.g. "Looking to invest? Here's our guide...").
+     */
+    private const NON_LISTING_PATTERNS = [
+        '/\b(blog|news|editorial|press release)\b/i',
+        '/\b(ultimate|complete|beginner\'?s|comprehensive)\s+guide\b/i',
+        '/\bguide\s+to\b/i',
+        '/\btop\s*\d+\b/i',
+        '/\bbest\s+(areas?|places?|neighbo(?:u)?rhoods?|locations?)\b/i',
+        '/\bhow\s+to\b/i',
+        '/\bwhy\s+you\s+should\b/i',
+        '/\bmarket\s+(report|trends?|update|analysis|outlook|forecast)\b/i',
+        '/\b(everything|things)\s+you\s+need\s+to\s+know\b/i',
+        '/\bfaqs?\b/i',
+    ];
+
     /** @var string[] */
     private array $knownLocations;
 
@@ -54,10 +76,25 @@ final class LeadIntentClassifier
         $this->knownLocations = $knownLocations;
     }
 
-    public function classify(string $text): ?ClassifiedLead
+    /**
+     * @param bool $requireBudget When true (web-search connectors — see
+     *                            RequiresCompleteListingInfo), a candidate
+     *                            with no detectable budget is rejected
+     *                            outright rather than merely scored lower —
+     *                            a specific individual request almost always
+     *                            names a price, so its absence is itself a
+     *                            strong signal this is informational content
+     *                            that slipped past the NON_LISTING_PATTERNS
+     *                            check above.
+     */
+    public function classify(string $text, bool $requireBudget = false): ?ClassifiedLead
     {
         $text = trim($text);
         if ($text === '') {
+            return null;
+        }
+
+        if ($this->matchesAny($text, self::NON_LISTING_PATTERNS)) {
             return null;
         }
 
@@ -70,6 +107,10 @@ final class LeadIntentClassifier
         $bedrooms = $this->detectBedrooms($text);
         $locationRaw = $this->detectLocation($text);
         [$budgetMin, $budgetMax] = $this->detectBudget($text);
+
+        if ($requireBudget && $budgetMin === null) {
+            return null;
+        }
 
         return new ClassifiedLead(
             requestType: $requestType,
@@ -142,12 +183,27 @@ final class LeadIntentClassifier
      */
     private function detectBudget(string $text): array
     {
-        if (!preg_match('/(?:₦|N|NGN)\s?([\d,]+(?:\.\d+)?)\s*(million|m|k|thousand)?\b/i', $text, $m)) {
-            return [null, null];
+        // Currency-symbol-prefixed amount: ₦500,000 / N5m / NGN 2 million.
+        if (preg_match('/(?:₦|N|NGN)\s?([\d,]+(?:\.\d+)?)\s*(million|m|k|thousand)?\b/i', $text, $m)) {
+            return $this->normalizeAmount($m[1], $m[2] ?? '');
         }
 
-        $amount = (float) str_replace(',', '', $m[1]);
-        $suffix = strtolower($m[2] ?? '');
+        // "budget" named explicitly with no currency symbol — common in
+        // forum-style posts ("Budget: 15m", "budget of 5 million naira").
+        if (preg_match('/\bbudget\b[^\d]{0,15}([\d,]+(?:\.\d+)?)\s*(million|m|k|thousand)?\b/i', $text, $m)) {
+            return $this->normalizeAmount($m[1], $m[2] ?? '');
+        }
+
+        return [null, null];
+    }
+
+    /**
+     * @return array{0: float, 1: float}
+     */
+    private function normalizeAmount(string $rawAmount, string $suffix): array
+    {
+        $amount = (float) str_replace(',', '', $rawAmount);
+        $suffix = strtolower($suffix);
 
         $amount = match ($suffix) {
             'million', 'm' => $amount * 1_000_000,

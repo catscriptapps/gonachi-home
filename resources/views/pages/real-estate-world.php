@@ -238,9 +238,11 @@ $modules = [
                 <a href="<?= $baseUrl ?>contact" data-partial class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-teal-500 hover:bg-teal-600 text-white font-bold text-sm rounded-xl transition-colors shadow-sm">
                     Contact Us
                 </a>
-                <a href="<?= $baseUrl ?>login" data-login-button class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl border border-white/20 transition-colors">
-                    Sign In
-                </a>
+                <?php if (!$isLoggedIn): ?>
+                    <a href="<?= $baseUrl ?>login" data-login-button class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-bold text-sm rounded-xl border border-white/20 transition-colors">
+                        Sign In
+                    </a>
+                <?php endif; ?>
             </div>
         </div>
     </section>

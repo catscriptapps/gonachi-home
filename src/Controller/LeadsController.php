@@ -234,6 +234,39 @@ class LeadsController
     }
 
     /**
+     * Partly-obfuscated version of a lead's raw contact text (e.g.
+     * "+2348012345678" -> "+234*****", "buyer@example.com" -> "bu****@example.com")
+     * — shown to non-admin viewers even after they've spent a credit to
+     * unlock a lead, so the raw scraped contact itself (the actual asset
+     * this platform sells access to) never appears verbatim outside of an
+     * admin session. Only admins ever see $lead->contact_info_raw directly.
+     */
+    public static function maskedContact(?string $raw): ?string
+    {
+        if ($raw === null || trim($raw) === '') {
+            return $raw;
+        }
+
+        $masked = preg_replace_callback(
+            '/[\w.+-]+@[\w-]+\.[\w.-]+/',
+            fn(array $m) => self::maskEmail($m[0]),
+            $raw
+        );
+
+        return preg_replace_callback(
+            '/\+?\d[\d\s\-]{5,}\d/',
+            fn(array $m) => mb_substr($m[0], 0, 4) . '*****',
+            $masked
+        );
+    }
+
+    private static function maskEmail(string $email): string
+    {
+        [$local, $domain] = array_pad(explode('@', $email, 2), 2, '');
+        return mb_substr($local, 0, 2) . '****@' . $domain;
+    }
+
+    /**
      * Badge label + Tailwind color classes per request type.
      *
      * @return array{label: string, classes: string}

@@ -10,8 +10,10 @@ use App\Models\CreditPurchase;
 use App\Models\CreditTransaction;
 use App\Models\Lead;
 use App\Models\LeadUnlock;
+use App\Traits\RecentActivityLogger;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Src\Controller\LeadsController;
 
 /**
  * CreditService
@@ -22,6 +24,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
  */
 class CreditService
 {
+    use RecentActivityLogger;
+
     /** Trial credits granted the first time a user's account is touched. */
     private const TRIAL_GRANT = 12;
 
@@ -78,6 +82,23 @@ class CreditService
                 'reference_type' => 'lead',
                 'reference_id' => $lead->id,
             ]);
+
+            // Names the exact contact revealed (not just "a lead") — this is
+            // the user's own private receipt in their History page for why
+            // 1 credit just left their balance; RecentActivitiesController's
+            // privacy layer scopes it to them (or an admin) only. Capped at
+            // 80 chars so a long scraped contact string can't blow past the
+            // 'action' column's length and silently fail to log at all.
+            $contact = $lead->contact_info_raw ?: 'no direct contact listed for this lead';
+            if (mb_strlen($contact) > 80) {
+                $contact = mb_substr($contact, 0, 80) . '…';
+            }
+            self::logActivity(
+                "1 credit charged for revealing contact details on \"" . LeadsController::headline($lead) . "\": {$contact}",
+                'Lead',
+                $lead->id,
+                $userId
+            );
         });
 
         return ['success' => true, 'message' => 'Lead unlocked.', 'balance' => $account->fresh()->balance];

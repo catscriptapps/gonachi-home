@@ -21,7 +21,7 @@ use GuzzleHttp\Client;
  * rather than failing the run — it's safe to leave the lead_sources row
  * active before a key exists.
  */
-final class SerperConnector implements LeadSourceConnector
+final class SerperConnector implements LeadSourceConnector, RequiresCompleteListingInfo
 {
     private const ENDPOINT = 'https://google.serper.dev/search';
 

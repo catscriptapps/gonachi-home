@@ -7,6 +7,17 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
 use App\Models\User;
 
+/**
+ * True if $value already looks like a bcrypt hash (the format
+ * password_hash(..., PASSWORD_BCRYPT) produces: $2y$/$2a$/$2b$, a 2-digit
+ * cost, then a 53-char salt+hash). Anything else is treated as a raw,
+ * not-yet-hashed password.
+ */
+function isBcryptHash(string $value): bool
+{
+    return (bool) preg_match('/^\$2[aby]\$\d{2}\$[.\/A-Za-z0-9]{53}$/', $value);
+}
+
 function resetUsersTable(): array
 {
     $messages = [];
@@ -17,7 +28,7 @@ function resetUsersTable(): array
         $tableName = 'users';
         Capsule::schema()->dropIfExists($tableName);
 
-        // 2. Create structure matching legacy + your new JSON field
+        // 2. Create structure
         Capsule::schema()->create($tableName, function (Blueprint $table) {
             $table->bigIncrements('id'); // This is our BIGINT to match other tables
             $table->string('first_name', 300)->nullable();
@@ -64,12 +75,16 @@ function resetUsersTable(): array
         }
 
         // 5. THE LEGACY USER DATA
-        // Order: user_id, first_name, last_name, email, country_id, region_id, city, 
-        // user_code, password, status_id, date_created, user_last_log, avatar_url, 
+        // Order: user_id, first_name, last_name, email, country_id, region_id, city,
+        // user_code, password, status_id, date_created, user_last_log, avatar_url,
         // email_verified, timestamp
+        //
+        // password accepts either form — a raw, plaintext password (Cat's
+        // row below) or an already-bcrypt-hashed one (Elas's row, unchanged)
+        // — isBcryptHash() tells them apart below and only hashes the raw one.
         $usersData = [
 
-            [1, 'Cat', 'Nduanya', 'mindofcat@hotmail.com', 39, 866, 'Barrie', '7QESZL', '$2y$10$n7WqLLBr3SPk/A7jgK8nt.Rke6dZ5VGsX9E5tDGL1p0XYAJpHudNy', 1, '2023-07-29', '2026-02-18 19:48:54', null, 1, '2023-07-29 14:29:33'],
+            [1, 'Cat', 'Nduanya', 'mindofcat@hotmail.com', 39, 866, 'Barrie', '7QESZL', '123xxx#A', 1, '2023-07-29', '2026-02-18 19:48:54', null, 1, '2023-07-29 14:29:33'],
             [2, 'Elas', 'Abone', 'chyigwe@yahoo.com', 39, 866, 'Ajax', '', '$2y$10$WHQkT.ddJe/PnIA1a1ruM.pOfQpt6WlHBts5yn.4PmHhHEfDYV0SK', 1, '2023-07-29', '2024-07-15 12:04:45', null, 1, '2024-06-19 18:06:43'],
         ];
 
@@ -81,6 +96,8 @@ function resetUsersTable(): array
             // Check the dictionary for types, or provide empty array
             $assignedTypes = $userTypeLookup[$legacyId] ?? [];
 
+            $password = isBcryptHash($row[8]) ? $row[8] : password_hash($row[8], PASSWORD_BCRYPT);
+
             User::create([
                 'id'             => $legacyId,
                 'first_name'     => $row[1],
@@ -90,7 +107,7 @@ function resetUsersTable(): array
                 'region_id'      => $row[5],
                 'city'           => $row[6],
                 'user_code'      => $row[7],
-                'password'       => $row[8],
+                'password'       => $password,
                 'status_id'      => $row[9],
                 'date_created'   => $row[10],
                 'user_last_log'  => $row[11],
