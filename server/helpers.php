@@ -229,7 +229,10 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
 
         if ($lead && $lead->status === 'active') {
             return [
-                'title'   => \Src\Controller\LeadsController::headline($lead) . ' in ' . \Src\Controller\LeadsController::locationLabel($lead),
+                // headline() now bakes the location in itself (e.g. "For
+                // Sale: 3-Bedroom Duplex in Lekki") — no need to append
+                // locationLabel() again here like before.
+                'title'   => \Src\Controller\LeadsController::headline($lead),
                 'summary' => 'Full lead record: contact details, budget, and source.',
             ];
         }

@@ -186,18 +186,49 @@ class LeadsController
     }
 
     /**
-     * Human-readable "Seeking: 4 Bedroom House" style headline built from
-     * structured fields, falling back to a trimmed excerpt of the raw
-     * scraped text when property type/bedrooms weren't extracted.
+     * Specific residential property terms to look for in a lead's raw text,
+     * most-specific first (checked before the generic "House" fallback) —
+     * e.g. "Duplex" or "Bungalow" instead of the coarse property_type
+     * category alone. Only residential leads use this list; property_type
+     * itself stays a plain 'residential'/'commercial'/'land' for category
+     * matching (see resolveCategory()) — this is purely a display refinement.
+     */
+    private const RESIDENTIAL_TERMS = [
+        ['/\bsemi[- ]?detached\b/i', 'Semi-Detached Duplex'],
+        ['/\bdetached\b/i', 'Detached Duplex'],
+        ['/\bpenthouse\b/i', 'Penthouse'],
+        ['/\bmaisonette\b/i', 'Maisonette'],
+        ['/\bduplex\b/i', 'Duplex'],
+        ['/\bbungalow\b/i', 'Bungalow'],
+        ['/\btownhouse\b/i', 'Townhouse'],
+        ['/\bterrace(?:d)?\b/i', 'Terrace'],
+        ['/\bmansion\b/i', 'Mansion'],
+        ['/\bstudio\b/i', 'Studio Apartment'],
+        ['/\bself[- ]?contain(?:ed)?\b/i', 'Self-Contain'],
+        ['/\bapartment\b/i', 'Apartment'],
+        ['/\bflat\b/i', 'Flat'],
+    ];
+
+    private const COMMERCIAL_TERMS = [
+        ['/\bwarehouse\b/i', 'Warehouse'],
+        ['/\boffice\b/i', 'Office Space'],
+        ['/\bshop\b/i', 'Shop'],
+    ];
+
+    private const LAND_TERMS = [
+        ['/\bplot\b/i', 'Plot of Land'],
+    ];
+
+    /**
+     * Human-readable "For Sale: 3-Bedroom Duplex in Lekki" style headline
+     * built from structured fields (bedrooms, a specific property term
+     * pulled from the raw text, and location when known), falling back to a
+     * trimmed excerpt of the raw scraped text when property type wasn't
+     * even coarsely extracted.
      */
     public static function headline(Lead $lead): string
     {
-        $propertyLabel = match ($lead->property_type) {
-            'residential' => 'House',
-            'commercial' => 'Commercial Property',
-            'land' => 'Land',
-            default => null,
-        };
+        $propertyLabel = self::specificPropertyLabel($lead);
 
         if ($propertyLabel === null) {
             $excerpt = trim((string) $lead->raw_text);
@@ -205,7 +236,7 @@ class LeadsController
         }
 
         $subject = $lead->bedrooms
-            ? "{$lead->bedrooms} Bedroom {$propertyLabel}"
+            ? "{$lead->bedrooms}-Bedroom {$propertyLabel}"
             : $propertyLabel;
 
         $verb = match ($lead->request_type) {
@@ -215,7 +246,54 @@ class LeadsController
             default => 'Seeking',
         };
 
-        return "{$verb}: {$subject}";
+        return "{$verb}: {$subject}" . self::headlineLocationSuffix($lead);
+    }
+
+    /**
+     * The generic property_type category label, upgraded to a more specific
+     * term when one appears in the raw text (e.g. 'residential' -> "Duplex"
+     * instead of the generic "House").
+     */
+    private static function specificPropertyLabel(Lead $lead): ?string
+    {
+        [$genericLabel, $terms] = match ($lead->property_type) {
+            'residential' => ['House', self::RESIDENTIAL_TERMS],
+            'commercial' => ['Commercial Property', self::COMMERCIAL_TERMS],
+            'land' => ['Land', self::LAND_TERMS],
+            default => [null, []],
+        };
+
+        if ($genericLabel === null) {
+            return null;
+        }
+
+        $text = (string) $lead->raw_text;
+        foreach ($terms as [$pattern, $label]) {
+            if (preg_match($pattern, $text)) {
+                return $label;
+            }
+        }
+
+        return $genericLabel;
+    }
+
+    /**
+     * " in Lekki" when a location is known, otherwise an empty string —
+     * appended to the headline rather than always shown, since
+     * locationLabel()'s own "Location Unspecified" fallback would read
+     * strangely tacked onto the end of a headline.
+     */
+    private static function headlineLocationSuffix(Lead $lead): string
+    {
+        if ($lead->location) {
+            return ' in ' . $lead->location->name;
+        }
+
+        if ($lead->location_raw) {
+            return ' in ' . $lead->location_raw;
+        }
+
+        return '';
     }
 
     /**
