@@ -24,6 +24,14 @@ function resetCdeContractorClaimsTable(): array
             $table->text('message')->nullable();
             $table->string('contact_phone');
 
+            // Photo of a business document (registration cert, letterhead,
+            // signage, etc.) showing the exact business name — required at
+            // submission time (ContractorClaimController::submit()) so the
+            // admin review queue always has something concrete to verify
+            // the claimant's identity against, mirroring how Google's own
+            // business-claim flow requires video/document verification.
+            $table->string('document_path');
+
             // pending | approved | rejected
             $table->string('status')->default('pending')->index();
 

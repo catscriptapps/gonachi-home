@@ -84,6 +84,16 @@ $pendingClaims = ContractorClaimController::pending(15);
                         </div>
                     </div>
 
+                    <?php if ($claim->document_path): ?>
+                        <?php $documentUrl = $assetBase . 'images/uploads/contractor-claims/' . htmlspecialchars($claim->document_path); ?>
+                        <div class="mb-4">
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Business Document — verify it shows "<?= htmlspecialchars($claim->contractor->business_name ?? '') ?>"</span>
+                            <button type="button" data-img-src="<?= $documentUrl ?>" class="block w-48 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 hover:opacity-90 transition-opacity cursor-zoom-in">
+                                <img src="<?= $documentUrl ?>" alt="Business document" class="w-full h-32 object-cover">
+                            </button>
+                        </div>
+                    <?php endif; ?>
+
                     <?php if ($claim->message): ?>
                         <div class="bg-gray-50 dark:bg-gray-950 border border-gray-100 dark:border-gray-800 rounded-lg p-3 mb-4">
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1">Message</span>

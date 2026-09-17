@@ -174,6 +174,9 @@ $messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());
 require_once __DIR__ . '/reset/cde-contractor-claims.php';
 $messages = array_merge($messages, resetCdeContractorClaimsTable());
 
+require_once __DIR__ . '/reset/cde-contractor-outreach-log.php';
+$messages = array_merge($messages, resetCdeContractorOutreachLogTable());
+
 require_once __DIR__ . '/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
 

@@ -66,6 +66,7 @@ final class ContractorIngestionService
                 'service_category' => $candidate->serviceCategory,
                 'location' => $candidate->location,
                 'phone' => $candidate->phone,
+                'email' => $candidate->email,
                 'website' => $candidate->website,
                 'description' => $candidate->description,
                 'claim_status' => 'unclaimed',

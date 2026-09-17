@@ -71,7 +71,7 @@ $assetBase = rtrim($assetBase, '/') . '/';
 // earlier (e.g. a logged-out visitor hitting a protected real-estate-world
 // path) fell back to layouts/app.php regardless of which project it was.
 $portalPaths = ['/home'];
-$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review'];
+$contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review', '/contractor-outreach'];
 $landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
 $realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings', '/ratings', '/recommendations'];
 

@@ -20,7 +20,8 @@
     "imports": [
       "resources/js/ui/toast.js",
       "_modal-factory.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_upload-modal.min.js"
     ]
   },
   "_countries-api.min.js": {
@@ -249,6 +250,15 @@
       "resources/js/ui/toast.js"
     ]
   },
+  "resources/js/pages/contractor-claims-review-page.js": {
+    "file": "js/contractor-claims-review-page.min.js",
+    "name": "contractor-claims-review-page",
+    "src": "resources/js/pages/contractor-claims-review-page.js",
+    "isEntry": true,
+    "imports": [
+      "_preview.min.js"
+    ]
+  },
   "resources/js/pages/contractor-discovery-page.js": {
     "file": "js/contractor-discovery-page.min.js",
     "name": "contractor-discovery-page",
@@ -258,7 +268,19 @@
       "_contractor-claim.min.js",
       "resources/js/ui/toast.js",
       "_modal-factory.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_upload-modal.min.js"
+    ]
+  },
+  "resources/js/pages/contractor-outreach-page.js": {
+    "file": "js/contractor-outreach-page.min.js",
+    "name": "contractor-outreach-page",
+    "src": "resources/js/pages/contractor-outreach-page.js",
+    "isEntry": true,
+    "imports": [
+      "_modal-factory.min.js",
+      "_confirm.min.js",
+      "resources/js/ui/toast.js"
     ]
   },
   "resources/js/pages/contractor-page.js": {
@@ -270,7 +292,8 @@
       "_contractor-claim.min.js",
       "resources/js/ui/toast.js",
       "_modal-factory.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_upload-modal.min.js"
     ]
   },
   "resources/js/pages/faqs-page.js": {

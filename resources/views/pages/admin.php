@@ -21,6 +21,7 @@ use Src\Controller\ContractorClaimController;
 use Src\Controller\LandlordReportReviewController;
 use Src\Controller\LeadReviewController;
 use Src\Service\AuthService;
+use Src\Service\ContractorOutreachService;
 
 if (!AuthService::isAdmin()) {
 ?>
@@ -40,6 +41,7 @@ $pendingLeads = LeadReviewController::pending()->total();
 $pendingReports = LandlordReportReviewController::pending()->total();
 $pendingClaims = ContractorClaimController::pending()->total();
 $pendingAdverts = AdvertsController::pendingCount();
+$outreachableContractors = ContractorOutreachService::outreachable()->total();
 
 $tabs = [
     ['label' => 'Overview', 'href' => 'admin'],
@@ -47,15 +49,18 @@ $tabs = [
     ['label' => 'Live Chats', 'href' => 'live-chat', 'badge' => $unreadChats],
     ['label' => 'Lead Review', 'href' => 'lead-review', 'badge' => $pendingLeads],
     ['label' => 'Landlord Reports', 'href' => 'landlord-report-review', 'badge' => $pendingReports],
-    ['label' => 'Contractor Claims', 'href' => 'contractor-claims-review', 'badge' => $pendingClaims],
-    // crossShell: true — Adverts Admin lives under Real Estate World's own
-    // sidebar shell (layouts/real-estate-world-app.php), unlike every other
-    // tab here which stays inside this dashboard's app.php shell. A
-    // data-partial swap only replaces #main-content, so a partial nav here
-    // would show the adverts moderation table under the WRONG sidebar —
-    // same reasoning as layouts/portal.php's own admin link, which omits
+    // crossShell: true — both Contractor tabs live under Contractor
+    // Discovery's own sidebar shell (layouts/contractor-app.php), unlike
+    // every OTHER tab here which stays inside this dashboard's app.php
+    // shell. A data-partial swap only replaces #main-content, so a partial
+    // nav here would show the page under the WRONG sidebar — same
+    // reasoning as layouts/portal.php's own admin link, which omits
     // data-partial for the same cross-shell reason. A real navigation
     // (full page load) picks up the correct shell instead.
+    ['label' => 'Contractor Claims', 'href' => 'contractor-claims-review', 'badge' => $pendingClaims, 'crossShell' => true],
+    ['label' => 'Contractor Outreach', 'href' => 'contractor-outreach', 'badge' => $outreachableContractors, 'crossShell' => true],
+    // Adverts Admin lives under Real Estate World's own sidebar shell
+    // (layouts/real-estate-world-app.php) — same cross-shell reasoning.
     ['label' => 'Adverts Admin', 'href' => 'adverts-admin', 'badge' => $pendingAdverts, 'crossShell' => true],
 ];
 
@@ -91,6 +96,16 @@ $statCards = [
         'href' => 'contractor-claims-review',
         'accent' => 'text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-950/40',
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
+        'crossShell' => true,
+    ],
+    [
+        'label' => 'Contractors To Reach Out',
+        'value' => $outreachableContractors,
+        'sub' => 'Contractor Discovery',
+        'href' => 'contractor-outreach',
+        'accent' => 'text-secondary-600 dark:text-secondary-400 bg-secondary-50 dark:bg-secondary-950/40',
+        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />',
+        'crossShell' => true,
     ],
     [
         'label' => 'Pending Adverts',
@@ -126,7 +141,7 @@ $statCards = [
     </div>
 
     <!-- Overview stat cards -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         <?php foreach ($statCards as $card): ?>
             <a href="<?= $baseUrl . $card['href'] ?>" <?= empty($card['crossShell']) ? 'data-partial' : '' ?> class="group bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all">
                 <div class="w-10 h-10 rounded-xl flex items-center justify-center <?= $card['accent'] ?>">

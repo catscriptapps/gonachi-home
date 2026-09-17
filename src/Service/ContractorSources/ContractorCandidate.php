@@ -19,6 +19,7 @@ final class ContractorCandidate
         public readonly ?string $website,
         public readonly ?string $description,
         public readonly ?string $phone = null,
+        public readonly ?string $email = null,
     ) {
     }
 }

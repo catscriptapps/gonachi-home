@@ -78,6 +78,7 @@ final class SerperContractorConnector implements ContractorSourceConnector
                     website: $link,
                     description: $snippet !== '' ? $snippet : null,
                     phone: $this->extractPhone($snippet),
+                    email: $this->extractEmail($snippet),
                 );
             }
         }
@@ -111,6 +112,22 @@ final class SerperContractorConnector implements ContractorSourceConnector
     {
         if (preg_match('/(\+?234[\s-]?\d{3}[\s-]?\d{3}[\s-]?\d{4}|0\d{3}[\s-]?\d{3}[\s-]?\d{4})/', $text, $matches)) {
             return preg_replace('/[\s-]/', '', $matches[0]);
+        }
+
+        return null;
+    }
+
+    /**
+     * Best-effort email extraction from a search snippet — this is the
+     * outreach channel's other half (alongside phone): both feed
+     * ContractorOutreachService, which is how we reach out to a discovered
+     * business directly to invite them to claim their profile, rather than
+     * relying on them finding us on their own.
+     */
+    private function extractEmail(string $text): ?string
+    {
+        if (preg_match('/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/', $text, $matches)) {
+            return strtolower($matches[0]);
         }
 
         return null;

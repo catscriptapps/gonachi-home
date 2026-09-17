@@ -101,6 +101,7 @@ $tablesToDrop = [
     'ltv_landlords',
 
     // Project: contractor-discovery
+    'cde_contractor_outreach_log',
     'cde_contractor_claims',
     'cde_contractor_discovery_runs',
     'cde_contractor_unlocks',
@@ -289,6 +290,9 @@ $messages = array_merge($messages, resetCdeContractorDiscoveryRunsTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-contractor-claims.php';
 $messages = array_merge($messages, resetCdeContractorClaimsTable());
+
+require_once __DIR__ . '/../../scripts/reset/cde-contractor-outreach-log.php';
+$messages = array_merge($messages, resetCdeContractorOutreachLogTable());
 
 require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());

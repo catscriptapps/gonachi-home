@@ -19,6 +19,7 @@ class Contractor extends Model
         'location',
         'operating_areas',
         'phone',
+        'email',
         'website',
         'description',
         'rating',
@@ -26,6 +27,8 @@ class Contractor extends Model
         'claimed_by_user_id',
         'claim_status',
         'status',
+        'outreach_sms_sent_at',
+        'outreach_email_sent_at',
     ];
 
     protected $casts = [
@@ -33,6 +36,8 @@ class Contractor extends Model
         'claimed_by_user_id' => 'integer',
         'rating' => 'decimal:1',
         'review_count' => 'integer',
+        'outreach_sms_sent_at' => 'datetime',
+        'outreach_email_sent_at' => 'datetime',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
@@ -50,6 +55,11 @@ class Contractor extends Model
     public function claims()
     {
         return $this->hasMany(ContractorClaim::class, 'contractor_id');
+    }
+
+    public function outreachLog()
+    {
+        return $this->hasMany(ContractorOutreachLog::class, 'contractor_id');
     }
 
     public function scopeActive($query)

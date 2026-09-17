@@ -35,6 +35,11 @@ function resetCdeContractorsTable(): array
             $table->string('location');
             $table->text('operating_areas')->nullable();
             $table->string('phone')->nullable();
+            // Admin/outreach-only, like website — see ContractorOutreachService.
+            // Never shown to a regular unlocking user (phone is the paid
+            // contact-reveal value prop; email is purely how WE reach the
+            // business to invite them to claim their profile).
+            $table->string('email')->nullable();
             $table->string('website')->nullable();
             $table->text('description')->nullable();
             $table->decimal('rating', 2, 1)->nullable();
@@ -46,6 +51,13 @@ function resetCdeContractorsTable(): array
 
             // active | inactive
             $table->string('status')->default('active')->index();
+
+            // Denormalized "last contacted" markers for a quick glance in the
+            // outreach admin list — cde_contractor_outreach_log (see
+            // scripts/reset/cde-contractor-outreach-log.php) holds the full
+            // per-attempt history (message content, status, who sent it).
+            $table->timestamp('outreach_sms_sent_at')->nullable();
+            $table->timestamp('outreach_email_sent_at')->nullable();
 
             $table->timestamps();
 

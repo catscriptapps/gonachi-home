@@ -38,11 +38,17 @@ class ContractorClaimController
             return ['success' => false, 'errors' => ['A contact phone number is required.']];
         }
 
+        $documentPath = trim((string) ($input['document_path'] ?? ''));
+        if ($documentPath === '') {
+            return ['success' => false, 'errors' => ['A photo of a business document showing your business name is required (e.g. a registration certificate, letterhead, or signage).']];
+        }
+
         ContractorClaim::create([
             'contractor_id' => $contractor->id,
             'user_id' => $userId,
             'message' => trim((string) ($input['message'] ?? '')) ?: null,
             'contact_phone' => $contactPhone,
+            'document_path' => $documentPath,
             'status' => 'pending',
         ]);
 

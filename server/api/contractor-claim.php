@@ -3,7 +3,11 @@
 //
 // Handles "Claim This Profile" on the Contractor Discovery directory. JSON
 // in/out via fetch — no page reload, matching job-requests.php's convention.
-// Creates a pending claim; an admin approves/rejects it via
+// The business-document photo is uploaded separately beforehand via the
+// shared upload modal (see contractor-claim-document-upload.php); this
+// endpoint only receives the resulting filename in document_path, never a
+// raw file itself. Creates a pending claim; an admin manually reviews the
+// document against the business name and approves/rejects it via
 // contractor-claim-review.php (see ContractorClaimController).
 
 declare(strict_types=1);
@@ -43,4 +47,4 @@ if (!$result['success']) {
     exit;
 }
 
-echo json_encode(['success' => true, 'messages' => ["Claim submitted — we'll verify and get back to you shortly."]]);
+echo json_encode(['success' => true, 'messages' => ["Claim submitted — we'll verify your document and get back to you shortly."]]);
