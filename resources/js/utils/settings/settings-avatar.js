@@ -10,6 +10,7 @@ import { showToast } from '../../ui/toast.js';
 import { loadPartial } from '../spa-router.js';
 import { createDeleteHandler } from '../../factories/delete-factory.js';
 import { registerImagePreview } from '../globals/preview.js';
+import { updateHeaderAvatar } from '../header-avatar.js';
 
 export function initSettingsAvatar() {
   registerImagePreview();
@@ -26,7 +27,10 @@ export function initSettingsAvatar() {
       uploadModal.open();
 
       setTimeout(() => {
-        createUploadHandler(`${baseUrl}api/avatar-upload`, 'avatar', () => {
+        createUploadHandler(`${baseUrl}api/avatar-upload`, 'avatar', (files) => {
+          const fileName = files?.[0]?.url?.split('/').pop();
+          if (fileName) updateHeaderAvatar(fileName);
+
           showToast('✅ Photo updated!', 'success');
           loadPartial(`${baseUrl}settings`);
         }, 1, true, { single: true });
@@ -43,6 +47,7 @@ export function initSettingsAvatar() {
       const deleteHandler = createDeleteHandler(`${baseUrl}api/avatar-delete`, 'Avatar');
       deleteHandler.showConfirmation(encodedId, deleteBtn, (success) => {
         if (success) {
+          updateHeaderAvatar(null);
           showToast('🗑️ Avatar removed!', 'success');
           loadPartial(`${baseUrl}settings`);
         }

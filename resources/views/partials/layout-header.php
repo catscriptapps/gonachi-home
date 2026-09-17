@@ -94,8 +94,12 @@ declare(strict_types=1);
         <?php $accountInfo = \Src\Config\NavigationConfig::getUserDisplayInfo(); ?>
         <?php if ($isLoggedIn): ?>
             <a href="#" data-logout-button class="flex items-center space-x-3 group cursor-pointer">
-                <div class="w-8 h-8 rounded-full bg-primary-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
-                    <?= htmlspecialchars($accountInfo['initial']) ?>
+                <div id="header-account-avatar" data-initial="<?= htmlspecialchars($accountInfo['initial']) ?>" data-accent-class="bg-primary-600" class="w-8 h-8 rounded-full <?= empty($accountInfo['avatarUrl']) ? 'bg-primary-600' : '' ?> text-white font-bold flex items-center justify-center text-sm shadow-sm overflow-hidden">
+                    <?php if (!empty($accountInfo['avatarUrl'])): ?>
+                        <img src="<?= $assetBase . 'images/uploads/avatars/' . htmlspecialchars($accountInfo['avatarUrl']) ?>" alt="Avatar" class="w-full h-full object-cover">
+                    <?php else: ?>
+                        <?= htmlspecialchars($accountInfo['initial']) ?>
+                    <?php endif; ?>
                 </div>
                 <div class="hidden md:flex flex-col leading-tight">
                     <span class="text-sm font-medium text-gray-700 dark:text-gray-300 group-hover:text-primary-600 dark:group-hover:text-primary-400 transition-colors"><?= htmlspecialchars($accountInfo['displayName']) ?></span>

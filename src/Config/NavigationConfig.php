@@ -230,13 +230,15 @@ class NavigationConfig
     {
         $displayName = 'Account';
         $initial = 'G'; // Guest initial
+        $avatarUrl = null;
 
         if (AuthService::isLoggedIn()) {
             $landlord = AuthService::currentLandlord();
             $user = AuthService::currentUser();
 
             if ($landlord) {
-                // Landlord is logged in
+                // Landlord is logged in — no avatar concept for this entity,
+                // $avatarUrl stays null so the header falls back to the initial.
                 $displayName = $landlord->company_name;
                 $initial = !empty($landlord->company_name) ? strtoupper(substr($landlord->company_name, 0, 1)) : 'L';
             } elseif ($user) {
@@ -246,9 +248,10 @@ class NavigationConfig
                     ? strtoupper(substr($parts[0], 0, 1)) . '. ' . end($parts)
                     : ($parts[0] ?? 'User');
                 $initial = !empty($user->full_name) ? strtoupper(substr($user->full_name, 0, 1)) : 'U';
+                $avatarUrl = $user->avatar_url ?: null;
             }
         }
-        return compact('displayName', 'initial');
+        return compact('displayName', 'initial', 'avatarUrl');
     }
 
     /**

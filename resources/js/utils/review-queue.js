@@ -8,11 +8,18 @@
 // this intercepts the submit, posts via fetch, and refreshes the current
 // view through the SPA router instead.
 //
+// A form can opt into a confirm-before-submit gate (so an admin can back
+// out of a consequential action) by adding data-confirm-message — e.g.
+// contractor-claims-review.php's "Approve & Verify" form, since approving
+// publicly marks a profile Verified and assigns real ownership. Forms
+// without that attribute submit immediately, unchanged.
+//
 // Delegated on document (like utils/contractor-claim.js), so it only needs
 // to be wired once globally — it keeps working across SPA partial-load
 // navigations without re-binding per page.
 
 import { showToast } from '../ui/toast.js';
+import { confirmDialog } from '../ui/confirm.js';
 
 export function wireReviewQueue() {
   if (document._reviewQueueAttached) return;
@@ -23,6 +30,16 @@ export function wireReviewQueue() {
     if (!form) return;
 
     e.preventDefault();
+
+    if (form.dataset.confirmMessage) {
+      const confirmed = await confirmDialog(
+        form.dataset.confirmMessage,
+        form.dataset.confirmActionLabel || 'Confirm',
+        'Cancel',
+        form.dataset.confirmColor || 'bg-primary-600 hover:bg-primary-700'
+      );
+      if (!confirmed) return;
+    }
 
     const submitButtons = form.parentElement.querySelectorAll('button[type="submit"]');
     submitButtons.forEach((btn) => (btn.disabled = true));

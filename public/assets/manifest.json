@@ -39,6 +39,10 @@
       "resources/js/ui/toast.js"
     ]
   },
+  "_header-avatar.min.js": {
+    "file": "js/header-avatar.min.js",
+    "name": "header-avatar"
+  },
   "_home-events.min.js": {
     "file": "js/home-events.min.js",
     "name": "home-events",
@@ -186,8 +190,8 @@
       "_spinner-utils.min.js",
       "resources/js/ui/toast.js",
       "resources/js/pages/messages-page.js",
-      "_users-modal.min.js",
       "_confirm.min.js",
+      "_users-modal.min.js",
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js",
@@ -500,6 +504,7 @@
       "_spa-router.min.js",
       "_delete-factory.min.js",
       "_preview.min.js",
+      "_header-avatar.min.js",
       "_animations.min.js",
       "_modal-factory.min.js",
       "_regions-component.min.js",
@@ -598,6 +603,7 @@
       "_spa-router.min.js",
       "_delete-factory.min.js",
       "_preview.min.js",
+      "_header-avatar.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js"
     ]

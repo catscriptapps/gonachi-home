@@ -2,10 +2,11 @@
 
 import { uploadModal, createUploadHandler } from '../../modals/upload-modal.js';
 import { showToast } from '../../ui/toast.js';
-import { loadPartial } from '../spa-router.js'; 
-import { createDeleteHandler } from '../../factories/delete-factory.js'; 
-import { openEditUserModal } from '../../modals/users-modal.js'; 
+import { loadPartial } from '../spa-router.js';
+import { createDeleteHandler } from '../../factories/delete-factory.js';
+import { openEditUserModal } from '../../modals/users-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
+import { updateHeaderAvatar } from '../header-avatar.js';
 
 /**
  * Initializes profile-specific interactions.
@@ -44,7 +45,14 @@ export function initProfileAvatar() {
             
             // Short delay ensures modal DOM is injected and ready for Dropzone/Handler
             setTimeout(() => {
-                createUploadHandler(`${baseUrl}api/avatar-upload`, 'avatar', () => {
+                createUploadHandler(`${baseUrl}api/avatar-upload`, 'avatar', (files) => {
+                    // Update the header's account avatar immediately — it lives
+                    // outside #main-content, so the loadPartial() below (which
+                    // only refreshes this page's own avatar preview) never
+                    // reaches it on its own.
+                    const fileName = files?.[0]?.url?.split('/').pop();
+                    if (fileName) updateHeaderAvatar(fileName);
+
                     showToast('✅ Photo updated!', 'success');
                     loadPartial(`${baseUrl}profile`);
                 }, 1, true, { single: true });
@@ -62,6 +70,7 @@ export function initProfileAvatar() {
             const deleteHandler = createDeleteHandler(`${baseUrl}api/avatar-delete`, 'Avatar');
             deleteHandler.showConfirmation(encodedId, deleteBtn, (success) => {
                 if (success) {
+                    updateHeaderAvatar(null);
                     showToast('🗑️ Avatar removed!', 'success');
                     loadPartial(`${baseUrl}profile`);
                 }

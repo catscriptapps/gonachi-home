@@ -48,6 +48,14 @@ $unlock = $currentUserId ? ContractorCreditService::unlockContractor($currentUse
 $isAdmin = AuthService::isAdmin();
 $isClaimed = $contractor->claim_status === 'claimed';
 $categoryLabels = ContractorController::CATEGORY_LABELS;
+
+// A full, absolute URL — this gets copied and pasted onto other platforms
+// (social media, business cards, etc.), so a site-relative path alone
+// wouldn't work there. Same protocol/host detection as
+// ContractorOutreachService::profileUrl() and AuthController's password
+// reset link.
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
+$profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'contractor/' . $contractor->id;
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
     <?php
@@ -162,7 +170,20 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
             <span class="text-xs text-gray-400">Is this your business?</span>
 
             <?php if ($isClaimed): ?>
-                <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Claimed & Verified</span>
+                <div class="flex items-center gap-3">
+                    <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Claimed & Verified</span>
+                    <?php if ($currentUserId && (int) $contractor->claimed_by_user_id === $currentUserId): ?>
+                        <!-- Owner-only: lets a verified contractor grab their own
+                             profile link to share on social media, business cards,
+                             etc. — helps them get discovered without relying on
+                             luck/being found organically in the directory. -->
+                        <button type="button" id="copy-profile-link-btn" data-profile-url="<?= htmlspecialchars($profileUrl) ?>"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 010 5.656l-3 3a4 4 0 01-5.656-5.656l1.5-1.5m5.656-5.656l1.5-1.5a4 4 0 115.656 5.656l-3 3a4 4 0 01-5.656 0"/></svg>
+                            Copy Profile Link
+                        </button>
+                    <?php endif; ?>
+                </div>
             <?php elseif ($contractor->claim_status === 'pending'): ?>
                 <button disabled title="Awaiting admin review" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 cursor-not-allowed font-bold text-xs rounded-lg transition-colors tracking-wide">
                     Claim Pending

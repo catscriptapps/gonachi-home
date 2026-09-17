@@ -102,13 +102,17 @@ $pendingClaims = ContractorClaimController::pending(15);
                     <?php endif; ?>
 
                     <div class="flex items-center justify-end gap-3">
-                        <form method="POST" action="<?= $baseUrl ?>api/contractor-claim-review" data-review-form>
+                        <form method="POST" action="<?= $baseUrl ?>api/contractor-claim-review" data-review-form
+                            data-confirm-message="Reject this claim on &quot;<?= htmlspecialchars($claim->contractor->business_name ?? 'this profile') ?>&quot;? It goes back to unclaimed and the claimant will need to resubmit."
+                            data-confirm-action-label="Reject" data-confirm-color="bg-red-600 hover:bg-red-700">
                             <input type="hidden" name="action" value="reject">
                             <input type="hidden" name="id" value="<?= $claim->id ?>">                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 font-bold text-xs rounded-lg transition-colors">
                                 Reject
                             </button>
                         </form>
-                        <form method="POST" action="<?= $baseUrl ?>api/contractor-claim-review" data-review-form>
+                        <form method="POST" action="<?= $baseUrl ?>api/contractor-claim-review" data-review-form
+                            data-confirm-message="Approve this claim and mark &quot;<?= htmlspecialchars($claim->contractor->business_name ?? 'this profile') ?>&quot; as Verified? The claimant will become its owner."
+                            data-confirm-action-label="Approve & Verify" data-confirm-color="bg-secondary-600 hover:bg-secondary-700">
                             <input type="hidden" name="action" value="approve">
                             <input type="hidden" name="id" value="<?= $claim->id ?>">                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-secondary-600 dark:hover:bg-secondary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm">
                                 Approve & Verify
