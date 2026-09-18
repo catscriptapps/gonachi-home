@@ -105,10 +105,37 @@ $profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'c
             </div>
         </div>
 
+        <!-- Get A Quote: the primary client-facing CTA on this profile — works
+             regardless of contact-reveal/credit state, since it doesn't need
+             this contractor's own phone number. Routes into the existing Job
+             Request marketplace (no per-contractor targeting exists), pre-
+             scoped to this contractor's own category so the request is
+             visible to them (and similar contractors) to bid on. -->
+        <div class="mb-4">
+            <?php if ($currentUserId): ?>
+                <a href="<?= $baseUrl ?>job-requests?category=<?= urlencode($contractor->service_category) ?>&open_form=1" data-partial
+                    class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-2.5 bg-secondary-600 hover:bg-secondary-500 text-white font-bold text-sm rounded-lg transition-all shadow-sm">
+                    Get A Quote
+                </a>
+            <?php else: ?>
+                <button type="button" class="auth-gate-btn inline-flex items-center justify-center w-full sm:w-auto px-6 py-2.5 bg-secondary-600 hover:bg-secondary-500 text-white font-bold text-sm rounded-lg transition-all shadow-sm">
+                    Get A Quote
+                </button>
+            <?php endif; ?>
+        </div>
+
         <?php if (!$currentUserId): ?>
-            <!-- Conversion Gate: matches leads/detail.php's guest gate exactly -->
+            <!-- Conversion Gate: matches leads/detail.php's guest gate exactly.
+                 The phone still shows as a masked teaser (e.g. "+234*****")
+                 rather than nothing at all, so a guest sees a real number
+                 exists before deciding to sign up — same masking, whether
+                 they're logged in or not, is never fully revealed to a
+                 non-admin either way (see ContactMasker::mask()). -->
             <div class="mt-2 bg-gray-50 dark:bg-gray-950 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-6 text-center">
                 <svg class="h-8 w-8 text-secondary-600 mb-2 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
+                <?php if ($contractor->phone): ?>
+                    <p class="text-lg font-bold text-gray-900 dark:text-white tracking-wide mb-1"><?= htmlspecialchars(ContactMasker::mask($contractor->phone)) ?></p>
+                <?php endif; ?>
                 <h5 class="text-sm font-bold text-gray-900 dark:text-white">Contact Details Gated</h5>
                 <p class="text-xs text-gray-500 dark:text-gray-400 max-w-sm mx-auto mt-1 mb-4">
                     This contractor's phone number unlocks with an account.

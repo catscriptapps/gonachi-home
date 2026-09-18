@@ -35,6 +35,13 @@ $registered = isset($_GET['registered']);
 $category = trim($_GET['category'] ?? '');
 $location = trim($_GET['location'] ?? '');
 
+// A contractor profile's "Get A Quote" button lands here with ?category=
+// (its own service category) & open_form=1 — no per-contractor targeting
+// exists in the Job Request marketplace, so this pre-opens the post form,
+// pre-scoped to that category, rather than creating a whole new targeted
+// flow. See resources/views/pages/contractor/detail.php.
+$openForm = isset($_GET['open_form']);
+
 $categoryLabels = JobRequestController::categoryLabels();
 
 $openRequests = JobRequestController::openRequests($category ?: null, $location ?: null)
@@ -71,7 +78,7 @@ $totalOpen = JobRequestController::totalOpenCount();
     <div id="job-request-message"></div>
 
     <!-- Post A Job Request (toggled) -->
-    <div id="post-job-request-section" class="hidden">
+    <div id="post-job-request-section" class="<?= $openForm ? '' : 'hidden' ?>">
         <?php if (!$currentUserId): ?>
             <div class="max-w-lg mx-auto text-center py-16 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl">
                 <?php if ($registered): ?>
@@ -104,7 +111,7 @@ $totalOpen = JobRequestController::totalOpenCount();
                         <select id="job-request-category" name="service_category" required class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-secondary-500 focus:outline-none text-gray-700 dark:text-gray-300">
                             <option value="">Select a service&hellip;</option>
                             <?php foreach ($categoryLabels as $value => $label): ?>
-                                <option value="<?= $value ?>"><?= htmlspecialchars($label) ?></option>
+                                <option value="<?= $value ?>" <?= $category === $value ? 'selected' : '' ?>><?= htmlspecialchars($label) ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
