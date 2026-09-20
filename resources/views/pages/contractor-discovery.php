@@ -33,6 +33,7 @@ use Src\Utils\CuratedPhotos;
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
+$spotlightPhoto = $slideshowImages[0] ?? null;
 
 $category = trim($_GET['category'] ?? '');
 $location = trim($_GET['location'] ?? '');
@@ -219,6 +220,19 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
 
         <!-- SEO/Scalable Category Sidebar Column -->
         <div class="space-y-4">
+            <?php if ($spotlightPhoto): ?>
+                <!-- Spotlight Card -->
+                <div class="relative rounded-2xl overflow-hidden shadow-sm h-40"
+                    style="background-image:url('<?= htmlspecialchars($spotlightPhoto) ?>'); background-size:cover; background-position:center;">
+                    <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+                    <div class="relative h-full flex flex-col justify-end p-4">
+                        <span class="text-xs font-semibold text-secondary-300 uppercase tracking-wider">Spotlight</span>
+                        <h4 class="text-white font-bold text-sm mt-1">Verified Professionals, Every Day</h4>
+                        <p class="text-gray-200 text-xs mt-0.5">New contractors join and get reviewed continuously across the network.</p>
+                    </div>
+                </div>
+            <?php endif; ?>
+
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Popular Searches</h3>
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
                 <?php

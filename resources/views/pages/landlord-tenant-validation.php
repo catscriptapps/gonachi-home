@@ -32,6 +32,7 @@ use Src\Utils\ContactMasker;
 use Src\Utils\CuratedPhotos;
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
+$spotlightPhoto = $slideshowImages[0] ?? null;
 
 $opportunities = RentalListingController::countsByArea(3);
 
@@ -330,6 +331,19 @@ $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceS
 
             <!-- Rental Opportunities -->
             <div class="space-y-3">
+                <?php if ($spotlightPhoto): ?>
+                    <!-- Spotlight Card -->
+                    <div class="relative rounded-2xl overflow-hidden shadow-sm h-40"
+                        style="background-image:url('<?= htmlspecialchars($spotlightPhoto) ?>'); background-size:cover; background-position:center;">
+                        <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+                        <div class="relative h-full flex flex-col justify-end p-4">
+                            <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider">Spotlight</span>
+                            <h4 class="text-white font-bold text-sm mt-1">Rent With Confidence</h4>
+                            <p class="text-gray-200 text-xs mt-0.5">New property records and verified reports are added every day.</p>
+                        </div>
+                    </div>
+                <?php endif; ?>
+
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Rental Opportunities</h3>
                 <?php if (empty($opportunities)): ?>
                     <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-6 text-center">

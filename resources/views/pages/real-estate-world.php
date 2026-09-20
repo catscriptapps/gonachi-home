@@ -24,6 +24,7 @@ declare(strict_types=1);
 use Src\Utils\CuratedPhotos;
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
+$spotlightPhoto = $slideshowImages[0] ?? null;
 
 $roles = [
     [
@@ -168,6 +169,26 @@ $modules = [
             </div>
         </div>
     </section>
+
+    <?php if ($spotlightPhoto): ?>
+        <!-- Spotlight -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 flex flex-col justify-center bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+                <span class="text-xs font-semibold tracking-[0.2em] text-teal-600 dark:text-teal-400 uppercase mb-2">Global Reach</span>
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">A Growing Global Network</h3>
+                <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">From social updates to job requests, every module here connects real stakeholders across the ecosystem — worldwide.</p>
+            </div>
+            <div class="relative rounded-2xl overflow-hidden shadow-sm h-40 lg:h-auto"
+                style="background-image:url('<?= htmlspecialchars($spotlightPhoto) ?>'); background-size:cover; background-position:center;">
+                <div class="absolute inset-0 bg-gradient-to-t from-gray-900/90 via-gray-900/40 to-transparent"></div>
+                <div class="relative h-full flex flex-col justify-end p-4">
+                    <span class="text-xs font-semibold text-teal-300 uppercase tracking-wider">Spotlight</span>
+                    <h4 class="text-white font-bold text-sm mt-1">Where The Ecosystem Meets</h4>
+                    <p class="text-gray-200 text-xs mt-0.5">New submissions from stakeholders around the world land here every day.</p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
 
     <!-- Stakeholder Roles -->
     <div>
