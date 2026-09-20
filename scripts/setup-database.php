@@ -123,6 +123,15 @@ $messages = array_merge($messages, seedRelLeadsBaselineData());
 require_once __DIR__ . '/reset/ltv-landlords.php';
 $messages = array_merge($messages, resetLtvLandlordsTable());
 
+require_once __DIR__ . '/reset/ltv-credit-accounts.php';
+$messages = array_merge($messages, resetLtvCreditAccountsTable());
+
+require_once __DIR__ . '/reset/ltv-credit-transactions.php';
+$messages = array_merge($messages, resetLtvCreditTransactionsTable());
+
+require_once __DIR__ . '/reset/ltv-contact-unlocks.php';
+$messages = array_merge($messages, resetLtvContactUnlocksTable());
+
 require_once __DIR__ . '/reset/ltv-properties.php';
 $messages = array_merge($messages, resetLtvPropertiesTable());
 
@@ -131,6 +140,15 @@ $messages = array_merge($messages, resetLtvReportsTable());
 
 require_once __DIR__ . '/reset/ltv-report-photos.php';
 $messages = array_merge($messages, resetLtvReportPhotosTable());
+
+require_once __DIR__ . '/reset/ltv-tenants.php';
+$messages = array_merge($messages, resetLtvTenantsTable());
+
+require_once __DIR__ . '/reset/ltv-tenant-reports.php';
+$messages = array_merge($messages, resetLtvTenantReportsTable());
+
+require_once __DIR__ . '/reset/ltv-tenant-unlocks.php';
+$messages = array_merge($messages, resetLtvTenantUnlocksTable());
 
 require_once __DIR__ . '/reset/ltv-rental-listings.php';
 $messages = array_merge($messages, resetLtvRentalListingsTable());

@@ -9,32 +9,54 @@ declare(strict_types=1);
  * Report-a-landlord contribution loop, confidence engine, and search are
  * backed by real data via Src\Controller\LandlordDirectoryController — see
  * report-landlord.php (submission) and landlord-report-review.php
- * (moderation). The Rental Opportunities teaser below is backed by
- * Src\Controller\RentalListingController — see list-rental-property.php
- * (submission) and rental-listing-review.php (moderation).
+ * (moderation). The mirror-image Report-a-tenant loop is backed by
+ * Src\Controller\TenantDirectoryController — see report-tenant.php
+ * (submission) and tenant-report-review.php (moderation). The Rental
+ * Opportunities teaser below is backed by Src\Controller\
+ * RentalListingController — see list-rental-property.php (submission) and
+ * rental-listing-review.php (moderation). "Unlock Contact" on each search
+ * result spends 1 credit from Src\Service\LandlordCreditService's own
+ * wallet (landlord_and_tenant_validation.pdf's Step 8) — see
+ * server/api/landlord-contact-unlock.php and server/api/tenant-unlock.php.
  *
+ * @var bool $isLoggedIn
  * @var string $baseUrl
  */
 
 use Src\Controller\LandlordDirectoryController;
 use Src\Controller\RentalListingController;
+use Src\Controller\TenantDirectoryController;
+use Src\Service\AuthService;
+use Src\Service\LandlordCreditService;
+use Src\Utils\ContactMasker;
 use Src\Utils\CuratedPhotos;
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
 
 $opportunities = RentalListingController::countsByArea(3);
 
+$currentUserId = $isLoggedIn ? AuthService::userId() : null;
+$isAdmin = $currentUserId ? AuthService::isAdmin() : false;
+
 $searchQuery = trim($_GET['q'] ?? '');
 // ->appends() keeps `q` on the Next/Previous links — the app's Paginator::
 // currentPathResolver() strips the query string entirely, so without this
-// paginating would silently drop the search term.
+// paginating would silently drop the search term. The same query searches
+// both directories at once — one search box covers the whole platform
+// instead of forcing a "landlord or tenant" mode choice up front.
 $searchResults = $searchQuery !== '' ? LandlordDirectoryController::search($searchQuery)->appends(['q' => $searchQuery]) : null;
+$tenantSearchResults = $searchQuery !== '' ? TenantDirectoryController::search($searchQuery)->appends(['q' => $searchQuery]) : null;
 
 $totalProperties = LandlordDirectoryController::totalPublishedProperties();
 $totalReports = LandlordDirectoryController::totalPublishedReports();
+$totalTenants = TenantDirectoryController::totalPublishedTenants();
+$totalTenantReports = TenantDirectoryController::totalPublishedReports();
 
 $recentRecord = LandlordDirectoryController::recentPublished(1)->first();
 $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore($recentRecord) : 0;
+
+$recentTenant = TenantDirectoryController::recentPublished(1)->first();
+$recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceScore($recentTenant) : 0;
 ?>
 <div class="max-w-5xl mx-auto space-y-12">
 
@@ -64,7 +86,10 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
                 <a href="<?= $baseUrl ?>report-landlord" data-partial class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-sm rounded-xl transition-colors shadow-sm">
-                    Report A Landlord
+                    Submit an Anonymous Rental Report
+                </a>
+                <a href="<?= $baseUrl ?>report-tenant" data-partial class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-400 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-xl transition-colors shadow-sm">
+                    Report A Tenant
                 </a>
                 <form method="GET" action="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="w-full sm:w-80 relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
@@ -77,7 +102,7 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
     </section>
 
     <!-- Live Counters -->
-    <div class="flex items-center justify-center gap-10">
+    <div class="flex flex-wrap items-center justify-center gap-x-10 gap-y-4">
         <div class="text-center">
             <span class="block text-3xl font-bold text-indigo-600"><?= $totalProperties ?></span>
             <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Property Records</span>
@@ -87,6 +112,16 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
             <span class="block text-3xl font-bold text-gray-900 dark:text-white"><?= $totalReports ?></span>
             <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Landlord Reports</span>
         </div>
+        <div class="h-10 w-px bg-gray-200 dark:bg-gray-800"></div>
+        <div class="text-center">
+            <span class="block text-3xl font-bold text-indigo-600"><?= $totalTenants ?></span>
+            <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tenant Records</span>
+        </div>
+        <div class="h-10 w-px bg-gray-200 dark:bg-gray-800"></div>
+        <div class="text-center">
+            <span class="block text-3xl font-bold text-gray-900 dark:text-white"><?= $totalTenantReports ?></span>
+            <span class="text-xs font-medium text-gray-400 uppercase tracking-wider">Tenant Reports</span>
+        </div>
     </div>
 
     <?php if ($searchResults !== null): ?>
@@ -95,7 +130,7 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
         <div class="space-y-4">
             <div class="flex items-center justify-between">
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">
-                    Search Results for &ldquo;<?= htmlspecialchars($searchQuery) ?>&rdquo;
+                    Landlord Results for &ldquo;<?= htmlspecialchars($searchQuery) ?>&rdquo;
                 </h3>
                 <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="text-xs font-semibold text-indigo-600 hover:underline">Clear Search</a>
             </div>
@@ -107,13 +142,18 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
             <?php else: ?>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                     <?php foreach ($searchResults as $property): ?>
-                        <?php $score = LandlordDirectoryController::confidenceScore($property); ?>
+                        <?php
+                        $score = LandlordDirectoryController::confidenceScore($property);
+                        $landlord = $property->landlord;
+                        $hasPhone = $landlord && $landlord->phone;
+                        $isUnlocked = $currentUserId && $hasPhone && LandlordCreditService::hasUnlocked($currentUserId, $landlord->id);
+                        ?>
                         <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:border-indigo-500/50 transition-all">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
-                                <?= $property->published_reports_count ?> report<?= $property->published_reports_count === 1 ? '' : 's' ?>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-500 dark:bg-amber-950/30 dark:text-amber-400" title="<?= $property->published_reports_count ?> report<?= $property->published_reports_count === 1 ? '' : 's' ?>">
+                                <?= LandlordDirectoryController::starHtml($property->average_rating) ?>
                             </span>
                             <h4 class="text-base font-bold text-gray-900 dark:text-white mt-2"><?= htmlspecialchars($property->address) ?></h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">Landlord: <?= htmlspecialchars($property->landlord->name ?? 'Unknown') ?></p>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">Landlord: <?= htmlspecialchars($landlord->name ?? 'Unknown') ?></p>
 
                             <div class="mt-4">
                                 <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
@@ -126,9 +166,25 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
                             </div>
 
                             <div class="flex items-center justify-end pt-4">
-                                <button disabled title="Coming soon" class="inline-flex items-center px-3.5 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold text-xs rounded-lg cursor-not-allowed whitespace-nowrap">
-                                    Unlock Contact
-                                </button>
+                                <?php if (!$hasPhone): ?>
+                                    <button disabled title="No phone on file for this landlord yet" class="inline-flex items-center px-3.5 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold text-xs rounded-lg cursor-not-allowed whitespace-nowrap">
+                                        No Contact On File
+                                    </button>
+                                <?php elseif ($isUnlocked): ?>
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white">
+                                        <?= htmlspecialchars($isAdmin ? $landlord->phone : ContactMasker::mask($landlord->phone)) ?>
+                                    </span>
+                                <?php elseif (!$currentUserId): ?>
+                                    <!-- Matches the PDF's Step 8 exactly: clicking Show/Unlock
+                                         Contact as a guest prompts Create Account or Sign In. -->
+                                    <button type="button" class="auth-gate-btn inline-flex items-center px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors whitespace-nowrap">
+                                        Unlock Contact
+                                    </button>
+                                <?php else: ?>
+                                    <button type="button" class="unlock-contact-btn inline-flex items-center px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors whitespace-nowrap" data-landlord-id="<?= $landlord->id ?>">
+                                        Unlock Contact
+                                    </button>
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
@@ -154,6 +210,84 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
             <?php endif; ?>
         </div>
 
+        <!-- Tenant Search Results -->
+        <div class="space-y-4">
+            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">
+                Tenant Results for &ldquo;<?= htmlspecialchars($searchQuery) ?>&rdquo;
+            </h3>
+
+            <?php if ($tenantSearchResults->isEmpty()): ?>
+                <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-8 text-center">
+                    <p class="text-sm text-gray-400 dark:text-gray-500">No published tenant records match that search yet.</p>
+                </div>
+            <?php else: ?>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <?php foreach ($tenantSearchResults as $tenant): ?>
+                        <?php
+                        $tScore = TenantDirectoryController::confidenceScore($tenant);
+                        $hasReference = (bool) $tenant->reference_phone;
+                        $isTenantUnlocked = $currentUserId && $hasReference && LandlordCreditService::hasUnlockedTenant($currentUserId, $tenant->id);
+                        ?>
+                        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm hover:border-indigo-500/50 transition-all">
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-50 text-amber-500 dark:bg-amber-950/30 dark:text-amber-400" title="<?= $tenant->published_reports_count ?> report<?= $tenant->published_reports_count === 1 ? '' : 's' ?>">
+                                <?= LandlordDirectoryController::starHtml($tenant->average_rating) ?>
+                            </span>
+                            <h4 class="text-base font-bold text-gray-900 dark:text-white mt-2"><?= htmlspecialchars($tenant->name) ?></h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400"><?= $tenant->published_reports_count ?> report<?= $tenant->published_reports_count === 1 ? '' : 's' ?> on file</p>
+
+                            <div class="mt-4">
+                                <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
+                                    <span>Verification Confidence</span>
+                                    <span><?= $tScore ?>%</span>
+                                </div>
+                                <div class="h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                                    <div class="h-full rounded-full bg-indigo-500" style="width: <?= $tScore ?>%"></div>
+                                </div>
+                            </div>
+
+                            <div class="flex items-center justify-end pt-4">
+                                <?php if (!$hasReference): ?>
+                                    <button disabled title="No reference contact on file for this tenant yet" class="inline-flex items-center px-3.5 py-2 bg-gray-100 dark:bg-gray-800 text-gray-400 font-bold text-xs rounded-lg cursor-not-allowed whitespace-nowrap">
+                                        No Contact On File
+                                    </button>
+                                <?php elseif ($isTenantUnlocked): ?>
+                                    <span class="text-sm font-bold text-gray-900 dark:text-white">
+                                        <?= htmlspecialchars($isAdmin ? $tenant->reference_phone : ContactMasker::mask($tenant->reference_phone)) ?>
+                                    </span>
+                                <?php elseif (!$currentUserId): ?>
+                                    <button type="button" class="auth-gate-btn inline-flex items-center px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors whitespace-nowrap">
+                                        Unlock Contact
+                                    </button>
+                                <?php else: ?>
+                                    <button type="button" class="unlock-tenant-btn inline-flex items-center px-3.5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg transition-colors whitespace-nowrap" data-tenant-id="<?= $tenant->id ?>">
+                                        Unlock Contact
+                                    </button>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                </div>
+
+                <?php if ($tenantSearchResults->lastPage() > 1): ?>
+                    <div class="flex items-center justify-between pt-2">
+                        <?php if ($tenantSearchResults->previousPageUrl()): ?>
+                            <a href="<?= htmlspecialchars($tenantSearchResults->previousPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">&larr; Previous</a>
+                        <?php else: ?>
+                            <span></span>
+                        <?php endif; ?>
+
+                        <span class="text-xs text-gray-400">Page <?= $tenantSearchResults->currentPage() ?> of <?= $tenantSearchResults->lastPage() ?></span>
+
+                        <?php if ($tenantSearchResults->nextPageUrl()): ?>
+                            <a href="<?= htmlspecialchars($tenantSearchResults->nextPageUrl()) ?>" data-partial class="text-sm font-semibold text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400">Next &rarr;</a>
+                        <?php else: ?>
+                            <span></span>
+                        <?php endif; ?>
+                    </div>
+                <?php endif; ?>
+            <?php endif; ?>
+        </div>
+
     <?php else: ?>
 
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -164,7 +298,7 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
 
                 <?php if (!$recentRecord): ?>
                     <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-8 text-center">
-                        <p class="text-sm text-gray-400 dark:text-gray-500">No published records yet — be the first to report a landlord.</p>
+                        <p class="text-sm text-gray-400 dark:text-gray-500">No published records yet — be the first to submit an anonymous rental report.</p>
                     </div>
                 <?php else: ?>
                     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
@@ -174,7 +308,7 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
                                     <?= $recentConfidence >= 70 ? 'Verified' : 'Unverified' ?>
                                 </span>
                                 <h4 class="text-lg font-bold text-gray-900 dark:text-white mt-2"><?= htmlspecialchars($recentRecord->address) ?></h4>
-                                <p class="text-sm text-gray-500 dark:text-gray-400">Landlord: <?= htmlspecialchars($recentRecord->landlord->name ?? 'Unknown') ?> &middot; <?= $recentRecord->published_reports_count ?> report<?= $recentRecord->published_reports_count === 1 ? '' : 's' ?></p>
+                                <p class="text-sm text-gray-500 dark:text-gray-400">Landlord: <?= htmlspecialchars($recentRecord->landlord->name ?? 'Unknown') ?> &middot; <span class="text-amber-500 dark:text-amber-400" title="<?= $recentRecord->published_reports_count ?> report<?= $recentRecord->published_reports_count === 1 ? '' : 's' ?>"><?= LandlordDirectoryController::starHtml($recentRecord->average_rating) ?></span></p>
                             </div>
                         </div>
 
@@ -217,6 +351,42 @@ $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore
                 </p>
             </div>
 
+        </div>
+
+        <!-- Recently Reported Tenant -->
+        <div class="space-y-3">
+            <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">Recently Reported Tenant</h3>
+
+            <?php if (!$recentTenant): ?>
+                <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-8 text-center">
+                    <p class="text-sm text-gray-400 dark:text-gray-500">No published tenant records yet — be the first to report a tenant.</p>
+                </div>
+            <?php else: ?>
+                <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 shadow-sm">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-600 dark:bg-gray-800 dark:text-gray-400">
+                                <?= $recentTenantConfidence >= 70 ? 'Verified' : 'Unverified' ?>
+                            </span>
+                            <h4 class="text-lg font-bold text-gray-900 dark:text-white mt-2"><?= htmlspecialchars($recentTenant->name) ?></h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400"><span class="text-amber-500 dark:text-amber-400" title="<?= $recentTenant->published_reports_count ?> report<?= $recentTenant->published_reports_count === 1 ? '' : 's' ?>"><?= LandlordDirectoryController::starHtml($recentTenant->average_rating) ?></span></p>
+                        </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
+                            <span>Verification Confidence</span>
+                            <span><?= $recentTenantConfidence ?>%</span>
+                        </div>
+                        <div class="h-2 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
+                            <div class="h-full rounded-full bg-indigo-500" style="width: <?= $recentTenantConfidence ?>%"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 mt-2">
+                            Confidence grows as landlords corroborate details and references are added — this record could reach 95%.
+                        </p>
+                    </div>
+                </div>
+            <?php endif; ?>
         </div>
 
     <?php endif; ?>

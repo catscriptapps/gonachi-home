@@ -14,6 +14,7 @@ declare(strict_types=1);
  * @var string $assetBase
  */
 
+use Src\Controller\LandlordDirectoryController;
 use Src\Controller\LandlordReportReviewController;
 use Src\Service\AuthService;
 
@@ -70,7 +71,17 @@ $issueLabels = [
     <?php else: ?>
         <div class="space-y-4">
             <?php foreach ($pendingReports as $report): ?>
-                <?php $issue = $issueLabels[$report->issue_type] ?? ucfirst($report->issue_type); ?>
+                <?php
+                $issue = $issueLabels[$report->issue_type] ?? ucfirst($report->issue_type);
+                // Building Pictures are real images; Supporting Evidence is
+                // PDF-only (report-landlord-document-upload.php) and must
+                // never render through an <img> tag — see the two blocks below.
+                // ->values() re-indexes from 0 — where() alone keeps each
+                // item's original position in the combined $report->photos
+                // list, which threw off the "Document N" numbering below.
+                $buildingPictures = $report->photos->where('kind', 'building_picture')->values();
+                $supportingEvidence = $report->photos->where('kind', 'supporting_evidence')->values();
+                ?>
                 <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-4 mb-3">
                         <div>
@@ -85,10 +96,14 @@ $issueLabels = [
                         <span class="text-xs font-medium text-gray-400 dark:text-gray-500 whitespace-nowrap"><?= htmlspecialchars($report->created_at->diffForHumans()) ?></span>
                     </div>
 
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-3">
+                    <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 my-4 text-sm border-t border-b border-gray-100 dark:border-gray-800/80 py-3">
                         <div>
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Reported By</span>
                             <span class="font-medium text-gray-700 dark:text-gray-300"><?= htmlspecialchars($report->user->full_name ?? 'User #' . $report->user_id) ?></span>
+                        </div>
+                        <div>
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Rating</span>
+                            <span class="font-medium text-amber-500 dark:text-amber-400" title="<?= (int) $report->rating ?>/5"><?= LandlordDirectoryController::starHtml((float) $report->rating) ?></span>
                         </div>
                         <div>
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Property Type</span>
@@ -100,7 +115,7 @@ $issueLabels = [
                         </div>
                         <div>
                             <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider">Photos</span>
-                            <span class="font-medium text-gray-500 dark:text-gray-400"><?= $report->photos->count() ?> attached</span>
+                            <span class="font-medium text-gray-500 dark:text-gray-400"><?= $buildingPictures->count() ?> attached</span>
                         </div>
                     </div>
 
@@ -111,13 +126,40 @@ $issueLabels = [
                         </div>
                     <?php endif; ?>
 
-                    <?php if ($report->photos->isNotEmpty()): ?>
+                    <?php if ($buildingPictures->isNotEmpty()): ?>
+                        <!-- Building Pictures: real images — thumbnail grid, wired to the
+                             shared full-screen previewer (resources/js/utils/globals/preview.js). -->
+                        <div class="mb-1.5">
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Building Pictures</span>
+                        </div>
                         <div class="flex flex-wrap gap-2 mb-4">
-                            <?php foreach ($report->photos as $photo): ?>
-                                <a href="<?= $assetBase . htmlspecialchars($photo->file_path) ?>" target="_blank" rel="noopener noreferrer" class="block h-16 w-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800">
-                                    <img src="<?= $assetBase . htmlspecialchars($photo->file_path) ?>" alt="<?= htmlspecialchars($photo->kind) ?>" class="h-full w-full object-cover" />
-                                </a>
+                            <?php foreach ($buildingPictures as $photo): ?>
+                                <?php $photoUrl = $assetBase . htmlspecialchars($photo->file_path); ?>
+                                <button type="button" data-img-src="<?= $photoUrl ?>" class="block h-16 w-16 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 cursor-zoom-in">
+                                    <img src="<?= $photoUrl ?>" alt="Building picture" class="h-full w-full object-cover" />
+                                </button>
                             <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
+                    <?php if ($supportingEvidence->isNotEmpty()): ?>
+                        <!-- Supporting Evidence: PDF-only (see report-landlord-document-upload.php)
+                             — never an <img>, that's what was rendering as broken-thumbnail
+                             "Supporting" alt-text boxes before this fix. -->
+                        <div class="mb-4">
+                            <span class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5">Supporting Evidence</span>
+                            <div class="flex flex-wrap gap-2">
+                                <?php foreach ($supportingEvidence as $index => $document): ?>
+                                    <a href="<?= $assetBase . htmlspecialchars($document->file_path) ?>" target="_blank" rel="noopener noreferrer"
+                                        class="flex items-center gap-2 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 hover:border-indigo-400 rounded-lg px-3 py-2 transition-colors">
+                                        <svg class="h-5 w-5 text-red-500 flex-shrink-0" viewBox="0 0 24 24" fill="none">
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M7 2h7l5 5v13a2 2 0 01-2 2H7a2 2 0 01-2-2V4a2 2 0 012-2z" />
+                                            <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M14 2v5h5" />
+                                        </svg>
+                                        <span class="text-xs font-semibold text-gray-700 dark:text-gray-300">Document <?= $index + 1 ?></span>
+                                    </a>
+                                <?php endforeach; ?>
+                            </div>
                         </div>
                     <?php endif; ?>
 

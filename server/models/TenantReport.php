@@ -1,5 +1,5 @@
 <?php
-// /server/models/LandlordReport.php
+// /server/models/TenantReport.php
 
 declare(strict_types=1);
 
@@ -7,49 +7,39 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class LandlordReport extends Model
+class TenantReport extends Model
 {
-    protected $table = 'ltv_reports';
+    protected $table = 'ltv_tenant_reports';
 
     protected $fillable = [
-        'property_id',
-        'landlord_id',
+        'tenant_id',
         'user_id',
+        'property_address',
         'duration_of_tenancy',
-        'issue_type',
+        'conduct_type',
         'notes',
         'rating',
-        'landlord_phone',
+        'reference_name',
+        'reference_phone',
         'status',
     ];
 
     protected $casts = [
-        'property_id' => 'integer',
-        'landlord_id' => 'integer',
+        'tenant_id' => 'integer',
         'user_id' => 'integer',
         'rating' => 'integer',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];
 
-    public function property()
+    public function tenant()
     {
-        return $this->belongsTo(PropertyRecord::class, 'property_id');
-    }
-
-    public function landlord()
-    {
-        return $this->belongsTo(LandlordRecord::class, 'landlord_id');
+        return $this->belongsTo(TenantRecord::class, 'tenant_id');
     }
 
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
-    }
-
-    public function photos()
-    {
-        return $this->hasMany(LandlordReportPhoto::class, 'report_id');
     }
 
     public function scopePublished($query)

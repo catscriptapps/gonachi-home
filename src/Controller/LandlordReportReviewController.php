@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace Src\Controller;
 
+use App\Models\LandlordRecord;
 use App\Models\LandlordReport;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -33,7 +34,23 @@ class LandlordReportReviewController
         }
 
         $report->status = 'published';
-        return $report->save();
+        $saved = $report->save();
+
+        // Backfill the landlord's phone — only once a report clears review,
+        // matching how everything else here (confidence score, published
+        // report count) only ever counts approved reports. Never overwrites
+        // an already-known number, so one wrong/malicious submission can't
+        // clobber a previously-corroborated contact — see
+        // LandlordCreditService::unlockContact(), the credit system this feeds.
+        if ($saved && $report->landlord_phone) {
+            $landlord = LandlordRecord::find($report->landlord_id);
+            if ($landlord && !$landlord->phone) {
+                $landlord->phone = $report->landlord_phone;
+                $landlord->save();
+            }
+        }
+
+        return $saved;
     }
 
     public static function reject(int $id): bool

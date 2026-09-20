@@ -43,6 +43,37 @@ export function init() {
   // call again on partial-load re-init.
   registerImagePreview();
 
+  // --- Landlord Rating (1-5 stars) ---
+  // Not a native <input required> — a hidden input can't be meaningfully
+  // border-highlighted by FormValidator — so this is checked explicitly in
+  // the submit handler below instead.
+  const ratingPicker = document.getElementById('landlord-rating-picker');
+  const ratingValueInput = document.getElementById('landlord-rating-value');
+  const ratingError = document.getElementById('landlord-rating-error');
+
+  function renderStars(selected) {
+    ratingPicker.querySelectorAll('.star-btn').forEach((btn) => {
+      const isFilled = Number(btn.dataset.star) <= selected;
+      btn.classList.toggle('text-amber-400', isFilled);
+      btn.classList.toggle('text-gray-300', !isFilled);
+      btn.classList.toggle('dark:text-gray-600', !isFilled);
+    });
+  }
+
+  ratingPicker.addEventListener('click', (e) => {
+    const btn = e.target.closest('.star-btn');
+    if (!btn) return;
+
+    const value = Number(btn.dataset.star);
+    // Clicking the currently-selected star toggles it back to 0 — same
+    // "click again to clear" convention as Real Estate World's own star
+    // picker (resources/js/forms/rating-form.js).
+    const next = Number(ratingValueInput.value) === value ? 0 : value;
+    ratingValueInput.value = String(next);
+    renderStars(next);
+    ratingError.classList.add('hidden');
+  });
+
   // --- Building Pictures ---
   const addPicturesBtn = document.getElementById('add-building-pictures-btn');
   const picturesPreview = document.getElementById('building-pictures-preview');
@@ -170,6 +201,13 @@ export function init() {
 
     if (!validator.validateForEmptyFields(e)) return;
 
+    const rating = Number(ratingValueInput.value);
+    if (rating < 1) {
+      ratingError.classList.remove('hidden');
+      showToast('Please select a star rating.', 'error');
+      return;
+    }
+
     const formData = new FormData(form);
     const payload = {
       address: (formData.get('address') || '').trim(),
@@ -178,6 +216,8 @@ export function init() {
       duration_of_tenancy: (formData.get('duration_of_tenancy') || '').trim(),
       issue_type: formData.get('issue_type') || '',
       notes: (formData.get('notes') || '').trim(),
+      rating,
+      landlord_phone: (formData.get('landlord_phone') || '').trim(),
       building_picture_urls: buildingPictures.map((f) => f.url),
       supporting_evidence_urls: supportingEvidence.map((f) => f.url),
     };
@@ -207,6 +247,7 @@ export function init() {
         `;
 
         form.reset();
+        renderStars(0);
         buildingPictures = [];
         supportingEvidence = [];
         renderPictures();

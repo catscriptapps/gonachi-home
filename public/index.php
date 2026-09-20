@@ -72,7 +72,7 @@ $assetBase = rtrim($assetBase, '/') . '/';
 // path) fell back to layouts/app.php regardless of which project it was.
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review', '/contractor-outreach'];
-$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/rental-opportunities', '/landlord-report-review', '/list-rental-property', '/rental-listing-review'];
+$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/report-tenant', '/rental-opportunities', '/landlord-report-review', '/tenant-report-review', '/list-rental-property', '/rental-listing-review'];
 $realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings', '/ratings', '/recommendations'];
 
 // /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s

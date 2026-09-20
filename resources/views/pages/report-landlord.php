@@ -32,14 +32,14 @@ $registered = isset($_GET['registered']);
     <?php
     $breadcrumbs = [
         ['label' => 'Landlord & Tenant Validation', 'href' => $baseUrl . 'landlord-tenant-validation'],
-        ['label' => 'Report A Landlord'],
+        ['label' => 'Submit an Anonymous Rental Report'],
     ];
     $breadcrumbAccent = 'indigo';
     include __DIR__ . '/../components/breadcrumbs.php';
     ?>
 
     <div>
-        <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Report A Landlord</h1>
+        <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Submit an Anonymous Rental Report</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Share your experience to help the next renter — every contribution strengthens the verification confidence score.</p>
     </div>
 
@@ -57,7 +57,7 @@ $registered = isset($_GET['registered']);
                 </div>
             <?php endif; ?>
             <svg class="h-10 w-10 text-gray-300 dark:text-gray-700 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
-            <h1 class="text-xl font-bold text-gray-900 dark:text-white">Sign In To Report A Landlord</h1>
+            <h1 class="text-xl font-bold text-gray-900 dark:text-white">Sign In To Submit an Anonymous Rental Report</h1>
             <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">Reports are tied to your account so we can detect corroboration from independent renters.</p>
             <div class="mt-6 flex items-center justify-center gap-3">
                 <a href="<?= $baseUrl ?>login" data-login-button class="inline-flex items-center px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold rounded-lg transition-all shadow-sm">
@@ -83,6 +83,20 @@ $registered = isset($_GET['registered']);
                     <input type="text" id="report-landlord-name" name="landlord_name" required placeholder="e.g. Mr X" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
                 </div>
 
+                <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">How Would You Rate This Landlord?</label>
+                    <div class="flex items-center gap-1" id="landlord-rating-picker">
+                        <?php for ($star = 1; $star <= 5; $star++): ?>
+                            <button type="button" data-star="<?= $star ?>" class="star-btn text-gray-300 dark:text-gray-600 hover:text-amber-400 transition-colors">
+                                <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.958a1 1 0 00.95.69h4.162c.969 0 1.371 1.24.588 1.81l-3.368 2.447a1 1 0 00-.363 1.118l1.287 3.957c.3.922-.755 1.688-1.539 1.118L10.6 15.63a1 1 0 00-1.176 0l-3.367 2.446c-.784.57-1.838-.196-1.539-1.118l1.287-3.957a1 1 0 00-.363-1.118L2.075 9.436c-.783-.57-.38-1.81.588-1.81h4.163a1 1 0 00.95-.69l1.273-3.958z"/></svg>
+                            </button>
+                        <?php endfor; ?>
+                        <input type="hidden" id="landlord-rating-value" name="rating" value="0">
+                    </div>
+                    <p id="landlord-rating-error" class="hidden text-xs text-red-500 mt-1">Please select a star rating.</p>
+                    <p class="text-xs text-gray-400 mt-1">1 star = terrible experience, 5 stars = excellent landlord.</p>
+                </div>
+
                 <div>
                     <label for="report-landlord-property-type" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Property Type</label>
                     <select id="report-landlord-property-type" name="property_type" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-700 dark:text-gray-300">
@@ -98,6 +112,12 @@ $registered = isset($_GET['registered']);
                 <div>
                     <label for="report-landlord-duration" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Duration Of Tenancy</label>
                     <input type="text" id="report-landlord-duration" name="duration_of_tenancy" placeholder="e.g. 2 years" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                </div>
+
+                <div>
+                    <label for="report-landlord-phone" class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-1.5">Landlord Phone Number <span class="normal-case font-medium text-gray-400">(optional, if known)</span></label>
+                    <input type="tel" id="report-landlord-phone" name="landlord_phone" placeholder="e.g. 08011111111" class="w-full px-3.5 py-2.5 bg-gray-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-none text-gray-900 dark:text-white" />
+                    <p class="text-xs text-gray-400 mt-1">Helps future renters verify this landlord directly — kept private until another renter spends a credit to reveal it.</p>
                 </div>
 
                 <div>

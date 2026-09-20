@@ -28,6 +28,15 @@ function resetLtvReportsTable(): array
             // deposit | harassment | unsafe | eviction | other
             $table->string('issue_type')->index();
             $table->text('notes')->nullable();
+            // Optional — many tenants know their landlord's number even
+            // without formal documentation. Backfills ltv_landlords.phone on
+            // approval (see LandlordReportReviewController::approve()).
+            $table->string('landlord_phone')->nullable();
+            // 1 (terrible) - 5 (excellent) — the reporter's own rating of this
+            // landlord, averaged across a property's published reports to
+            // drive the public "stars instead of a bare report count" display
+            // (see LandlordDirectoryController::publishedPropertiesQuery()).
+            $table->unsignedTinyInteger('rating');
 
             // pending_review | published | rejected
             $table->string('status')->default('pending_review')->index();

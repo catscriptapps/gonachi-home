@@ -39,7 +39,11 @@ class LandlordDirectoryController
      * — this just attaches the resulting URLs to the report.
      *
      * @param array $input Decoded JSON body: address, landlord_name, property_type,
-     *                      duration_of_tenancy, issue_type, notes, building_picture_urls[], supporting_evidence_urls[].
+     *                      duration_of_tenancy, issue_type, notes, rating (1-5),
+     *                      landlord_phone (optional — backfills the landlord's
+     *                      record once this report is approved, see
+     *                      LandlordReportReviewController::approve()),
+     *                      building_picture_urls[], supporting_evidence_urls[].
      * @return array{success: bool, errors: string[]}
      */
     public static function submitReport(array $input, int $userId): array
@@ -49,6 +53,11 @@ class LandlordDirectoryController
             if (trim((string) ($input[$field] ?? '')) === '') {
                 $errors[] = "The {$field} field is required.";
             }
+        }
+
+        $rating = $input['rating'] ?? null;
+        if (!is_numeric($rating) || (int) $rating < 1 || (int) $rating > 5) {
+            $errors[] = 'A star rating (1-5) is required.';
         }
 
         if ($errors) {
@@ -78,6 +87,8 @@ class LandlordDirectoryController
             'duration_of_tenancy' => trim((string) ($input['duration_of_tenancy'] ?? '')) ?: null,
             'issue_type' => (string) $input['issue_type'],
             'notes' => trim((string) ($input['notes'] ?? '')) ?: null,
+            'rating' => (int) $rating,
+            'landlord_phone' => trim((string) ($input['landlord_phone'] ?? '')) ?: null,
             'status' => 'pending_review',
         ]);
 
@@ -160,14 +171,37 @@ class LandlordDirectoryController
 
     /**
      * Base query for property records with at least one published report,
-     * annotated with the count and recency needed by both read paths above.
+     * annotated with the count/recency needed by both read paths above, plus
+     * average_rating — the public display shows stars (see starHtml()) built
+     * from this instead of a bare report count.
      */
     private static function publishedPropertiesQuery()
     {
         return PropertyRecord::whereHas('reports', fn($q) => $q->published())
             ->with('landlord')
             ->withCount(['reports as published_reports_count' => fn($q) => $q->published()])
-            ->withMax(['reports as latest_report_at' => fn($q) => $q->published()], 'created_at');
+            ->withMax(['reports as latest_report_at' => fn($q) => $q->published()], 'created_at')
+            ->withAvg(['reports as average_rating' => fn($q) => $q->published()], 'rating');
+    }
+
+    /**
+     * Character-based ★/☆ row for a 1-5 average (rounded to the nearest
+     * whole star) — same convention as Real Estate World's own rating
+     * display (resources/js/utils/ratings/browse.js's ratingRowHtml()).
+     *
+     * @param int|float|string|null $averageRating withAvg()'s aggregate
+     *   attribute arrives via PDO as a numeric string (e.g. "2.0000"), not a
+     *   float — under strict_types, a plain ?float parameter would reject
+     *   that with a TypeError at every real call site (both callers are
+     *   themselves strict_types files). Accepting the wider type and
+     *   casting internally is what avoids that.
+     */
+    public static function starHtml(int|float|string|null $averageRating): string
+    {
+        $filled = $averageRating !== null ? (int) round((float) $averageRating) : 0;
+        $filled = max(0, min(5, $filled));
+
+        return str_repeat('★', $filled) . str_repeat('☆', 5 - $filled);
     }
 
     /**

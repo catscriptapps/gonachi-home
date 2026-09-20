@@ -1,17 +1,17 @@
 <?php
-// /scripts/reset/ltv-landlords.php
+// /scripts/reset/ltv-tenants.php
 declare(strict_types=1);
 
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Schema\Blueprint;
-use App\Models\LandlordRecord;
+use App\Models\TenantRecord;
 
-function resetLtvLandlordsTable(): array
+function resetLtvTenantsTable(): array
 {
     $messages = [];
 
     try {
-        $tableName = (new LandlordRecord())->getTable();
+        $tableName = (new TenantRecord())->getTable();
 
         Capsule::schema()->dropIfExists($tableName);
         $messages[] = "dropped existing {$tableName} table";
@@ -21,13 +21,13 @@ function resetLtvLandlordsTable(): array
             $table->string('name');
             // trimmed/collapsed-whitespace/lowercased — used for find-or-create dedup
             $table->string('normalized_name')->index();
-            // Best-known phone for this landlord — backfilled from the first
-            // APPROVED report that included one (LandlordReportReviewController
-            // ::approve()), never overwritten by a later report so one bad/
-            // wrong submission can't clobber an already-corroborated number.
-            // This is the "Contact Details" LandlordCreditService unlocks —
-            // see landlord_and_tenant_validation.pdf's Step 8.
-            $table->string('phone')->nullable();
+            // Best-known reference contact for this tenant (e.g. a previous
+            // landlord's phone) — backfilled from the first APPROVED report
+            // that included one, never overwritten. This is the "Tenant
+            // Records" contact LandlordCreditService::unlockTenantReport()
+            // reveals — see landlord_and_tenant_validation.pdf's Step 8 and
+            // Tenant Profile's "References" field.
+            $table->string('reference_phone')->nullable();
             $table->timestamps();
         });
 

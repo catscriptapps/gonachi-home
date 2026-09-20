@@ -14,6 +14,7 @@ class LandlordRecord extends Model
     protected $fillable = [
         'name',
         'normalized_name',
+        'phone',
     ];
 
     public function properties()

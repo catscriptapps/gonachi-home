@@ -174,6 +174,7 @@ class NavigationConfig
             $base . '/properties',
             $base . '/lead-review',
             $base . '/landlord-report-review',
+            $base . '/tenant-report-review',
             $base . '/rental-listing-review',
             $base . '/contractor-claims-review',
             $base . '/contractor-outreach',
@@ -198,6 +199,7 @@ class NavigationConfig
         return [
             $base . '/lead-review',
             $base . '/landlord-report-review',
+            $base . '/tenant-report-review',
             $base . '/rental-listing-review',
             $base . '/contractor-claims-review',
             $base . '/contractor-outreach',
