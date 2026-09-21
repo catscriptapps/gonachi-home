@@ -15,6 +15,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 require_once __DIR__ . '/../server/bootstrap.php';
 require_once __DIR__ . '/reset/preserve-scraped-data.php';
+require_once __DIR__ . '/reset/preserve-system-settings.php';
 
 $messages = [];
 
@@ -23,6 +24,10 @@ $messages = [];
 // "skip dropping those tables" (their foreign keys point at parent tables
 // that DO get reseeded with new IDs).
 $scrapedDataBackup = backupScrapedData();
+
+// Same idea for the Settings page's scraping on/off toggles — see
+// reset/preserve-system-settings.php.
+$systemSettingsBackup = backupSystemSettings();
 
 // Each reset*Table() function below drops and recreates one table in
 // isolation, without regard for cross-table FK ordering (e.g. rew_posts vs.
@@ -80,6 +85,7 @@ $messages = array_merge($messages, resetChatAiSettingsTable());
 
 require_once __DIR__ . '/reset/system-settings.php';
 $messages = array_merge($messages, resetSystemSettingsTable());
+$messages = array_merge($messages, restoreSystemSettings($systemSettingsBackup));
 
 // --------------------------------------------------
 // Project: real-estate-leads (rel_ prefixed tables)

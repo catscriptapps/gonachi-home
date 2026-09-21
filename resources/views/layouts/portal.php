@@ -57,7 +57,7 @@ declare(strict_types=1);
 
         <header class="sticky top-0 z-40 h-16 flex items-center justify-between px-4 sm:px-6 lg:px-8 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 transition-colors duration-300">
             <a href="<?= $baseUrl ?>" class="flex items-center gap-2.5 flex-shrink-0">
-                <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-10 w-10 rounded-full object-contain bg-white ring-1 ring-black/5 dark:ring-white/10" />
+                <img src="<?= $assetBase ?>images/logo/gonachi-swap-logo.svg" alt="Gonachi Logo" class="h-10 w-10 rounded-full object-contain bg-white ring-1 ring-black/5 dark:ring-white/10" />
                 <span class="text-xl font-bold tracking-tight text-gray-900 dark:text-white">Gonachi</span>
             </a>
 

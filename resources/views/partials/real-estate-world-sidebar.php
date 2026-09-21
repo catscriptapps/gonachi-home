@@ -25,8 +25,8 @@ declare(strict_types=1);
          Gonachi project hub" link (previously a separate "Gonachi Home"
          button above the logo; now the logo itself carries that link). -->
     <div class="relative flex items-center justify-center px-6 py-4 border-b border-gray-200 dark:border-gray-800">
-        <a href="<?= $baseUrl ?>" data-partial class="flex items-center justify-center">
-            <img src="<?= $assetBase ?>images/logo/favicon.png" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
+        <a href="<?= $baseUrl ?>" @click.prevent="window.location = '<?= $baseUrl ?>'" class="flex items-center justify-center">
+            <img src="<?= $assetBase ?>images/logo/gonachi-swap-logo.svg" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
         </a>
 
         <!-- Mobile Close Trigger -->

@@ -42,6 +42,21 @@ $projects[] = [
     'external' => false,
 ];
 
+// Gonachi Swap: a fifth project, but a genuinely separate PHP app
+// (../gonachi-swap, its own codebase/database) rather than a route inside
+// gonachi-home — so unlike Real Estate World it stays "external" (opens in
+// a new tab), pointed at SWAP_APP_URL from .env.
+$projects[] = [
+    'slug' => 'swap',
+    'name' => 'Swap',
+    'tagline' => 'A new way to swap and trade — details coming soon.',
+    'status' => 'live',
+    'accent' => 'orange',
+    'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />',
+    'href' => $_ENV['SWAP_APP_URL'] ?? '#',
+    'external' => true,
+];
+
 $accentClasses = [
     'primary' => [
         'bar' => 'from-primary-500 to-primary-400',
@@ -61,6 +76,11 @@ $accentClasses = [
     'teal' => [
         'bar' => 'from-teal-500 to-teal-400',
         'icon' => 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 group-hover:bg-teal-500 group-hover:text-white',
+        'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
+    ],
+    'orange' => [
+        'bar' => 'from-orange-500 to-orange-400',
+        'icon' => 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white',
         'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
     ],
 ];
@@ -131,7 +151,7 @@ if (is_dir($heroImagesPath)) {
 <?php endif; ?>
 
 <div class="relative <?= $isLoggedIn ? '-mt-8 sm:-mt-10' : '' ?> max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 sm:pb-28">
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <?php foreach ($projects as $index => $project): ?>
             <?php $accent = $accentClasses[$project['accent']]; ?>
             <a href="<?= htmlspecialchars($project['href']) ?>"
@@ -183,14 +203,14 @@ if (is_dir($heroImagesPath)) {
         <div data-aos="fade-up" data-aos-duration="800">
             <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-4">The Big Picture</span>
             <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white max-w-3xl mx-auto">
-                Four projects. One idea: put the right person in front of the right opportunity.
+                Five projects. One idea: put the right person in front of the right opportunity.
             </h2>
             <p class="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Three engines continuously surface signals hiding in plain sight across the public web and structure them into something searchable — real estate leads for realtors, verified contractors for property owners, landlord and tenant records for renters. The fourth flips the model: Real Estate World is a global platform where stakeholders anywhere submit their own adverts, listings, and quotations directly to us.
+                Three engines continuously surface signals hiding in plain sight across the public web and structure them into something searchable — real estate leads for realtors, verified contractors for property owners, landlord and tenant records for renters. The fourth flips the model: Real Estate World is a global platform where stakeholders anywhere submit their own adverts, listings, and quotations directly to us. The fifth, Swap, is next.
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-5xl mx-auto">
             <?php foreach ($projects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
                 <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>" class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">

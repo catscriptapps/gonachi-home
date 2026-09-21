@@ -43,6 +43,7 @@ if ($isAdminReset) {
 }
 
 require_once __DIR__ . '/../../scripts/reset/preserve-scraped-data.php';
+require_once __DIR__ . '/../../scripts/reset/preserve-system-settings.php';
 
 $messages = [];
 
@@ -55,6 +56,10 @@ $messages = [];
 // just be "skip dropping those tables" (their foreign keys point at parent
 // tables that DO get reseeded with new IDs).
 $scrapedDataBackup = backupScrapedData();
+
+// Same idea for the Settings page's scraping on/off toggles — see
+// scripts/reset/preserve-system-settings.php.
+$systemSettingsBackup = backupSystemSettings();
 
 Capsule::schema()->disableForeignKeyConstraints();
 
@@ -203,6 +208,7 @@ $messages = array_merge($messages, resetChatAiSettingsTable());
 
 require_once __DIR__ . '/../../scripts/reset/system-settings.php';
 $messages = array_merge($messages, resetSystemSettingsTable());
+$messages = array_merge($messages, restoreSystemSettings($systemSettingsBackup));
 
 /**
  * 4. CREATION PHASE - PROJECT: real-estate-leads (rel_ prefixed tables)
