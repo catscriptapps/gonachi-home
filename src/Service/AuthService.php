@@ -166,24 +166,7 @@ class AuthService
                 ];
             }
 
-            // Set User Session Data
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_email'] = $user->email;
-            $_SESSION['user_full_name'] = $user->full_name;
-            $_SESSION['account_type'] = 'user'; // Distinguish account type
-
-            // Generate secure API token
-            $token = bin2hex(random_bytes(32));
-            $user->api_token = $token;
-            $user->user_last_log = date('Y-m-d H:i:s');
-            $user->save();
-
-            return [
-                'success' => true,
-                'api_token' => $token,
-                'messages' => ['Login successful!'],
-                'redirect_url' => '/dashboard' // Explicit redirect for users
-            ];
+            return self::loginAsUser($user);
         }
 
         // Note: this app only has backend User accounts. Older Landlord/Tenant
@@ -191,6 +174,42 @@ class AuthService
         // exist (see currentLandlord()/currentTenant() above).
 
         return ['success' => false, 'messages' => ['Invalid email or password.']];
+    }
+
+    /**
+     * Establishes a real, cookie-backed login session for an already-
+     * verified/trusted User — the actual session-setting logic login()
+     * used to hand-roll inline, extracted so a second caller
+     * (VerificationController::verify(), logging a user straight in the
+     * moment they click their activation link) gets the exact same
+     * session shape — the 2-week cookie from ensureSession(), a fresh
+     * api_token, and user_last_log — instead of a bare session_start()
+     * that silently used PHP's default ~24-minute/browser-session cookie.
+     *
+     * No password check here — the caller is responsible for having
+     * already established that this login is legitimate (a verified
+     * password, or a just-verified email token).
+     */
+    public static function loginAsUser(User $user): array
+    {
+        self::ensureSession();
+
+        $_SESSION['user_id'] = $user->id;
+        $_SESSION['user_email'] = $user->email;
+        $_SESSION['user_full_name'] = $user->full_name;
+        $_SESSION['account_type'] = 'user';
+
+        $token = bin2hex(random_bytes(32));
+        $user->api_token = $token;
+        $user->user_last_log = date('Y-m-d H:i:s');
+        $user->save();
+
+        return [
+            'success' => true,
+            'api_token' => $token,
+            'messages' => ['Login successful!'],
+            'redirect_url' => '/dashboard',
+        ];
     }
 
     /**

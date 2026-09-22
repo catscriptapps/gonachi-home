@@ -17,7 +17,20 @@ class MailService
 {
     /**
      * Sends an email.
-     * * @param string $to Recipient email
+     *
+     * Reads SMTP credentials from .env (MAIL_HOST / MAIL_PORT /
+     * MAIL_USERNAME / MAIL_PASSWORD / MAIL_ENCRYPTION / MAIL_FROM_ADDRESS /
+     * MAIL_FROM_NAME) — previously all of this was hard-coded to
+     * `localhost:25` with no auth (a "GoDaddy internal relay" that doesn't
+     * exist on this deploy) and a leftover `noreply@pmbtracker.com` /
+     * "Property Management Brokers" sender from the old PMB template.
+     * Falls back to that same localhost:25/no-auth shape when MAIL_HOST is
+     * unset, so local dev (which has never had a real mail server anyway)
+     * keeps working exactly as before — a real deploy just needs the
+     * MAIL_* vars filled in, same "leave blank to disable" convention as
+     * PAYSTACK_SECRET_KEY / TERMII_API_KEY.
+     *
+     * @param string $to Recipient email
      * @param string $subject Email subject
      * @param string $body HTML content
      * @return bool
@@ -28,18 +41,33 @@ class MailService
         $mail = new PHPMailer(true);
 
         try {
-            // Server settings
+            $host = $_ENV['MAIL_HOST'] ?? 'localhost';
+            $port = (int) ($_ENV['MAIL_PORT'] ?? 25);
+            $username = $_ENV['MAIL_USERNAME'] ?? '';
+            $password = $_ENV['MAIL_PASSWORD'] ?? '';
+            $encryption = $_ENV['MAIL_ENCRYPTION'] ?? ''; // 'tls' | 'ssl' | ''
+            $fromAddress = $_ENV['MAIL_FROM_ADDRESS'] ?? 'noreply@gonachi.com';
+            $fromName = $_ENV['MAIL_FROM_NAME'] ?? 'Gonachi';
+
             $mail->isSMTP();
+            $mail->Host = $host;
+            $mail->Port = $port;
+            $mail->SMTPAuth = $username !== '';
 
-            // GoDaddy internal relay settings
-            $mail->Host         = 'localhost';
-            $mail->SMTPAuth     = false;        // GoDaddy's internal relay doesn't require authentication
-            $mail->SMTPAutoTLS  = false;
-            $mail->SMTPSecure   = '';           // No encryption needed for the local loop
-            $mail->Port         = 25;           // Port 25 is the standard for local relays
+            if ($mail->SMTPAuth) {
+                $mail->Username = $username;
+                $mail->Password = $password;
+            }
 
-            // Recipients
-            $mail->setFrom('noreply@pmbtracker.com', 'Property Management Brokers');
+            if ($encryption === 'tls' || $encryption === 'ssl') {
+                $mail->SMTPSecure = $encryption;
+                $mail->SMTPAutoTLS = true;
+            } else {
+                $mail->SMTPSecure = '';
+                $mail->SMTPAutoTLS = false;
+            }
+
+            $mail->setFrom($fromAddress, $fromName);
             $mail->addAddress($to);
 
             // Content

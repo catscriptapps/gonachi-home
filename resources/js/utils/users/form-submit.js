@@ -32,12 +32,12 @@ function validateRoles(form, apiMsg) {
 /**
  * Maps form data to an API payload for Users
  */
-function getPayload(form) {
+function getPayload(form, mode) {
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
     const userTypeIds = formData.getAll('userTypeIds[]');
-    
-    return {
+
+    const payload = {
         encoded_id: form.dataset.encodedId || null,
         first_name: data.firstName?.trim(),
         last_name: data.lastName?.trim(),
@@ -52,6 +52,16 @@ function getPayload(form) {
         user_type_ids: userTypeIds.map(id => parseInt(id)),
         status_id: form.querySelector('input[name="isActive"]')?.checked ? 1 : 0,
     };
+
+    // Only a true guest self-registration captures where to send them back
+    // to once they verify their email (see UserVerification.resume_url's
+    // doc comment) — an admin adding a user from the Users page isn't
+    // "resuming" anything themselves, so this stays unset there.
+    if (mode === 'add' && !window.APP_CONFIG?.isLoggedIn) {
+        payload.resume_url = window.location.href;
+    }
+
+    return payload;
 }
 
 export function handleUserFormSubmission(form, mode, modalInstance, tableSelector = '#users-tbody') {
@@ -115,7 +125,7 @@ export function handleUserFormSubmission(form, mode, modalInstance, tableSelecto
         apiMsg.innerHTML = '';
 
         try {
-            const payload = getPayload(form);
+            const payload = getPayload(form, mode);
             if (mode === 'edit') payload._method = 'PUT';
 
             const baseUrl = window.APP_CONFIG?.baseUrl || '/';
@@ -127,12 +137,30 @@ export function handleUserFormSubmission(form, mode, modalInstance, tableSelecto
 
             const result = await response.json();
 
+            if (result.success && result.is_registration) {
+                // Guest self-registration: no row to insert (nothing's
+                // active yet), no profile to refresh — just a clear,
+                // persistent "go check your email" state. Deliberately NOT
+                // auto-closing this modal after a few seconds like the
+                // admin-add-user path does below — this message matters
+                // more and the reminders (junk folder, arrival delay) need
+                // time to actually be read.
+                apiMsg.innerHTML = `
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-xl font-bold text-sm mt-2 space-y-1">
+                        <p>${result.messages?.[0] || "We've sent you an activation link — please check your email."}</p>
+                    </div>
+                `;
+                form.reset();
+                submitBtn.style.display = 'none';
+                return;
+            }
+
             if (result.success) {
                 // 1. UPDATE TABLE (Users List Page)
                 const tbody = document.querySelector(tableSelector);
                 if (tbody) {
                     if (mode === 'edit' && result.rowHtml) {
-                        const existingRow = document.getElementById(`user-row-${result.data?.id}`) || 
+                        const existingRow = document.getElementById(`user-row-${result.data?.id}`) ||
                                            document.querySelector(`tr[data-encoded-id="${payload.encoded_id}"]`);
                         if (existingRow) existingRow.outerHTML = result.rowHtml;
                     } else if (result.rowHtml) {
@@ -156,7 +184,7 @@ export function handleUserFormSubmission(form, mode, modalInstance, tableSelecto
                     </div>
                 `;
 
-                submitBtn.style.visibility = 'hidden'; 
+                submitBtn.style.visibility = 'hidden';
                 setTimeout(() => modalInstance?.close(), (mode === 'add') ? 5000 : 800);
 
             } else {

@@ -321,45 +321,24 @@ class UsersController
             $user->save();
 
             if ($isNew && !$isLocal) {
-                // 1. Generate a secure random token (32 bytes = 64 chars)
-                $token = bin2hex(random_bytes(32));
+                // Where to send them back to once they click the link —
+                // see UserVerification.resume_url's doc comment. Only ever
+                // set by a true guest self-registration (register-new-user.js
+                // /form-submit.js's getPayload()); an admin creating another
+                // user's account from the Users page has no "resume" concept
+                // and never sends this.
+                $resumeUrl = trim((string) ($data['resume_url'] ?? '')) ?: null;
 
-                // 2. Store in your verification table (Emulating PasswordReset logic)
-                \App\Models\UserVerification::updateOrCreate(
-                    ['email' => $email],
-                    [
-                        'token' => password_hash($token, PASSWORD_DEFAULT),
-                        'created_at' => date('Y-m-d H:i:s')
-                    ]
-                );
-
-                // 3. Construct the Activation Link (Using your Env logic)
-                $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? "https://" : "http://";
-                $host     = $_SERVER['HTTP_HOST'];
-                $envBase  = trim($_ENV['APP_BASE_PATH'] ?? '', '/');
-                $fullBaseUrl = $protocol . $host . ($envBase ? '/' . $envBase : '');
-
-                $activationLink = rtrim($fullBaseUrl, '/') . "/verify-account?token={$token}&email=" . urlencode($email);
-
-                // 4. Send the Email via MailService
-                $subject = "Activate Your Account";
-                $body = "
-                <div style='font-family: \"Quicksand\", sans-serif; color: #000000;'>
-                    <h2 style='color: #EA580C;'>Welcome to the Team, {$user->first_name}!</h2>
-                    <p>We're excited to have you. Please click the button below to verify your email and activate your account:</p>
-                    <div style='margin: 32px 0;'>
-                        <a href='{$activationLink}' style='background-color: #EA580C; color: white; padding: 14px 28px; text-decoration: none; border-radius: 10px; font-weight: bold; display: inline-block; box-shadow: 0 4px 6px rgba(139, 92, 246, 0.2);'>Verify My Account</a>
-                    </div>
-                    <p style='font-size: 0.875rem; color: #818181;'>If the button doesn't work, copy and paste this link: <br>{$activationLink}</p>
-                </div>
-            ";
-
-                \Src\Service\MailService::send($email, $subject, $body);
+                \Src\Controller\VerificationController::sendVerificationEmail($user, $resumeUrl);
 
                 return [
                     'success' => true,
                     'is_registration' => true,
-                    'messages' => ["Welcome! We've sent an activation link to <strong>{$email}</strong>. Please click it to complete your registration."]
+                    'messages' => [
+                        "We've sent an activation link to <strong>{$email}</strong>. "
+                            . "Please check your inbox (and your junk/spam folder, just in case) to verify your account — "
+                            . "it can take a few minutes to arrive. Once you click it, you'll be signed in automatically.",
+                    ],
                 ];
             }
 

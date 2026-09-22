@@ -45,7 +45,12 @@ $email = $_GET['email'] ?? '';
         </div>
         <h1 class="text-2xl font-bold text-red-600">Verification Failed</h1>
         <p id="error-message" class="text-gray-600 dark:text-gray-400 font-medium"></p>
-        <a href="<?= $baseUrl . 'login' ?>" class="text-primary-600 font-bold hover:underline">Back to Sign In</a>
+        <div class="flex items-center justify-center gap-3">
+            <button type="button" id="verification-resend-btn" class="text-primary-600 font-bold hover:underline">Resend Activation Link</button>
+            <span class="text-gray-300 dark:text-gray-700">&middot;</span>
+            <a href="<?= $baseUrl ?>?login=true" class="text-primary-600 font-bold hover:underline">Back to Sign In</a>
+        </div>
+        <div id="verification-resend-message" class="text-sm"></div>
     </div>
 
 </div>

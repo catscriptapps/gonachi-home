@@ -98,6 +98,10 @@
     "file": "js/regions-component.min.js",
     "name": "regions-component"
   },
+  "_resend-activation.min.js": {
+    "file": "js/resend-activation.min.js",
+    "name": "resend-activation"
+  },
   "_search.min.js": {
     "file": "js/search.min.js",
     "name": "search",
@@ -202,6 +206,7 @@
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "resources/js/ui/toast.js",
+      "_resend-activation.min.js",
       "resources/js/pages/messages-page.js",
       "_confirm.min.js",
       "_users-modal.min.js",
@@ -740,6 +745,15 @@
       "_form-validator.min.js",
       "_spinner-utils.min.js",
       "_preload-helper.min.js"
+    ]
+  },
+  "resources/js/pages/verify-account-page.js": {
+    "file": "js/verify-account-page.min.js",
+    "name": "verify-account-page",
+    "src": "resources/js/pages/verify-account-page.js",
+    "isEntry": true,
+    "imports": [
+      "_resend-activation.min.js"
     ]
   },
   "resources/js/ui/toast.js": {

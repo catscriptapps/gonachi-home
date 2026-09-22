@@ -31,6 +31,14 @@ function resetUserVerificationsTable(): array
             // Standard timestamp for expiration logic (e.g., 60-minute window)
             $table->timestamp('created_at')->nullable();
 
+            // Where to send the user back to after clicking the activation
+            // link (e.g. the guest-gated page they were on when they
+            // registered) — captured client-side at signup time and carried
+            // through here since the link is usually opened from a mail
+            // client, sometimes on a different device, so a client-side
+            // sessionStorage handoff can't be relied on to survive the trip.
+            $table->string('resume_url')->nullable();
+
             // Indexing for faster lookups during the verification click
             $table->index('email');
             $table->index('token');

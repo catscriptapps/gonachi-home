@@ -10,7 +10,7 @@ export async function resendActivationLink(email, messageContainer) {
         const response = await fetch(`${window.APP_CONFIG.baseUrl}api/resend-verification`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email })
+            body: JSON.stringify({ email, resume_url: window.location.href })
         });
 
         const result = await response.json();
