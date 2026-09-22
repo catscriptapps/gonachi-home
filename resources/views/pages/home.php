@@ -42,19 +42,18 @@ $projects[] = [
     'external' => false,
 ];
 
-// Gonachi Swap: a fifth project, but a genuinely separate PHP app
-// (../gonachi-swap, its own codebase/database) rather than a route inside
-// gonachi-home — so unlike Real Estate World it stays "external" (opens in
-// a new tab), pointed at SWAP_APP_URL from .env.
+// Gonachi Swap: a fifth project, ported from the standalone gonachi-swap
+// app into its own internal route here (see resources/views/pages/swap.php)
+// — same treatment as Real Estate World above, not a separate deployment.
 $projects[] = [
     'slug' => 'swap',
     'name' => 'Swap',
-    'tagline' => 'A new way to swap and trade — details coming soon.',
+    'tagline' => 'Exchange, sell, or gift items within your local community.',
     'status' => 'live',
-    'accent' => 'orange',
+    'accent' => 'purple',
     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />',
-    'href' => $_ENV['SWAP_APP_URL'] ?? '#',
-    'external' => true,
+    'href' => $baseUrl . 'swap',
+    'external' => false,
 ];
 
 $accentClasses = [
@@ -78,9 +77,9 @@ $accentClasses = [
         'icon' => 'bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400 group-hover:bg-teal-500 group-hover:text-white',
         'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
     ],
-    'orange' => [
-        'bar' => 'from-orange-500 to-orange-400',
-        'icon' => 'bg-orange-50 dark:bg-orange-950/40 text-orange-600 dark:text-orange-400 group-hover:bg-orange-500 group-hover:text-white',
+    'purple' => [
+        'bar' => 'from-purple-500 to-purple-400',
+        'icon' => 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400 group-hover:bg-purple-500 group-hover:text-white',
         'badgeLive' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400',
     ],
 ];

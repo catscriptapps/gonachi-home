@@ -1,0 +1,105 @@
+<?php
+// /resources/views/partials/swap-sidebar.php
+
+declare(strict_types=1);
+
+/**
+ * Gonachi Swap - Left Navigation Sidebar
+ */
+?>
+<aside
+    class="fixed inset-y-0 left-0 z-50 flex flex-col w-64 bg-white dark:bg-gray-900 border-r border-gray-200 dark:border-gray-800 transition-all duration-300 ease-in-out"
+    :class="[$store.sidebar.expanded ? 'lg:w-64' : 'lg:w-24', mobileMenuOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0']"
+    x-cloak>
+
+    <!-- Sidebar Header: Identity & Brand Logo — doubles as the "back to the
+         Gonachi project hub" link (previously a separate "Gonachi Home"
+         button above the logo; now the logo itself carries that link). -->
+    <div class="relative flex items-center justify-center px-6 py-4 border-b border-gray-200 dark:border-gray-800">
+        <a href="<?= $baseUrl ?>" @click.prevent="window.location = '<?= $baseUrl ?>'" class="flex items-center justify-center">
+            <img src="<?= $assetBase ?>images/logo/gonachi-swap-logo.svg" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
+        </a>
+
+        <!-- Mobile Close Trigger -->
+        <button @click="mobileMenuOpen = false" class="lg:hidden absolute right-6 p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 focus:outline-none">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+    </div>
+
+    <?php
+    $navActiveClasses = 'bg-purple-500/10 text-purple-600 dark:text-purple-400 font-semibold';
+    $navInactiveClasses = 'text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800/60 font-medium';
+    $currentPath = $path ?? '';
+    ?>
+
+    <!-- Navigation Directory -->
+    <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar" data-nav-accent="purple">
+        <a href="<?= $baseUrl ?>swap" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/swap' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Listings</span>
+        </a>
+
+        <a href="<?= $baseUrl ?>my-swap-listings" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/my-swap-listings' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">My Listings</span>
+        </a>
+
+        <a href="<?= $baseUrl ?>saved-swap-listings" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/saved-swap-listings' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Saved</span>
+        </a>
+
+        <a href="<?= $baseUrl ?>social-feed" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/social-feed' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.75" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Social Feed</span>
+        </a>
+
+        <?php if (\Src\Service\AuthService::isAdmin()): ?>
+            <a href="<?= $baseUrl ?>admin" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/admin' ? $navActiveClasses : $navInactiveClasses ?>">
+                <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h7v7H3V3zm0 11h7v7H3v-7zm11-11h7v7h-7V3zm0 11h7v7h-7v-7z" />
+                </svg>
+                <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Admin Dashboard</span>
+            </a>
+
+            <a href="<?= $baseUrl ?>live-chat" data-partial class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/live-chat' ? $navActiveClasses : $navInactiveClasses ?>">
+                <span class="flex items-center space-x-3">
+                    <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                    <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Live Chat</span>
+                </span>
+                <span id="live-chat-nav-badge" x-show="$store.sidebar.expanded || mobileMenuOpen" class="hidden flex-shrink-0 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center">0</span>
+            </a>
+        <?php endif; ?>
+
+        <a href="<?= $baseUrl ?>contact" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/contact' ? $navActiveClasses : $navInactiveClasses ?>">
+            <svg class="h-5 w-5 text-gray-400 group-hover:text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+            </svg>
+            <span x-show="$store.sidebar.expanded || mobileMenuOpen" class="text-sm">Contact</span>
+        </a>
+
+        <?php $currentProjectSlug = 'swap'; ?>
+        <?php include __DIR__ . '/project-switcher.php'; ?>
+    </nav>
+
+    <!-- Sidebar Collapsing Action Footer (desktop only — mobile has no icon-only collapsed state) -->
+    <div class="hidden lg:flex p-4 border-t border-gray-200 dark:border-gray-800 justify-end">
+        <button
+            @click="$store.sidebar.expanded = !$store.sidebar.expanded"
+            class="p-2 rounded-xl bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-500 dark:text-gray-400 focus:outline-none">
+            <svg class="h-5 w-5 transform transition-transform duration-300" :class="!$store.sidebar.expanded && 'rotate-180'" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
+            </svg>
+        </button>
+    </div>
+</aside>

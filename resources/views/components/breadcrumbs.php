@@ -5,8 +5,8 @@
 // including this — an ordered array of ['label' => string, 'href' =>
 // string|null]. The last entry (or any entry with a null/empty href)
 // renders as plain current-page text instead of a link. Optionally set
-// $breadcrumbAccent ('primary'|'secondary'|'indigo', matches
-// ProjectsConfig's per-project accent) to theme the hover color — defaults
+// $breadcrumbAccent ('primary'|'secondary'|'indigo'|'teal'|'purple', matches
+// each project's own accent) to theme the hover color — defaults
 // to 'primary'.
 //
 // Usage (top of a page file, before its hero/header content):
@@ -31,6 +31,7 @@ $accentHoverClasses = [
     'secondary' => 'hover:text-secondary-600 dark:hover:text-secondary-400',
     'indigo' => 'hover:text-indigo-600 dark:hover:text-indigo-400',
     'teal' => 'hover:text-teal-600 dark:hover:text-teal-400',
+    'purple' => 'hover:text-purple-600 dark:hover:text-purple-400',
 ][$breadcrumbAccent ?? 'primary'] ?? 'hover:text-primary-600 dark:hover:text-primary-400';
 
 $lastIndex = count($breadcrumbs) - 1;

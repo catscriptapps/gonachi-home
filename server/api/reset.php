@@ -159,6 +159,12 @@ $tablesToDrop = [
     'rew_rating_criteria_scores',
     'rew_ratings',
     'rew_rating_criteria',
+
+    // Project: swap
+    'swp_saved_listings',
+    'swp_listing_pics',
+    'swp_listings',
+    'swp_listing_categories',
 ];
 
 foreach ($tablesToDrop as $table) {
@@ -430,7 +436,25 @@ require_once __DIR__ . '/../../scripts/reset/rew-recommendations.php';
 $messages = array_merge($messages, resetRewRecommendationsTable());
 
 /**
- * 4e. RESTORE PRESERVED DATA
+ * 4e. CREATION PHASE - PROJECT: swap (swp_ prefixed tables)
+ */
+require_once __DIR__ . '/../../scripts/reset/swp-listing-categories.php';
+$messages = array_merge($messages, resetSwpListingCategoriesTable());
+
+require_once __DIR__ . '/../../scripts/reset/swp-listings.php';
+$messages = array_merge($messages, resetSwpListingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/swp-listing-pics.php';
+$messages = array_merge($messages, resetSwpListingPicsTable());
+
+require_once __DIR__ . '/../../scripts/reset/swp-saved-listings.php';
+$messages = array_merge($messages, resetSwpSavedListingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/swp-seed.php';
+$messages = array_merge($messages, seedSwpBaselineData());
+
+/**
+ * 4f. RESTORE PRESERVED DATA
  * Re-attach the leads/contractors snapshotted in step 1, now that their
  * parent tables (sources, categories, locations) have fresh IDs to resolve against.
  */

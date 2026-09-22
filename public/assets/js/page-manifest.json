@@ -22,6 +22,7 @@
   "my-adverts-page",
   "my-listings-page",
   "my-quotations-page",
+  "my-swap-listings-page",
   "profile-page",
   "quotations-page",
   "ratings-page",
@@ -30,8 +31,10 @@
   "report-tenant-page",
   "reset-password-page",
   "saved-searches-page",
+  "saved-swap-listings-page",
   "settings-page",
   "social-feed-page",
+  "swap-page",
   "transactions-page",
   "users-page"
 ]

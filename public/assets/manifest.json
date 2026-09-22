@@ -113,6 +113,24 @@
     "file": "js/spinner-utils.min.js",
     "name": "spinner-utils"
   },
+  "_swap-listing-actions.min.js": {
+    "file": "js/swap-listing-actions.min.js",
+    "name": "swap-listing-actions",
+    "imports": [
+      "_confirm.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "_swap-listings-modal.min.js": {
+    "file": "js/swap-listings-modal.min.js",
+    "name": "swap-listings-modal",
+    "imports": [
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "_form-validator.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
   "_table-pagination-count.min.js": {
     "file": "js/table-pagination-count.min.js",
     "name": "table-pagination-count"
@@ -510,6 +528,21 @@
       "_form-validator.min.js"
     ]
   },
+  "resources/js/pages/my-swap-listings-page.js": {
+    "file": "js/my-swap-listings-page.min.js",
+    "name": "my-swap-listings-page",
+    "src": "resources/js/pages/my-swap-listings-page.js",
+    "isEntry": true,
+    "imports": [
+      "_swap-listings-modal.min.js",
+      "_swap-listing-actions.min.js",
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_form-validator.min.js",
+      "_confirm.min.js"
+    ]
+  },
   "resources/js/pages/profile-page.js": {
     "file": "js/profile-page.min.js",
     "name": "profile-page",
@@ -619,6 +652,17 @@
       "resources/js/ui/toast.js"
     ]
   },
+  "resources/js/pages/saved-swap-listings-page.js": {
+    "file": "js/saved-swap-listings-page.min.js",
+    "name": "saved-swap-listings-page",
+    "src": "resources/js/pages/saved-swap-listings-page.js",
+    "isEntry": true,
+    "imports": [
+      "_swap-listing-actions.min.js",
+      "_confirm.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
   "resources/js/pages/settings-page.js": {
     "file": "js/settings-page.min.js",
     "name": "settings-page",
@@ -651,6 +695,21 @@
     ],
     "dynamicImports": [
       "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/swap-page.js": {
+    "file": "js/swap-page.min.js",
+    "name": "swap-page",
+    "src": "resources/js/pages/swap-page.js",
+    "isEntry": true,
+    "imports": [
+      "_swap-listings-modal.min.js",
+      "_swap-listing-actions.min.js",
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_form-validator.min.js",
+      "_confirm.min.js"
     ]
   },
   "resources/js/pages/transactions-page.js": {

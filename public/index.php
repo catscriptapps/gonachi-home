@@ -74,6 +74,7 @@ $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review', '/contractor-outreach'];
 $landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/report-tenant', '/rental-opportunities', '/landlord-report-review', '/tenant-report-review', '/list-rental-property', '/rental-listing-review'];
 $realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings', '/ratings', '/recommendations'];
+$swapPaths = ['/swap', '/my-swap-listings', '/saved-swap-listings'];
 
 // /contractor/{id} is a dynamic detail route (see resolvePageRoute()'s
 // /{resource}/{id} handling) — its path always carries the contractor's ID,
@@ -90,6 +91,8 @@ if (in_array($path, $portalPaths, true)) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/landlord-app.php';
 } elseif (in_array($path, $realEstateWorldPaths, true)) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/real-estate-world-app.php';
+} elseif (in_array($path, $swapPaths, true)) {
+    $resolvedLayout = __DIR__ . '/../resources/views/layouts/swap-app.php';
 } else {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/app.php';
 }

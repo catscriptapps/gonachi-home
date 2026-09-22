@@ -306,6 +306,24 @@ $messages = array_merge($messages, resetRewRatingCriteriaScoresTable());
 require_once __DIR__ . '/reset/rew-recommendations.php';
 $messages = array_merge($messages, resetRewRecommendationsTable());
 
+// --------------------------------------------------
+// Project: swap (swp_ prefixed tables)
+// --------------------------------------------------
+require_once __DIR__ . '/reset/swp-listing-categories.php';
+$messages = array_merge($messages, resetSwpListingCategoriesTable());
+
+require_once __DIR__ . '/reset/swp-listings.php';
+$messages = array_merge($messages, resetSwpListingsTable());
+
+require_once __DIR__ . '/reset/swp-listing-pics.php';
+$messages = array_merge($messages, resetSwpListingPicsTable());
+
+require_once __DIR__ . '/reset/swp-saved-listings.php';
+$messages = array_merge($messages, resetSwpSavedListingsTable());
+
+require_once __DIR__ . '/reset/swp-seed.php';
+$messages = array_merge($messages, seedSwpBaselineData());
+
 // Re-attach the leads/contractors snapshotted at the top, now that their
 // parent tables (sources, categories, locations) have fresh IDs to resolve against.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
