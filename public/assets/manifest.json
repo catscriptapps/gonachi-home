@@ -113,24 +113,6 @@
     "file": "js/spinner-utils.min.js",
     "name": "spinner-utils"
   },
-  "_swap-listing-actions.min.js": {
-    "file": "js/swap-listing-actions.min.js",
-    "name": "swap-listing-actions",
-    "imports": [
-      "_confirm.min.js",
-      "resources/js/ui/toast.js"
-    ]
-  },
-  "_swap-listings-modal.min.js": {
-    "file": "js/swap-listings-modal.min.js",
-    "name": "swap-listings-modal",
-    "imports": [
-      "_modal-factory.min.js",
-      "_upload-modal.min.js",
-      "_form-validator.min.js",
-      "resources/js/ui/toast.js"
-    ]
-  },
   "_table-pagination-count.min.js": {
     "file": "js/table-pagination-count.min.js",
     "name": "table-pagination-count"
@@ -186,6 +168,19 @@
   "_view-counter.min.js": {
     "file": "js/view-counter.min.js",
     "name": "view-counter"
+  },
+  "_view-swap-listing-modal.min.js": {
+    "file": "js/view-swap-listing-modal.min.js",
+    "name": "view-swap-listing-modal",
+    "imports": [
+      "_confirm.min.js",
+      "resources/js/ui/toast.js",
+      "_video-upload-modal.min.js",
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "_form-validator.min.js",
+      "_preview.min.js"
+    ]
   },
   "resources/css/app.css": {
     "file": "css/app.min.css",
@@ -534,13 +529,14 @@
     "src": "resources/js/pages/my-swap-listings-page.js",
     "isEntry": true,
     "imports": [
-      "_swap-listings-modal.min.js",
-      "_swap-listing-actions.min.js",
+      "_view-swap-listing-modal.min.js",
+      "_confirm.min.js",
+      "resources/js/ui/toast.js",
+      "_video-upload-modal.min.js",
       "_modal-factory.min.js",
       "_upload-modal.min.js",
-      "resources/js/ui/toast.js",
       "_form-validator.min.js",
-      "_confirm.min.js"
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -658,9 +654,14 @@
     "src": "resources/js/pages/saved-swap-listings-page.js",
     "isEntry": true,
     "imports": [
-      "_swap-listing-actions.min.js",
+      "_view-swap-listing-modal.min.js",
       "_confirm.min.js",
-      "resources/js/ui/toast.js"
+      "resources/js/ui/toast.js",
+      "_video-upload-modal.min.js",
+      "_modal-factory.min.js",
+      "_upload-modal.min.js",
+      "_form-validator.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/settings-page.js": {
@@ -703,13 +704,14 @@
     "src": "resources/js/pages/swap-page.js",
     "isEntry": true,
     "imports": [
-      "_swap-listings-modal.min.js",
-      "_swap-listing-actions.min.js",
+      "_view-swap-listing-modal.min.js",
+      "_confirm.min.js",
+      "resources/js/ui/toast.js",
+      "_video-upload-modal.min.js",
       "_modal-factory.min.js",
       "_upload-modal.min.js",
-      "resources/js/ui/toast.js",
       "_form-validator.min.js",
-      "_confirm.min.js"
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/transactions-page.js": {

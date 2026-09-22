@@ -27,12 +27,13 @@ if (!$isLoggedIn) {
 
 $viewerId = AuthService::userId();
 $listings = SwapListingsController::saved($viewerId);
+$categories = SwapListingsController::categories();
 ?>
 <div class="space-y-6" id="saved-swap-listings-page-marker">
 
     <?php
     $breadcrumbs = [
-        ['label' => 'Swap', 'href' => $baseUrl . 'swap'],
+        ['label' => 'Swap Marketplace', 'href' => $baseUrl . 'swap'],
         ['label' => 'Saved'],
     ];
     $breadcrumbAccent = 'purple';
@@ -74,4 +75,12 @@ $listings = SwapListingsController::saved($viewerId);
             </div>
         <?php endif; ?>
     <?php endif; ?>
+
+    <script type="application/json" id="swap-listing-lookups"><?= json_encode([
+        'categories' => $categories->map(fn($c) => ['id' => $c->id, 'name' => $c->name])->values(),
+        'types' => SwapListingsController::TYPE_LABELS,
+        'conditions' => SwapListingsController::CONDITION_LABELS,
+    ]) ?></script>
+
+    <?php include __DIR__ . '/../components/swap-listings/view-swap-listing-modal.php'; ?>
 </div>

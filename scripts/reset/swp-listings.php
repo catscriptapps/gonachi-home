@@ -38,6 +38,12 @@ function resetSwpListingsTable(): array
             $table->decimal('price', 10, 2)->nullable();
             $table->text('trade_pref')->nullable();
             $table->string('city')->nullable();
+            // Uploaded video filename only (e.g. "vid_....mp4") — the URL is
+            // always derived as assetBase + 'videos/swap-listings/' + this,
+            // same convention as Real Estate World's rew_quotations.video_name.
+            // Max one at a time: SwapListingsController::attachVideo()
+            // always replaces whichever video already exists.
+            $table->string('video_name')->nullable();
             $table->unsignedBigInteger('views')->default(0);
             // draft | posted | completed | archived
             $table->string('status')->default('posted');

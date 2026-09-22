@@ -14,7 +14,7 @@ import { uploadModal, createUploadHandler } from './upload-modal.js';
 import { FormValidator } from '../utils/form-validator.js';
 import { showToast } from '../ui/toast.js';
 
-const MAX_PHOTOS = 6;
+const MAX_PHOTOS = 12; // matches server/helpers.php's getMediaLimit()
 
 let lookupsCache = null;
 let photos = []; // { url, fileName }

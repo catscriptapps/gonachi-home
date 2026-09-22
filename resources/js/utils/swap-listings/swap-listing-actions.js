@@ -115,6 +115,13 @@ async function handleSaveToggle(btn) {
 
     if (result.success) {
       const svg = btn.querySelector('svg');
+      // Keeps data-is-saved in sync on the card wrapper itself — without
+      // this, reopening the detail modal (no full page reload in between)
+      // would re-populate its primary button from the now-stale attribute
+      // and show the wrong Save/Unsave label.
+      const card = btn.closest('[data-listing-wrapper]');
+      if (card) card.dataset.isSaved = result.saved ? '1' : '0';
+
       if (result.saved) {
         btn.classList.remove('text-gray-400', 'hover:text-amber-500');
         btn.classList.add('text-amber-500');

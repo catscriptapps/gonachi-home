@@ -14,24 +14,36 @@
 
 declare(strict_types=1);
 ?>
-<div class="swap-listing-card-wrapper bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:border-purple-500/50 transition-all shadow-sm relative"
+<div class="swap-listing-card-wrapper view-swap-trigger bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl p-5 hover:border-purple-500/50 transition-all shadow-sm relative cursor-pointer"
     data-listing-wrapper
     data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>"
     data-title="<?= htmlspecialchars($data['title']) ?>"
     data-description="<?= htmlspecialchars($data['description'] ?? '') ?>"
     data-category-id="<?= htmlspecialchars((string) ($data['category_id'] ?? '')) ?>"
+    data-category-name="<?= htmlspecialchars($data['category_name'] ?? '') ?>"
     data-listing-type="<?= htmlspecialchars($data['listing_type']) ?>"
+    data-type-label="<?= htmlspecialchars($data['type_label']) ?>"
     data-condition="<?= htmlspecialchars($data['condition']) ?>"
+    data-condition-label="<?= htmlspecialchars($data['condition_label']) ?>"
     data-price="<?= htmlspecialchars((string) ($data['price'] ?? '')) ?>"
     data-trade-pref="<?= htmlspecialchars($data['trade_pref'] ?? '') ?>"
     data-city="<?= htmlspecialchars($data['city'] ?? '') ?>"
     data-status="<?= htmlspecialchars($data['status']) ?>"
+    data-views="<?= (int) $data['views'] ?>"
+    data-created="<?= htmlspecialchars($data['created_at'] ?? '') ?>"
+    data-updated="<?= htmlspecialchars($data['updated_at'] ?? '') ?>"
     data-photos='<?= htmlspecialchars(json_encode($data['photos']), ENT_QUOTES) ?>'
+    data-video-url="<?= htmlspecialchars($data['video_url'] ?? '') ?>"
+    data-owner-id="<?= (int) $data['owner_id'] ?>"
+    data-owner-name="<?= htmlspecialchars($data['owner_name']) ?>"
+    data-owner-avatar="<?= htmlspecialchars($data['owner_avatar'] ?? '') ?>"
+    data-owner-initial="<?= htmlspecialchars($data['owner_initial']) ?>"
+    data-owner-location="<?= htmlspecialchars($data['owner_location'] ?? '') ?>"
     data-is-card-owner="<?= $data['is_card_owner'] ? '1' : '0' ?>"
     data-is-saved="<?= $data['is_saved'] ? '1' : '0' ?>">
 
     <?php if ($data['viewer_id']): ?>
-        <div class="absolute top-4 right-4 flex items-center gap-1.5 z-10">
+        <div class="absolute top-4 right-4 flex items-center gap-1.5 z-10" onclick="event.stopPropagation()">
             <?php if ($data['is_card_owner']): ?>
                 <!-- Owner-only Edit/Delete -->
                 <button type="button" class="edit-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-purple-600 shadow-sm transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="Edit">
@@ -101,7 +113,7 @@ declare(strict_types=1);
     </div>
 
     <?php if ($data['is_card_owner']): ?>
-        <div class="pt-2 border-t border-gray-100 dark:border-gray-800/80">
+        <div class="pt-2 border-t border-gray-100 dark:border-gray-800/80" onclick="event.stopPropagation()">
             <?php if ($data['status'] === 'completed'): ?>
                 <button type="button" class="reactivate-swap-listing-trigger w-full inline-flex items-center justify-center px-4 py-2 bg-emerald-50 hover:bg-emerald-100 dark:bg-emerald-950/40 dark:hover:bg-emerald-950/70 text-emerald-700 dark:text-emerald-400 font-bold text-xs rounded-lg transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>">
                     Reactivate Listing

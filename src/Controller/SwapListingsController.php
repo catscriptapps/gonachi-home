@@ -36,6 +36,9 @@ class SwapListingsController
      */
     private const ALLOWED_UPLOAD_PATH = 'images/uploads/swap-listings/';
 
+    /** Relative to public/ — where swap-listing-upload-video.php writes files. */
+    private const VIDEO_UPLOAD_PATH = 'videos/swap-listings/';
+
     public const TYPE_LABELS = [
         'swap' => 'Swap',
         'sale' => 'Sale',
@@ -55,7 +58,7 @@ class SwapListingsController
      */
     public static function browse(?string $search, ?string $categorySlug, ?string $type, int $perPage = 12): LengthAwarePaginator
     {
-        $query = SwapListing::posted()->with(['category', 'pictures']);
+        $query = SwapListing::posted()->with(['category', 'pictures', 'user']);
 
         if ($search) {
             $needle = trim($search);
@@ -82,7 +85,7 @@ class SwapListingsController
      */
     public static function mine(int $userId, ?string $search, int $perPage = 12): LengthAwarePaginator
     {
-        $query = SwapListing::where('user_id', $userId)->with(['category', 'pictures']);
+        $query = SwapListing::where('user_id', $userId)->with(['category', 'pictures', 'user']);
 
         if ($search) {
             $needle = trim($search);
@@ -107,7 +110,7 @@ class SwapListingsController
         $listingIds = SwapSavedListing::where('user_id', $userId)->pluck('listing_id');
 
         return SwapListing::whereIn('id', $listingIds)
-            ->with(['category', 'pictures'])
+            ->with(['category', 'pictures', 'user'])
             ->orderByDesc('created_at')
             ->paginate($perPage);
     }
@@ -193,7 +196,7 @@ class SwapListingsController
             self::replacePhotos($listing, $input['photo_urls']);
         }
 
-        $listing->load(['category', 'pictures']);
+        $listing->load(['category', 'pictures', 'user']);
         self::logActivity("{$actionLabel}: {$listing->title}", 'SwapListing', $listing->id, $userId);
 
         return ['success' => true, 'errors' => [], 'listing' => $listing];
@@ -239,7 +242,7 @@ class SwapListingsController
 
         $listing->status = $status;
         $listing->save();
-        $listing->load(['category', 'pictures']);
+        $listing->load(['category', 'pictures', 'user']);
 
         self::logActivity(
             ($status === 'completed' ? 'Marked listing as completed: ' : 'Reactivated listing: ') . $listing->title,
@@ -265,6 +268,63 @@ class SwapListingsController
 
         SwapSavedListing::create(['user_id' => $userId, 'listing_id' => $listingId]);
         return ['success' => true, 'saved' => true];
+    }
+
+    /**
+     * Attaches an uploaded video to a listing — max one at a time, mirroring
+     * Real Estate World's Quotation::attachVideo(): always replaces
+     * whichever video already existed (unlinking its file first) rather
+     * than enforcing a count.
+     *
+     * @return array{success: bool, message?: string, listing?: SwapListing}
+     */
+    public static function attachVideo(string $encodedId, int $userId, string $fileName): array
+    {
+        $listing = self::ownedListing($encodedId, $userId);
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        if ($listing->video_name) {
+            $oldPath = dirname(__DIR__, 2) . '/public/' . self::VIDEO_UPLOAD_PATH . basename($listing->video_name);
+            if (is_file($oldPath)) {
+                @unlink($oldPath);
+            }
+        }
+
+        $listing->video_name = $fileName;
+        $listing->save();
+        $listing->load(['category', 'pictures', 'user']);
+
+        self::logActivity("Added video to listing: {$listing->title}", 'SwapListing', $listing->id, $userId);
+
+        return ['success' => true, 'listing' => $listing];
+    }
+
+    /**
+     * @return array{success: bool, message?: string, listing?: SwapListing}
+     */
+    public static function removeVideo(string $encodedId, int $userId): array
+    {
+        $listing = self::ownedListing($encodedId, $userId);
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        if ($listing->video_name) {
+            $path = dirname(__DIR__, 2) . '/public/' . self::VIDEO_UPLOAD_PATH . basename($listing->video_name);
+            if (is_file($path)) {
+                @unlink($path);
+            }
+        }
+
+        $listing->video_name = null;
+        $listing->save();
+        $listing->load(['category', 'pictures', 'user']);
+
+        return ['success' => true, 'listing' => $listing];
     }
 
     /**
@@ -295,6 +355,8 @@ class SwapListingsController
             ? SwapSavedListing::where('user_id', $viewerId)->where('listing_id', $listing->id)->exists()
             : false;
 
+        $owner = $listing->user;
+
         return [
             'encoded_id' => IdEncoder::encode($listing->id),
             'title' => $listing->title,
@@ -309,11 +371,20 @@ class SwapListingsController
             'trade_pref' => $listing->trade_pref,
             'city' => $listing->city,
             'status' => $listing->status,
+            'views' => (int) $listing->views,
             'thumbnail' => $thumbnail ? $assetBase . $thumbnail->file_path : null,
             'photos' => $listing->pictures->map(fn(SwapListingPic $pic) => [
                 'id' => $pic->id,
                 'url' => $assetBase . $pic->file_path,
             ])->values()->all(),
+            'video_url' => $listing->video_name ? $assetBase . self::VIDEO_UPLOAD_PATH . $listing->video_name : null,
+            'created_at' => $listing->created_at?->format('M d, Y'),
+            'updated_at' => $listing->updated_at?->format('M d, Y'),
+            'owner_id' => (int) $listing->user_id,
+            'owner_name' => $owner->full_name ?? 'Gonachi Member',
+            'owner_avatar' => $owner && !empty($owner->avatar_url) ? $assetBase . 'images/uploads/avatars/' . $owner->avatar_url : null,
+            'owner_initial' => $owner && !empty($owner->full_name) ? strtoupper(substr($owner->full_name, 0, 1)) : 'G',
+            'owner_location' => $owner->city ?? null,
             'viewer_id' => $viewerId,
             'is_card_owner' => $viewerId !== null && (int) $listing->user_id === $viewerId,
             'is_saved' => $isSaved,
@@ -349,6 +420,11 @@ class SwapListingsController
                 $desiredPaths[] = $relative;
             }
         }
+
+        // Server-side enforcement of the same 12-photo cap the compose
+        // modal's client-side check uses (getMediaLimit()) — the client
+        // check alone isn't authoritative.
+        $desiredPaths = array_slice($desiredPaths, 0, getMediaLimit());
 
         Capsule::connection()->transaction(function () use ($listing, $desiredPaths) {
             $existingPics = $listing->pictures()->get()->keyBy('file_path');

@@ -41,7 +41,7 @@ $categories = SwapListingsController::categories();
 <div class="space-y-6">
 
     <?php
-    $breadcrumbs = [['label' => 'Swap']];
+    $breadcrumbs = [['label' => 'Swap Marketplace']];
     $breadcrumbAccent = 'purple';
     include __DIR__ . '/../components/breadcrumbs.php';
     ?>
@@ -191,4 +191,6 @@ $categories = SwapListingsController::categories();
         'types' => SwapListingsController::TYPE_LABELS,
         'conditions' => SwapListingsController::CONDITION_LABELS,
     ]) ?></script>
+
+    <?php include __DIR__ . '/../components/swap-listings/view-swap-listing-modal.php'; ?>
 </div>

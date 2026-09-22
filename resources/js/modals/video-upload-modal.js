@@ -169,7 +169,13 @@ export function createVideoUploadHandler(endpointUrl, onComplete) {
             if (finalResponse && finalResponse.success) {
                 const uploadedFiles = finalResponse.files || finalResponse.uploadedFiles || [];
                 setTimeout(() => {
-                    onComplete(uploadedFiles);
+                    // 2nd arg mirrors upload-modal.js's createUploadHandler
+                    // (onComplete(files, cardHtml)) — forwards the server's
+                    // freshly-rendered card HTML when the endpoint returns
+                    // one, so a caller can keep the underlying grid card's
+                    // data-* attributes in sync instead of only updating
+                    // the modal's own in-memory view.
+                    onComplete(uploadedFiles, finalResponse.cardHtml);
                     videoUploadModal.close();
                     showToast('Video ready!', 'success');
                 }, 500);

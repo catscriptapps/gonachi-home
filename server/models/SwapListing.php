@@ -21,6 +21,7 @@ class SwapListing extends Model
         'price',
         'trade_pref',
         'city',
+        'video_name',
         'views',
         'status',
     ];
@@ -58,6 +59,15 @@ class SwapListing extends Model
     {
         static::deleting(function (SwapListing $listing) {
             $listing->pictures()->get()->each(fn(SwapListingPic $pic) => $pic->delete());
+
+            // Real Estate World's own equivalent (rew_quotations.video_name)
+            // never does this and orphans the file on delete — fixed here.
+            if ($listing->video_name) {
+                $path = dirname(__DIR__, 2) . '/public/videos/swap-listings/' . basename($listing->video_name);
+                if (is_file($path)) {
+                    @unlink($path);
+                }
+            }
         });
     }
 }

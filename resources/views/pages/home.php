@@ -47,7 +47,7 @@ $projects[] = [
 // — same treatment as Real Estate World above, not a separate deployment.
 $projects[] = [
     'slug' => 'swap',
-    'name' => 'Swap',
+    'name' => 'Swap Marketplace',
     'tagline' => 'Exchange, sell, or gift items within your local community.',
     'status' => 'live',
     'accent' => 'purple',
@@ -209,18 +209,21 @@ if (is_dir($heroImagesPath)) {
             </p>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-px bg-gray-200 dark:bg-gray-800 rounded-2xl overflow-hidden mt-12 max-w-5xl mx-auto">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 max-w-5xl mx-auto">
             <?php foreach ($projects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
-                <div data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>" class="bg-white dark:bg-gray-900 p-6 flex items-start gap-4 text-left">
-                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 <?= $accent['icon'] ?>">
+                <a href="<?= htmlspecialchars($project['href']) ?>"
+                    <?php if (!empty($project['external'])): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
+                    data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>"
+                    class="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 flex items-start gap-4 text-left hover:border-transparent hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors duration-300 <?= $accent['icon'] ?>">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><?= $project['icon'] ?></svg>
                     </div>
                     <div>
                         <h4 class="text-sm font-bold text-gray-900 dark:text-white"><?= htmlspecialchars($project['name']) ?></h4>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1"><?= htmlspecialchars($project['tagline']) ?></p>
                     </div>
-                </div>
+                </a>
             <?php endforeach; ?>
         </div>
     </div>
