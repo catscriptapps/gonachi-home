@@ -30,21 +30,24 @@ declare(strict_types=1);
     data-is-card-owner="<?= $data['is_card_owner'] ? '1' : '0' ?>"
     data-is-saved="<?= $data['is_saved'] ? '1' : '0' ?>">
 
-    <?php if ($data['is_card_owner']): ?>
-        <!-- Owner-only Edit/Delete overlay -->
+    <?php if ($data['viewer_id']): ?>
         <div class="absolute top-4 right-4 flex items-center gap-1.5 z-10">
-            <button type="button" class="edit-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-purple-600 shadow-sm transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="Edit">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
-            </button>
-            <button type="button" class="delete-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-red-600 shadow-sm transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="Delete">
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+            <?php if ($data['is_card_owner']): ?>
+                <!-- Owner-only Edit/Delete -->
+                <button type="button" class="edit-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-purple-600 shadow-sm transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="Edit">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" /></svg>
+                </button>
+                <button type="button" class="delete-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 text-gray-500 hover:text-red-600 shadow-sm transition-colors" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="Delete">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                </button>
+            <?php endif; ?>
+
+            <!-- Save/bookmark toggle — every listing, owned or not, for any
+                 signed-in viewer (owners can bookmark their own listing too). -->
+            <button type="button" class="save-swap-listing-btn p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 shadow-sm transition-colors <?= $data['is_saved'] ? 'text-amber-500' : 'text-gray-400 hover:text-amber-500' ?>" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="<?= $data['is_saved'] ? 'Remove from Saved' : 'Save this listing' ?>">
+                <svg class="h-4 w-4" fill="<?= $data['is_saved'] ? 'currentColor' : 'none' ?>" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
             </button>
         </div>
-    <?php elseif ($data['viewer_id']): ?>
-        <!-- Save/bookmark toggle (logged-in, non-owner) -->
-        <button type="button" class="save-swap-listing-btn absolute top-4 right-4 z-10 p-1.5 rounded-lg bg-white/90 dark:bg-gray-800/90 shadow-sm transition-colors <?= $data['is_saved'] ? 'text-amber-500' : 'text-gray-400 hover:text-amber-500' ?>" data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" title="<?= $data['is_saved'] ? 'Remove from Saved' : 'Save this listing' ?>">
-            <svg class="h-4 w-4" fill="<?= $data['is_saved'] ? 'currentColor' : 'none' ?>" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" /></svg>
-        </button>
     <?php endif; ?>
 
     <div class="flex items-start justify-between gap-4 mb-3 pr-8">

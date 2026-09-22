@@ -99,6 +99,11 @@ class SwapListingsController
      */
     public static function saved(int $userId, int $perPage = 12): LengthAwarePaginator
     {
+        // No status filter — a bookmark stays active/visible even after the
+        // listing is later marked completed, rather than silently
+        // disappearing. The card itself already renders a "Completed" badge
+        // in that case (see data-card.php), so the saver still gets a clear
+        // signal it's no longer available without losing their bookmark.
         $listingIds = SwapSavedListing::where('user_id', $userId)->pluck('listing_id');
 
         return SwapListing::whereIn('id', $listingIds)
