@@ -438,7 +438,8 @@
     "src": "resources/js/pages/live-chat-page.js",
     "isEntry": true,
     "imports": [
-      "resources/js/ui/toast.js"
+      "resources/js/ui/toast.js",
+      "_confirm.min.js"
     ]
   },
   "resources/js/pages/mentors-page.js": {

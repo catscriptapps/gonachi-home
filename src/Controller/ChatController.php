@@ -198,6 +198,18 @@ class ChatController
             ->paginate($perPage);
     }
 
+    /**
+     * Admin inbox listing — closed conversations, most recently closed first.
+     */
+    public static function closedConversations(int $perPage = 20): LengthAwarePaginator
+    {
+        return ChatConversation::closed()
+            ->with(['user'])
+            ->withCount(['messages as unread_count' => fn($q) => $q->where('is_read_by_admin', false)])
+            ->orderByDesc('updated_at')
+            ->paginate($perPage);
+    }
+
     public static function close(int $id): bool
     {
         $conversation = ChatConversation::find($id);

@@ -33,14 +33,14 @@ $assetBase = getAssetBase();
             <p class="text-xs text-gray-500 mb-4">@<?= htmlspecialchars($currentUsername) ?></p>
 
             <div class="flex items-center space-x-6 border-t border-gray-100 dark:border-gray-800 pt-4">
-                <div class="text-center">
+                <button type="button" data-follow-list-trigger="following" class="text-center hover:opacity-70 transition-opacity">
                     <span id="following-count" class="block text-sm font-bold text-gray-900 dark:text-white">0</span>
                     <span class="text-[10px] text-gray-500 uppercase tracking-wider font-sans">Following</span>
-                </div>
-                <div class="text-center">
+                </button>
+                <button type="button" data-follow-list-trigger="followers" class="text-center hover:opacity-70 transition-opacity">
                     <span id="followers-count" class="block text-sm font-bold text-gray-900 dark:text-white">0</span>
                     <span class="text-[10px] text-gray-500 uppercase tracking-wider font-sans">Followers</span>
-                </div>
+                </button>
             </div>
         </div>
     </div>

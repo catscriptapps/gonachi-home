@@ -17,7 +17,11 @@ if (!AuthService::isAdmin()) {
     exit;
 }
 
-$conversations = ChatController::openConversations(20);
+$status = ($_GET['status'] ?? 'open') === 'closed' ? 'closed' : 'open';
+
+$conversations = $status === 'closed'
+    ? ChatController::closedConversations(20)
+    : ChatController::openConversations(20);
 
 echo json_encode([
     'success' => true,

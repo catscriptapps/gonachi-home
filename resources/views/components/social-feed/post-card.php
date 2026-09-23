@@ -94,9 +94,9 @@ $isOwnPost = ((int)$authorId === (int)$currentUserId);
             <?php if ($mediaType === 'image'): ?>
                 <img src="<?= $fullMediaUrl ?>"
                     alt="Post Media"
-                    class="max-h-96 w-full object-cover cursor-pointer hover:opacity-95 transition-opacity post-media-trigger post-main-media">
+                    class="max-h-96 w-full object-contain cursor-pointer hover:opacity-95 transition-opacity post-media-trigger post-main-media">
             <?php elseif ($mediaType === 'video'): ?>
-                <video controls preload="metadata" class="max-h-96 w-full post-main-media bg-black">
+                <video controls preload="metadata" class="max-h-96 w-full object-contain post-main-media bg-black">
                     <source src="<?= $fullMediaUrl ?>" type="video/mp4">
                     <source src="<?= $fullMediaUrl ?>" type="video/webm">
                     <source src="<?= $fullMediaUrl ?>" type="video/quicktime">

@@ -65,7 +65,10 @@ $conversations = ChatController::openConversations(20);
         <!-- Conversation list -->
         <div class="lg:col-span-1 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl overflow-hidden flex flex-col">
             <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between flex-shrink-0">
-                <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">Conversations</h4>
+                <div class="flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
+                    <button type="button" data-live-chat-tab="open" class="px-3 py-1 text-xs font-bold rounded-md transition-colors bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-sm">Open</button>
+                    <button type="button" data-live-chat-tab="closed" class="px-3 py-1 text-xs font-bold rounded-md transition-colors text-gray-500 dark:text-gray-400">Closed</button>
+                </div>
                 <span id="live-chat-total" class="text-xs text-gray-400"><?= $conversations->total() ?></span>
             </div>
             <div id="live-chat-list" class="flex-1 overflow-y-auto divide-y divide-gray-100 dark:divide-gray-800">

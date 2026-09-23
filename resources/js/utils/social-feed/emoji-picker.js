@@ -6,9 +6,23 @@
 // composer and the view-post modal's comment box.
 
 const EMOJIS = [
-  '😀', '😂', '😍', '🥰', '😎', '🤔', '😢', '😡',
-  '👍', '👎', '🙏', '👏', '🎉', '🔥', '💯', '❤️',
-  '🏠', '🏢', '🔑', '📸', '📍', '✅', '⭐', '💬',
+  // Smileys
+  '😀', '😃', '😄', '😁', '😆', '😅', '🤣', '😂',
+  '🙂', '🙃', '😉', '😊', '😇', '🥰', '😍', '🤩',
+  '😘', '😋', '😛', '😜', '🤪', '🤗', '🤔', '🤨',
+  '😐', '😑', '🙄', '😏', '😴', '🤤', '🥱', '😷',
+  '🥵', '🥶', '🤯', '🥳', '😎', '🤓', '🧐', '😕',
+  '😢', '😭', '😡', '🤬', '😱', '😳', '🥺', '😬',
+  // Gestures & hearts
+  '👍', '👎', '👌', '✌️', '🤞', '🤟', '👏', '🙌',
+  '🙏', '💪', '🤝', '👀', '🖤', '🤍', '💔', '❤️',
+  '🧡', '💛', '💚', '💙', '💜', '💕', '💖', '💯',
+  // Celebration & symbols
+  '🔥', '✨', '🎉', '🎊', '⭐', '🌟', '⚡', '💡',
+  // Real estate & everyday (kept from the original set, plus a few more)
+  '🏠', '🏡', '🏢', '🔑', '📸', '📍', '🗺️', '📦',
+  // Nature, food, misc favorites
+  '☀️', '🌧️', '🌈', '☕', '🍕', '🎂', '🐶', '🐱',
 ];
 
 export function initEmojiPicker(triggerBtn, targetTextarea) {
@@ -36,7 +50,7 @@ export function initEmojiPicker(triggerBtn, targetTextarea) {
     }
 
     popover = document.createElement('div');
-    popover.className = 'emoji-picker-popover absolute z-50 mt-2 right-0 grid grid-cols-8 gap-1 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl w-64';
+    popover.className = 'emoji-picker-popover absolute z-50 mt-2 right-0 grid grid-cols-8 gap-1 p-2 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl shadow-xl w-64 max-h-72 overflow-y-auto custom-scrollbar';
     popover.innerHTML = EMOJIS.map((e) => `<button type="button" class="emoji-option text-lg hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg p-1" data-emoji="${e}">${e}</button>`).join('');
 
     const anchor = triggerBtn.closest('.relative') || triggerBtn.parentElement;

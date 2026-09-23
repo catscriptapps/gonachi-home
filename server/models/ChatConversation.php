@@ -42,6 +42,11 @@ class ChatConversation extends Model
         return $query->where('status', 'open');
     }
 
+    public function scopeClosed($query)
+    {
+        return $query->where('status', 'closed');
+    }
+
     /**
      * Display label for the admin inbox — account name if logged in,
      * otherwise whatever the guest supplied on the pre-chat form.

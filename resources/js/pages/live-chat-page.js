@@ -13,6 +13,7 @@
 // navigation (see spa-router.js).
 
 import { showToast } from '../ui/toast.js';
+import { confirmDialog } from '../ui/confirm.js';
 
 const LIST_POLL_MS = 7000;
 const THREAD_POLL_MS = 1500;
@@ -21,6 +22,7 @@ let activeConversationId = null;
 let lastMessageId = 0;
 let listPollTimer = null;
 let threadPollTimer = null;
+let currentTab = 'open';
 
 function baseUrl() {
   return window.APP_CONFIG?.baseUrl || '/';
@@ -61,10 +63,6 @@ async function selectConversation(id) {
 
   await pollThread(true);
 
-  document.getElementById('live-chat-composer').classList.remove('hidden');
-  document.getElementById('live-chat-close-btn').classList.remove('hidden');
-
-  scheduleThreadPoll();
   pollList(); // refresh unread badges now that this one's been read
 }
 
@@ -91,6 +89,15 @@ async function pollThread(initial = false) {
     }
 
     document.getElementById('live-chat-thread-name').textContent = data.conversation.display_name;
+
+    if (initial) {
+      const isClosed = data.conversation.status !== 'open';
+      document.getElementById('live-chat-composer').classList.toggle('hidden', isClosed);
+      document.getElementById('live-chat-close-btn').classList.toggle('hidden', isClosed);
+
+      clearTimeout(threadPollTimer);
+      if (!isClosed) scheduleThreadPoll();
+    }
   } catch (err) {
     console.error('Admin thread poll failed:', err);
   }
@@ -141,7 +148,7 @@ function renderListItem(c) {
 
 async function pollList() {
   try {
-    const res = await fetch(`${baseUrl()}api/chat-admin-list`, { cache: 'no-store' });
+    const res = await fetch(`${baseUrl()}api/chat-admin-list?status=${currentTab}`, { cache: 'no-store' });
     const data = await res.json();
     if (!data.success || isPageGone()) return;
 
@@ -149,7 +156,7 @@ async function pollList() {
     list.innerHTML = '';
 
     if (!data.conversations.length) {
-      list.innerHTML = '<p class="text-xs text-gray-400 text-center p-6">No open conversations yet.</p>';
+      list.innerHTML = `<p class="text-xs text-gray-400 text-center p-6">No ${currentTab} conversations yet.</p>`;
     } else {
       data.conversations.forEach((c) => list.appendChild(renderListItem(c)));
     }
@@ -175,6 +182,37 @@ function wireList() {
   document.getElementById('live-chat-list').addEventListener('click', (e) => {
     const btn = e.target.closest('[data-live-chat-item]');
     if (btn) selectConversation(btn.dataset.conversationId);
+  });
+}
+
+function wireTabs() {
+  const tabs = document.querySelectorAll('[data-live-chat-tab]');
+  tabs.forEach((tabBtn) => {
+    tabBtn.addEventListener('click', () => {
+      const tab = tabBtn.dataset.liveChatTab;
+      if (tab === currentTab) return;
+      currentTab = tab;
+
+      tabs.forEach((b) => {
+        const active = b === tabBtn;
+        b.classList.toggle('bg-white', active);
+        b.classList.toggle('dark:bg-gray-900', active);
+        b.classList.toggle('shadow-sm', active);
+        b.classList.toggle('text-gray-800', active);
+        b.classList.toggle('dark:text-gray-200', active);
+        b.classList.toggle('text-gray-500', !active);
+        b.classList.toggle('dark:text-gray-400', !active);
+      });
+
+      activeConversationId = null;
+      clearTimeout(threadPollTimer);
+      document.getElementById('live-chat-thread').innerHTML = '<p class="text-xs text-gray-400 text-center mt-6">Pick a conversation on the left to view its messages.</p>';
+      document.getElementById('live-chat-thread-name').textContent = 'Select a conversation';
+      document.getElementById('live-chat-composer').classList.add('hidden');
+      document.getElementById('live-chat-close-btn').classList.add('hidden');
+
+      pollList();
+    });
   });
 }
 
@@ -219,6 +257,14 @@ function wireComposer() {
 function wireCloseButton() {
   document.getElementById('live-chat-close-btn').addEventListener('click', async () => {
     if (!activeConversationId) return;
+
+    const confirmed = await confirmDialog(
+      'Close this conversation? The visitor will need to start a new one to reach you again.',
+      'Close Conversation',
+      'Cancel',
+      'bg-red-600 hover:bg-red-700'
+    );
+    if (!confirmed) return;
 
     try {
       const res = await fetch(`${baseUrl()}api/chat-close`, {
@@ -317,6 +363,7 @@ export function init() {
   page.dataset.initialized = 'true';
 
   wireList();
+  wireTabs();
   wireComposer();
   wireCloseButton();
   wireAiSettings();
