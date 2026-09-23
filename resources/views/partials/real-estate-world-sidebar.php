@@ -26,7 +26,9 @@ declare(strict_types=1);
          button above the logo; now the logo itself carries that link). -->
     <div class="relative flex items-center justify-center px-6 py-4 border-b border-gray-200 dark:border-gray-800">
         <a href="<?= $baseUrl ?>" @click.prevent="window.location = '<?= $baseUrl ?>'" class="flex items-center justify-center">
-            <img src="<?= $assetBase ?>images/logo/gonachi-swap-logo.svg" alt="Gonachi Logo" class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md" />
+            <img src="<?= $assetBase ?>images/logo/gonachi-swap-logo.svg" alt="Gonachi Logo"
+                class="h-24 w-24 flex-shrink-0 rounded-full object-contain bg-white ring-2 ring-black/5 dark:ring-white/10 shadow-md transition-all duration-300"
+                :class="$store.sidebar.expanded ? 'lg:h-24 lg:w-24' : 'lg:h-12 lg:w-12'" />
         </a>
 
         <!-- Mobile Close Trigger -->
