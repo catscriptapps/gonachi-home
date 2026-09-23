@@ -45,6 +45,17 @@ $unlock = $currentUserId ? CreditService::unlockLead($currentUserId, $lead) : nu
 $isAdmin = AuthService::isAdmin();
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
+    <?php if ($unlock): ?>
+        <!-- Silent sync signal for the sidebar's "Available Credits" badge —
+             this page can spend a credit purely by being visited (see
+             CreditService::unlockLead() above), and when that happens via a
+             data-partial navigation, only #main-content gets swapped — the
+             sidebar (outer layout chrome) never re-renders on its own, so
+             without this it'd show a stale balance until a full reload. See
+             resources/js/utils/spa-router.js's loadPartial() and
+             resources/js/utils/sidebar-credits.js. -->
+        <span data-credit-balance="<?= (int) $unlock['balance'] ?>" class="hidden"></span>
+    <?php endif; ?>
     <?php
     $breadcrumbs = [
         ['label' => 'Real Estate Leads', 'href' => $baseUrl . 'real-estate-leads'],

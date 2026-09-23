@@ -47,10 +47,15 @@ $spotlight = LeadsController::spotlight();
         <?php endif; ?>
 
         <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
-            <div>
-                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-2">Real Estate Leads</span>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Active Property Requests</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Discover live home buyers and home sellers signaling real estate intent across active networks.</p>
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400">
+                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4.5h18M3 4.5v1.086c0 .464.184.909.513 1.237l5.974 5.974c.329.328.513.773.513 1.237v5.148c0 .687.56 1.212 1.229 1.318a48.62 48.62 0 003.542 0c.669-.106 1.229-.63 1.229-1.318v-5.148c0-.464.184-.909.513-1.237l5.974-5.974A1.75 1.75 0 0021 5.586V4.5" /></svg>
+                </div>
+                <div>
+                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-primary-600 dark:text-primary-400 uppercase mb-2">Real Estate Leads</span>
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Active Property Requests</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Discover live home buyers and home sellers signaling real estate intent across active networks.</p>
+                </div>
             </div>
 
             <!-- Live Counters -->

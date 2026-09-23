@@ -34,9 +34,14 @@ declare(strict_types=1);
         </button>
 
         <!-- Target System Context Heading -->
-        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 hidden sm:inline-block">
-            The Barter Economy
-        </span>
+        <div class="hidden sm:flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+            </div>
+            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                The Barter Economy
+            </span>
+        </div>
     </div>
 
     <!-- Profile Actions, Dark Mode Switcher Infrastructure -->

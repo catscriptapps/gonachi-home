@@ -76,7 +76,10 @@ async function verifyPurchase(reference, btn) {
 
     if (data.success) {
       showToast(`Success! New balance: ${data.balance} credits.`, 'success');
-      // Full partial reload so the balance badge + transaction history both
+      // Sidebar's own balance badge (outer layout chrome, untouched by the
+      // partial reload below) — see resources/js/utils/sidebar-credits.js.
+      window.dispatchEvent(new CustomEvent('credits-updated', { detail: { balance: data.balance } }));
+      // Full partial reload so the transaction history + pack list both
       // reflect the purchase, same as any other server-truth refresh here.
       if (window.loadPartial) {
         window.loadPartial(window.location.href, false);

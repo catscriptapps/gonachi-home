@@ -65,10 +65,15 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
         <?php endif; ?>
 
         <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
-            <div>
-                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-secondary-600 dark:text-secondary-400 uppercase mb-2">Contractor Discovery</span>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Find A Trusted Contractor</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Search verified plumbers, electricians, builders, and more across active service networks.</p>
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-secondary-50 dark:bg-secondary-950/40 text-secondary-600 dark:text-secondary-400">
+                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+                </div>
+                <div>
+                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-secondary-600 dark:text-secondary-400 uppercase mb-2">Contractor Discovery</span>
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Find A Trusted Contractor</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Search verified plumbers, electricians, builders, and more across active service networks.</p>
+                </div>
             </div>
 
             <!-- Live Counters -->

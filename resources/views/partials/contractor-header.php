@@ -34,9 +34,14 @@ declare(strict_types=1);
         </button>
 
         <!-- Target System Context Heading -->
-        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 hidden sm:inline-block">
-            Contractor Opportunity Network
-        </span>
+        <div class="hidden sm:flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-secondary-50 dark:bg-secondary-950/40 text-secondary-600 dark:text-secondary-400">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" /></svg>
+            </div>
+            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                Contractor Opportunity Network
+            </span>
+        </div>
     </div>
 
     <!-- Profile Actions, Dark Mode Switcher Infrastructure -->

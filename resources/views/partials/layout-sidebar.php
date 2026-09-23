@@ -33,7 +33,7 @@ declare(strict_types=1);
             <a href="<?= $baseUrl ?>transactions" data-partial class="block bg-primary-50 dark:bg-primary-950/40 rounded-xl p-3 border border-primary-100 dark:border-primary-900/30 hover:border-primary-300 dark:hover:border-primary-800 transition-colors">
                 <div class="flex items-center justify-between">
                     <span class="text-xs text-primary-700 dark:text-primary-400 font-medium">Available Credits</span>
-                    <span class="text-xs bg-primary-600 text-white font-bold px-2 py-0.5 rounded-full"><?= \Src\Service\CreditService::getBalance($sidebarUserId) ?></span>
+                    <span id="sidebar-credit-balance" class="text-xs bg-primary-600 text-white font-bold px-2 py-0.5 rounded-full"><?= \Src\Service\CreditService::getBalance($sidebarUserId) ?></span>
                 </div>
             </a>
         </div>

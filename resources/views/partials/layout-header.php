@@ -34,9 +34,14 @@ declare(strict_types=1);
         </button>
 
         <!-- Target System Context Heading -->
-        <span class="text-sm font-semibold text-gray-500 dark:text-gray-400 hidden sm:inline-block">
-            Real Estate Demand Network
-        </span>
+        <div class="hidden sm:flex items-center gap-2">
+            <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary-50 dark:bg-primary-950/40 text-primary-600 dark:text-primary-400">
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4.5h18M3 4.5v1.086c0 .464.184.909.513 1.237l5.974 5.974c.329.328.513.773.513 1.237v5.148c0 .687.56 1.212 1.229 1.318a48.62 48.62 0 003.542 0c.669-.106 1.229-.63 1.229-1.318v-5.148c0-.464.184-.909.513-1.237l5.974-5.974A1.75 1.75 0 0021 5.586V4.5" /></svg>
+            </div>
+            <span class="text-sm font-semibold text-gray-500 dark:text-gray-400">
+                Real Estate Demand Network
+            </span>
+        </div>
     </div>
 
     <!-- Profile Actions, Dark Mode Switcher Infrastructure -->

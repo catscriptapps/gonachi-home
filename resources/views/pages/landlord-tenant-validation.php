@@ -77,6 +77,9 @@ $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceS
         <?php endif; ?>
 
         <div class="relative text-center max-w-2xl mx-auto px-6 py-14 sm:py-20">
+            <div class="w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 bg-indigo-50 dark:bg-indigo-950/40 text-indigo-600 dark:text-indigo-400">
+                <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" /></svg>
+            </div>
             <span class="inline-block text-xs font-semibold tracking-[0.2em] text-indigo-600 dark:text-indigo-400 uppercase mb-3">Landlord & Tenant Validation</span>
             <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                 Check If Your Landlord Has Previous Complaints — Before Renting

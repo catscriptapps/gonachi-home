@@ -56,10 +56,15 @@ $categories = SwapListingsController::categories();
         <?php endif; ?>
 
         <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
-            <div>
-                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-purple-600 dark:text-purple-400 uppercase mb-2">Swap</span>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Don't Throw It. Swap It.</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Exchange, sell, or gift items within your local community. No cash? No problem.</p>
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400">
+                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
+                </div>
+                <div>
+                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-purple-600 dark:text-purple-400 uppercase mb-2">Swap</span>
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Don't Throw It. Swap It.</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Exchange, sell, or gift items within your local community. No cash? No problem.</p>
+                </div>
             </div>
 
             <!-- Live Counters -->

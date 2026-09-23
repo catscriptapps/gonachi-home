@@ -99,6 +99,21 @@ export async function loadPartial(url, pushState = true, clickedLink = null) {
       masterContainer.style.display = 'none';
       masterContainer.innerHTML = html.replace(/<style\b[^>]*>([\s\S]*?)<\/style>/gim, "");
       masterContainer.style.display = 'block';
+
+      // Some pages spend/grant credits purely as a side effect of a
+      // server-side render (e.g. leads/detail.php's CreditService::
+      // unlockLead() — no client-side fetch response to hook a balance
+      // update off of). A page that just did that leaves a hidden
+      // [data-credit-balance] marker in its own HTML; if one just landed
+      // here, broadcast it so the sidebar's balance badge (which this
+      // partial swap never touches) can catch up — see
+      // resources/js/utils/sidebar-credits.js.
+      const creditSync = masterContainer.querySelector('[data-credit-balance]');
+      if (creditSync) {
+        window.dispatchEvent(new CustomEvent('credits-updated', {
+          detail: { balance: creditSync.dataset.creditBalance }
+        }));
+      }
     }
 
     // 4. State Management

@@ -60,6 +60,7 @@ import { wireReviewQueue } from './utils/review-queue.js';
 import { initRegisterNewUser } from './utils/home/register-new-user.js';
 import { initAuthGateTriggers } from './modals/auth-gate-modal.js';
 import { initSponsoredAd } from './components/sponsored-ad.js';
+import { initSidebarCreditsSync } from './utils/sidebar-credits.js';
 
 // === Page Manifest ===
 let PAGE_MANIFEST = [];
@@ -190,6 +191,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initGlobalModals();
   initRegisterNewUser();
   initAuthGateTriggers();
+  initSidebarCreditsSync();
 
   // PRECISION TRIGGER: Check for login request
   const urlParams = new URLSearchParams(window.location.search);

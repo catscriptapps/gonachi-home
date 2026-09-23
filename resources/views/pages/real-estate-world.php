@@ -150,10 +150,15 @@ $modules = [
         <?php endif; ?>
 
         <div class="relative flex flex-col md:flex-row md:items-center md:justify-between gap-6 p-6 sm:p-10">
-            <div>
-                <span class="inline-block text-xs font-semibold tracking-[0.2em] text-teal-600 dark:text-teal-400 uppercase mb-2">Real Estate World</span>
-                <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">The Ultimate Nexus For Real Estate Stakeholders</h1>
-                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">A global submission platform — landlords, tenants, agents, contractors, and property managers anywhere in the world post directly to us.</p>
+            <div class="flex items-start gap-4">
+                <div class="w-14 h-14 rounded-2xl flex items-center justify-center flex-shrink-0 bg-teal-50 dark:bg-teal-950/40 text-teal-600 dark:text-teal-400">
+                    <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+                </div>
+                <div>
+                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-teal-600 dark:text-teal-400 uppercase mb-2">Real Estate World</span>
+                    <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">The Ultimate Nexus For Real Estate Stakeholders</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">A global submission platform — landlords, tenants, agents, contractors, and property managers anywhere in the world post directly to us.</p>
+                </div>
             </div>
 
             <!-- Ecosystem Counters -->
