@@ -51,7 +51,7 @@ class RentalListing extends Model
 
     public function photos()
     {
-        return $this->hasMany(RentalListingPhoto::class, 'listing_id');
+        return $this->hasMany(RentalListingPhoto::class, 'listing_id')->orderBy('id');
     }
 
     public function scopePublished($query)

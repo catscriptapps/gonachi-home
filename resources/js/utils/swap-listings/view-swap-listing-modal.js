@@ -30,6 +30,10 @@ export function initViewSwapListingModal() {
 
   modal.querySelectorAll('.close-swap-modal').forEach((el) => el.addEventListener('click', closeModal));
 
+  document.getElementById('swap-pics-wrapper')?.addEventListener('click', (e) => {
+    const delBtn = e.target.closest('[data-delete-pic]');
+    if (delBtn) deletePhoto(delBtn, modal);
+  });
   wirePicReorder(document.getElementById('swap-pics-wrapper'), (order) => reorderPhotos(modal, order));
 
   document.getElementById('swap-add-video-btn')?.addEventListener('click', () => triggerVideoUpload(modal));
@@ -242,12 +246,39 @@ function renderPictures(pics, canManage = false) {
   wrapper.innerHTML = pics
     .map(
       (pic) => `
-      <div data-pic-tile data-pic-id="${pic.id}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
+      <div data-pic-tile data-pic-id="${pic.id}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20 group">
         <img src="${pic.url}" data-img-src="${pic.url}" class="w-full h-full object-cover cursor-pointer">
         ${canManage && pics.length > 1 ? reorderButtonHtml() : ''}
+        ${canManage ? `<button type="button" data-delete-pic="${pic.id}" title="Remove" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>` : ''}
       </div>`
     )
     .join('') || '<p class="col-span-4 text-xs text-gray-400 text-center py-4">No photos yet.</p>';
+}
+
+async function deletePhoto(btn, modal) {
+  const confirmed = await confirmDialog('Remove this photo?', 'Remove', 'Cancel', 'bg-red-600 hover:bg-red-700');
+  if (!confirmed) return;
+
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  try {
+    const response = await fetch(`${baseUrl}api/swap-listing-pic-delete`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pic_id: btn.dataset.deletePic }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      renderPictures(result.photos || [], true);
+      updateCardInGrid(modal.dataset.activeEncodedId, result.cardHtml);
+    } else {
+      showToast(result.message || 'Could not remove photo.', 'error');
+    }
+  } catch (err) {
+    console.error('Swap Marketplace photo delete error:', err);
+    showToast('Unexpected error. Please try again.', 'error');
+  }
 }
 
 async function reorderPhotos(modal, order) {

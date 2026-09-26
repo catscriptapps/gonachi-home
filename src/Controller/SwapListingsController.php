@@ -327,6 +327,36 @@ class SwapListingsController
         return ['success' => true, 'listing' => $listing];
     }
 
+    /**
+     * Removes one photo (DB row + file, via SwapListingPic's deleting hook)
+     * from a listing the caller owns, and closes the position gap so the
+     * remaining photos stay contiguous.
+     *
+     * @return array{success: bool, message?: string, listing?: SwapListing}
+     */
+    public static function deletePhoto(int $picId, int $userId): array
+    {
+        $pic = SwapListingPic::with('listing')->find($picId);
+
+        if (!$pic || !$pic->listing || (int) $pic->listing->user_id !== $userId) {
+            return ['success' => false, 'message' => 'Photo not found, or not yours to manage.'];
+        }
+
+        $listing = $pic->listing;
+        $pic->delete();
+
+        $listing->pictures()->get()->values()->each(function (SwapListingPic $remaining, int $position) {
+            if ((int) $remaining->position !== $position) {
+                $remaining->position = $position;
+                $remaining->save();
+            }
+        });
+
+        $listing->load(['category', 'pictures', 'user']);
+
+        return ['success' => true, 'listing' => $listing];
+    }
+
     public static function removeVideo(string $encodedId, int $userId): array
     {
         $listing = self::ownedListing($encodedId, $userId);

@@ -172,7 +172,8 @@
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "_view-counter.min.js": {
@@ -189,8 +190,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/css/app.css": {
@@ -249,7 +250,8 @@
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/adverts-page.js": {
@@ -266,7 +268,8 @@
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -385,6 +388,7 @@
       "_upload-modal.min.js",
       "resources/js/ui/toast.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_modal-factory.min.js",
       "_confirm.min.js"
     ]
@@ -416,7 +420,8 @@
       "_form-validator.min.js",
       "_upload-modal.min.js",
       "resources/js/ui/toast.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/listings-page.js": {
@@ -496,7 +501,8 @@
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/my-listings-page.js": {
@@ -552,8 +558,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -634,7 +640,8 @@
       "_form-validator.min.js",
       "_upload-modal.min.js",
       "resources/js/ui/toast.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/report-tenant-page.js": {
@@ -680,8 +687,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/settings-page.js": {
@@ -731,8 +738,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_preview.min.js"
     ]
   },
   "resources/js/pages/transactions-page.js": {

@@ -49,7 +49,7 @@ class LandlordReport extends Model
 
     public function photos()
     {
-        return $this->hasMany(LandlordReportPhoto::class, 'report_id');
+        return $this->hasMany(LandlordReportPhoto::class, 'report_id')->orderBy('id');
     }
 
     public function scopePublished($query)

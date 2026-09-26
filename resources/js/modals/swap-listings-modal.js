@@ -13,6 +13,7 @@ import { swapListingFormHtml } from '../forms/swap-listing-form.js';
 import { uploadModal, createUploadHandler } from './upload-modal.js';
 import { FormValidator } from '../utils/form-validator.js';
 import { showToast } from '../ui/toast.js';
+import { reorderButtonHtml, wirePicReorder } from '../utils/pic-reorder.js';
 
 const MAX_PHOTOS = 12; // matches server/helpers.php's getMediaLimit()
 
@@ -46,8 +47,9 @@ function renderPhotosPreview(p) {
   if (!preview) return;
 
   preview.innerHTML = photos.map((file, i) => `
-    <div class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
+    <div data-pic-tile data-pic-id="${i}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
       <img src="${file.url}" class="w-full h-full object-cover" alt="Listing photo" />
+      ${photos.length > 1 ? reorderButtonHtml() : ''}
       <button type="button" data-remove-photo="${i}" title="Remove" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow">&times;</button>
     </div>
   `).join('');
@@ -64,6 +66,11 @@ function wirePhotoUpload(p) {
     const btn = e.target.closest('[data-remove-photo]');
     if (!btn) return;
     photos.splice(Number(btn.dataset.removePhoto), 1);
+    renderPhotosPreview(p);
+  });
+
+  wirePicReorder(preview, (ids) => {
+    photos = ids.map((i) => photos[Number(i)]);
     renderPhotosPreview(p);
   });
 

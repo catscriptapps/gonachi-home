@@ -8,6 +8,7 @@ namespace Src\Controller;
 use App\Models\Advert;
 use App\Models\AdvertPic;
 use Src\Service\ImageUploadService;
+use Src\Service\PictureOrderService;
 
 /**
  * Picture management for one advert — up to getMediaLimit() (12) images,
@@ -88,6 +89,29 @@ class AdvertsPicturesController
         $advert->load(['owner', 'cta', 'package', 'pictures']);
 
         return ['success' => true, 'files' => $uploaded, 'cardHtml' => AdvertsController::renderCard($advert, $userId)];
+    }
+
+    /**
+     * @param int[] $order Picture ids in the desired order.
+     */
+    public static function reorder(int $advertId, array $order, int $userId): array
+    {
+        $advert = Advert::where('id', $advertId)->where('user_id', $userId)->first();
+
+        if (!$advert) {
+            return ['success' => false, 'message' => 'Advert not found, or not yours to manage.'];
+        }
+
+        $pics = AdvertPic::where('advert_id', $advertId)->get();
+
+        if (!PictureOrderService::apply($pics, $order, 'id', 'pos_index')) {
+            return ['success' => false, 'message' => 'That picture order is out of date — please reopen the advert and try again.'];
+        }
+
+        // The card's thumbnail is the first picture, so it can change.
+        $advert->load(['owner', 'cta', 'package', 'pictures']);
+
+        return ['success' => true, 'cardHtml' => AdvertsController::renderCard($advert, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array

@@ -36,7 +36,7 @@ class JobRequest extends Model
 
     public function photos()
     {
-        return $this->hasMany(JobRequestPhoto::class, 'job_request_id');
+        return $this->hasMany(JobRequestPhoto::class, 'job_request_id')->orderBy('id');
     }
 
     public function bids()
