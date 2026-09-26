@@ -7,9 +7,9 @@
 // attributes — no fetch needed to open it, including the photo gallery
 // (the card already carries every photo URL in data-photos for the edit
 // modal's prefill) and the video (data-video-url). Mirrors Real Estate
-// World's view-quotation-modal.php, minus the fields Swap doesn't have
+// World's view-quotation-modal.php, minus the fields Swap Marketplace doesn't have
 // (location/contractor-type/timeline/budget) and the Responses section
-// (Swap has no inquiry/bid system).
+// (Swap Marketplace has no inquiry/bid system).
 
 $modalDetailOwnerId = 'swap';
 $modalDetailOwnerTitle = 'Posted By';

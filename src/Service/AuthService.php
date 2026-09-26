@@ -157,16 +157,33 @@ class AuthService
         // --- Priority 1: Attempt login as a backend User ---
         $user = User::where('email', $email)->first();
         if ($user && password_verify($password, $user->password)) {
-            // CHECK STATUS: Only active users can proceed
+            // Inactive accounts can't proceed — except ones that are only
+            // inactive because they're still awaiting email verification,
+            // while no mail server is configured (MAIL_HOST blank) and the
+            // verification link therefore can't be delivered. Those are let
+            // in and activated, matching how UsersController::save() treats
+            // sign-ups in the same situation. Once mail is configured this
+            // exception ends and the original verify-first gate applies.
             if ((int)$user->status_id !== 1) {
-                return [
-                    'success' => false,
-                    'unverified' => true,
-                    'messages' => ['Account not activated. Please verify your email.']
-                ];
+                if (!$user->email_verified && !MailService::isConfigured()) {
+                    $user->status_id = 1;
+                    $user->save();
+                } else {
+                    return [
+                        'success' => false,
+                        'unverified' => true,
+                        'messages' => ['Account not activated. Please verify your email.']
+                    ];
+                }
             }
 
-            return self::loginAsUser($user);
+            $result = self::loginAsUser($user);
+
+            if (!$user->email_verified) {
+                $result['email_unverified'] = true;
+            }
+
+            return $result;
         }
 
         // Note: this app only has backend User accounts. Older Landlord/Tenant

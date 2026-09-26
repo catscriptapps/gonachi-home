@@ -1,7 +1,7 @@
 <?php
 // /server/api/swap-listing-save.php
 //
-// Toggles the signed-in user's bookmark on a Swap listing (the "Saved" tab
+// Toggles the signed-in user's bookmark on a Swap Marketplace listing (the "Saved" tab
 // — see SwapListingsController::toggleSave() / saved()).
 
 declare(strict_types=1);

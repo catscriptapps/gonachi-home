@@ -210,7 +210,7 @@ function resolvePageRoute(string $path): array
         $title = 'Page Not Found';
     } else {
         $slug = basename($path);
-        $title = ucwords(str_replace(['-', '_'], ' ', $slug));
+        $title = $slug === 'swap' ? 'Swap Marketplace' : ucwords(str_replace(['-', '_'], ' ', $slug));
     }
 
     return [$pageFile, $title];

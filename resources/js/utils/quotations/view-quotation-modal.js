@@ -16,6 +16,7 @@ import { videoUploadModal, createVideoUploadHandler } from '../../modals/video-u
 import { ViewCounter } from '../globals/view-counter.js';
 import { openQuotationResponseModal } from '../../modals/quotation-response-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
+import { reorderButtonHtml, wirePicReorder } from '../pic-reorder.js';
 
 export function initViewQuotationModal() {
   const modal = document.getElementById('view-quote-modal');
@@ -36,6 +37,7 @@ export function initViewQuotationModal() {
     const delBtn = e.target.closest('[data-delete-pic]');
     if (delBtn) deletePicture(delBtn, modal);
   });
+  wirePicReorder(document.getElementById('quote-pics-wrapper'), (order) => reorderPictures(modal, order));
 
   document.getElementById('quote-add-video-btn')?.addEventListener('click', () => triggerVideoUpload(modal));
   document.getElementById('quote-remove-video-btn')?.addEventListener('click', () => removeVideo(modal));
@@ -243,8 +245,9 @@ async function loadPictures(encodedId, canManage) {
     wrapper.innerHTML = pics
       .map(
         (pic) => `
-        <div class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20 group">
+        <div data-pic-tile data-pic-id="${pic.entry_id}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20 group">
           <img src="${pic.url}" data-img-src="${pic.url}" class="w-full h-full object-cover cursor-pointer">
+          ${canManage && pics.length > 1 ? reorderButtonHtml() : ''}
           ${canManage ? `<button type="button" data-delete-pic="${pic.entry_id}" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow opacity-0 group-hover:opacity-100 transition-opacity">&times;</button>` : ''}
         </div>`
       )
@@ -274,6 +277,30 @@ function triggerPhotoUpload(modal) {
       { maxFiles: 12 }
     );
   }, 50);
+}
+
+async function reorderPictures(modal, order) {
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+  const encodedId = modal.dataset.activeEncodedId;
+
+  try {
+    const response = await fetch(`${baseUrl}api/quotation-pic-reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: encodedId, order }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      await loadPictures(encodedId, true);
+      updateCardInGrid(encodedId, result.cardHtml);
+    } else {
+      showToast(result.message || 'Could not reorder pictures.', 'error');
+    }
+  } catch (err) {
+    console.error('Reorder quotation pictures error:', err);
+    showToast('Unexpected error.', 'error');
+  }
 }
 
 async function deletePicture(btn, modal) {

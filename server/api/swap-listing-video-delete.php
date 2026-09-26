@@ -1,7 +1,7 @@
 <?php
 // /server/api/swap-listing-video-delete.php
 //
-// Removes the video attached to a Swap listing (owner-only) — DB field +
+// Removes the video attached to a Swap Marketplace listing (owner-only) — DB field +
 // file. Mirrors Real Estate World's quotation-video-delete.php.
 
 declare(strict_types=1);

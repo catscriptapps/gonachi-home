@@ -1,8 +1,8 @@
 // /resources/js/forms/swap-listing-form.js
 //
-// Builds the Add/Edit Listing form HTML for the Swap compose modal — same
+// Builds the Add/Edit Listing form HTML for the Swap Marketplace compose modal — same
 // idPrefix/mode/existing shape as Real Estate World's own
-// resources/js/forms/listing-form.js, simplified to Swap's own field set
+// resources/js/forms/listing-form.js, simplified to Swap Marketplace's own field set
 // (no property/amenity fields).
 
 export function swapListingFormHtml({ mode, lookups, existing = null }) {

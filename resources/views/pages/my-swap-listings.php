@@ -4,14 +4,14 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - My Listings
+ * Gonachi Swap Marketplace - My Listings
  *
  * Owner-only management page: every status (not just posted), each card
  * showing Edit/Delete + a Mark As Completed/Reactivate toggle — see
  * Src\Controller\SwapListingsController::mine()/save()/delete()/setStatus()
  * and resources/views/components/swap-listings/data-card.php. Mirrors Real
  * Estate World's my-listings.php shape (own listings, "Post a Listing"
- * trigger) simplified to Swap's smaller field set.
+ * trigger) simplified to Swap Marketplace's smaller field set.
  *
  * @var bool $isLoggedIn
  * @var string $baseUrl
@@ -60,19 +60,20 @@ $categories = SwapListingsController::categories();
         <input type="text" name="q" value="<?= htmlspecialchars($search) ?>" placeholder="Search my listings..." class="w-full pl-10 pr-4 py-2.5 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl text-sm focus:ring-2 focus:ring-purple-500 focus:outline-none text-gray-900 dark:text-white" />
     </form>
 
-    <?php if ($listings->isEmpty()): ?>
-        <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
-            <p class="text-sm text-gray-400 dark:text-gray-500">
-                <?= $search ? 'No listings match that search.' : "You haven't posted any listings yet." ?>
-            </p>
-        </div>
-    <?php else: ?>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5" id="swap-listings-grid">
-            <?php foreach ($listings as $listing): ?>
-                <?= SwapListingsController::renderCard($listing, $viewerId) ?>
-            <?php endforeach; ?>
-        </div>
+    <?php // The grid is always rendered (just hidden when empty) so a listing posted from the empty state has somewhere to land without a reload. ?>
+    <div data-swap-empty-state class="<?= $listings->isEmpty() ? '' : 'hidden' ?> bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
+        <p class="text-sm text-gray-400 dark:text-gray-500">
+            <?= $search ? 'No listings match that search.' : "You haven't posted any listings yet." ?>
+        </p>
+    </div>
 
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 <?= $listings->isEmpty() ? 'hidden' : '' ?>" id="swap-listings-grid">
+        <?php foreach ($listings as $listing): ?>
+            <?= SwapListingsController::renderCard($listing, $viewerId) ?>
+        <?php endforeach; ?>
+    </div>
+
+    <?php if (!$listings->isEmpty()): ?>
         <?php if ($listings->lastPage() > 1): ?>
             <div class="flex items-center justify-between pt-2">
                 <?php if ($listings->previousPageUrl()): ?>

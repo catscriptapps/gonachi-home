@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - Left Navigation Sidebar
+ * Gonachi Swap Marketplace - Left Navigation Sidebar
  */
 ?>
 <aside

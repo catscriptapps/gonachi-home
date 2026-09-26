@@ -21,7 +21,7 @@ $switcherIconClasses = [
     'purple' => 'bg-purple-50 dark:bg-purple-950/40 text-purple-600 dark:text-purple-400',
 ];
 
-// Real Estate World and Swap aren't in ProjectsConfig (see its class doc
+// Real Estate World and Swap Marketplace aren't in ProjectsConfig (see its class doc
 // comment — different shape, not a leads-extraction engine) but still
 // belong in this switcher alongside the other three, so they're appended
 // here.
@@ -34,7 +34,7 @@ $switcherProjects[] = [
 ];
 $switcherProjects[] = [
     'slug' => 'swap',
-    'name' => 'Swap',
+    'name' => 'Swap Marketplace',
     'accent' => 'purple',
     'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />',
 ];

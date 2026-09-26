@@ -1,9 +1,9 @@
 // /resources/js/utils/swap-listings/swap-listing-actions.js
 //
 // Delete, status toggle (Mark As Completed / Reactivate), and save/unsave
-// for Swap listing cards — capture-phase document click delegation, same
+// for Swap Marketplace listing cards — capture-phase document click delegation, same
 // pattern as Real Estate World's view-listing-modal.js delete/toggle
-// handlers (minus the "view modal" step Swap doesn't have).
+// handlers (minus the "view modal" step Swap Marketplace doesn't have).
 
 import { confirmDialog } from '../../ui/confirm.js';
 import { showToast } from '../../ui/toast.js';
@@ -59,7 +59,7 @@ async function handleDelete(btn) {
       showToast(result.message || 'Could not delete listing.', 'error');
     }
   } catch (err) {
-    console.error('Swap listing delete error:', err);
+    console.error('Swap Marketplace listing delete error:', err);
     showToast('Unexpected error. Please try again.', 'error');
   }
 }
@@ -94,7 +94,7 @@ async function handleStatusToggle(btn) {
       showToast(result.message || 'Could not update listing.', 'error');
     }
   } catch (err) {
-    console.error('Swap listing status toggle error:', err);
+    console.error('Swap Marketplace listing status toggle error:', err);
     showToast('Unexpected error. Please try again.', 'error');
   }
 }
@@ -144,7 +144,7 @@ async function handleSaveToggle(btn) {
       showToast(result.message || 'Could not update saved listings.', 'error');
     }
   } catch (err) {
-    console.error('Swap listing save-toggle error:', err);
+    console.error('Swap Marketplace listing save-toggle error:', err);
     showToast('Unexpected error. Please try again.', 'error');
   } finally {
     btn.disabled = false;

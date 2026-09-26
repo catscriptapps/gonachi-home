@@ -8,6 +8,7 @@ namespace Src\Controller;
 use App\Models\Quotation;
 use App\Models\QuotationPic;
 use Src\Service\ImageUploadService;
+use Src\Service\PictureOrderService;
 
 /**
  * Picture management for one quotation's project photos — up to
@@ -89,6 +90,29 @@ class QuotationPicturesController
         $quote->load(QuotationsController::EAGER);
 
         return ['success' => true, 'files' => $uploaded, 'cardHtml' => QuotationsController::renderCard($quote, $userId)];
+    }
+
+    /**
+     * @param int[] $order Picture entry_ids in the desired order.
+     */
+    public static function reorder(int $quotationId, array $order, int $userId): array
+    {
+        $quote = Quotation::where('quotation_id', $quotationId)->where('orig_user_id', $userId)->first();
+
+        if (!$quote) {
+            return ['success' => false, 'message' => 'Quotation not found, or not yours to manage.'];
+        }
+
+        $pics = QuotationPic::where('quotation_id', $quotationId)->get();
+
+        if (!PictureOrderService::apply($pics, $order, 'entry_id', 'pos_index')) {
+            return ['success' => false, 'message' => 'That picture order is out of date — please reopen the quotation and try again.'];
+        }
+
+        // The card's thumbnail is the first picture, so it can change.
+        $quote->load(QuotationsController::EAGER);
+
+        return ['success' => true, 'cardHtml' => QuotationsController::renderCard($quote, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array

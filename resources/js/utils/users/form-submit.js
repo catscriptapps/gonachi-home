@@ -137,6 +137,25 @@ export function handleUserFormSubmission(form, mode, modalInstance, tableSelecto
 
             const result = await response.json();
 
+            if (result.success && result.is_registration && result.logged_in) {
+                // No mail server configured yet: the server activated and
+                // signed the new user in already. Reload the page they were
+                // on so the signed-in state (header, gated content) shows
+                // and they can carry on with what they were doing.
+                apiMsg.innerHTML = `
+                    <div class="bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 px-4 py-3 rounded-xl font-bold text-sm mt-2">
+                        <p>${result.messages?.[0] || "Your account has been created and you're now signed in."}</p>
+                    </div>
+                `;
+                form.reset();
+                submitBtn.style.display = 'none';
+
+                const resumeUrl = new URL(window.location.href);
+                resumeUrl.searchParams.delete('login');
+                setTimeout(() => { window.location.href = resumeUrl.toString(); }, 1500);
+                return;
+            }
+
             if (result.success && result.is_registration) {
                 // Guest self-registration: no row to insert (nothing's
                 // active yet), no profile to refresh — just a clear,

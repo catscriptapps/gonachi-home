@@ -1,7 +1,7 @@
 <?php
 // /server/api/swap-listing-photo-upload.php
 //
-// Photo upload target for the Swap listing compose/edit modal, called by
+// Photo upload target for the Swap Marketplace listing compose/edit modal, called by
 // the shared upload modal (resources/js/modals/upload-modal.js's
 // createUploadHandler). Images arrive here already compressed client-side
 // by its WorkerPool, so this just stores them and returns URLs — the main

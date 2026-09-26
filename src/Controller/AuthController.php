@@ -197,6 +197,10 @@ class AuthController
             if (isset($result['api_token'])) {
                 $response['api_token'] = $result['api_token'];
             }
+            if (!empty($result['email_unverified'])) {
+                $response['email_unverified'] = true;
+                $response['messages'] = ["You're signed in — but your email address isn't verified yet. You can verify it any time from your profile."];
+            }
             return $response;
         }
 

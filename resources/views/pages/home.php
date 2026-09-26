@@ -42,7 +42,7 @@ $projects[] = [
     'external' => false,
 ];
 
-// Gonachi Swap: a fifth project, ported from the standalone gonachi-swap
+// Gonachi Swap Marketplace: a fifth project, ported from the standalone gonachi-swap
 // app into its own internal route here (see resources/views/pages/swap.php)
 // — same treatment as Real Estate World above, not a separate deployment.
 $projects[] = [
@@ -205,7 +205,7 @@ if (is_dir($heroImagesPath)) {
                 Five projects. One idea: put the right person in front of the right opportunity.
             </h2>
             <p class="mt-4 text-base text-gray-500 dark:text-gray-400 max-w-2xl mx-auto">
-                Three engines continuously surface signals hiding in plain sight across the public web and structure them into something searchable — real estate leads for realtors, verified contractors for property owners, landlord and tenant records for renters. The fourth flips the model: Real Estate World is a global platform where stakeholders anywhere submit their own adverts, listings, and quotations directly to us. The fifth, Swap, is next.
+                Three engines continuously surface signals hiding in plain sight across the public web and structure them into something searchable — real estate leads for realtors, verified contractors for property owners, landlord and tenant records for renters. The fourth flips the model: Real Estate World is a global platform where stakeholders anywhere submit their own adverts, listings, and quotations directly to us. The fifth, Swap Marketplace, is next.
             </p>
         </div>
 

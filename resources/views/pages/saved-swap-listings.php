@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - Saved Listings
+ * Gonachi Swap Marketplace - Saved Listings
  *
  * The "Saved" tab from the legacy gonachi-swap app's nav (dangling there —
  * no page ever backed it), built for real here: listings the signed-in

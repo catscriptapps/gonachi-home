@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - Main Application Layout
+ * Gonachi Swap Marketplace - Main Application Layout
  * Mirrors layouts/contractor-app.php (same shell shape, own sidebar/header)
  * — each project keeps its own chrome so a visitor always knows which
  * engine they're in. Ported from the standalone gonachi-swap app, now
@@ -86,7 +86,7 @@ declare(strict_types=1);
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div class="flex items-center space-x-2">
                     <span class="text-sm font-bold tracking-tight text-gray-900 dark:text-white">Gonachi</span>
-                    <span class="text-xs text-gray-400 dark:text-gray-500">&copy; <?= date('Y') ?> Swap. All rights reserved.</span>
+                    <span class="text-xs text-gray-400 dark:text-gray-500">&copy; <?= date('Y') ?> Swap Marketplace. All rights reserved.</span>
                 </div>
                 <div class="flex space-x-6 text-xs font-medium text-gray-500 dark:text-gray-400">
                     <a href="#" class="hover:text-purple-600 transition-colors">Terms of Service</a>

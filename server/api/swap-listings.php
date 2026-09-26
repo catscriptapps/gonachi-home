@@ -1,10 +1,10 @@
 <?php
 // /server/api/swap-listings.php
 //
-// Create/update/delete/status-toggle hub for the signed-in user's own Swap
+// Create/update/delete/status-toggle hub for the signed-in user's own Swap Marketplace
 // listings — mirrors Real Estate World's api/listings.php dispatch shape
 // (a single POST endpoint branching on _method / intent) but scoped to
-// Swap's own simpler save() (see SwapListingsController).
+// Swap Marketplace's own simpler save() (see SwapListingsController).
 
 declare(strict_types=1);
 

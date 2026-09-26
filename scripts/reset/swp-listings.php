@@ -7,7 +7,7 @@ use Illuminate\Database\Schema\Blueprint;
 use App\Models\SwapListing;
 
 /**
- * Gonachi Swap's core entity — ported from the standalone gonachi-swap app's
+ * Gonachi Swap Marketplace's core entity — ported from the standalone gonachi-swap app's
  * `listings` table (its own gonachi_swap_db), simplified to match this
  * app's sibling-project conventions: a plain bigIncrements id instead of a
  * custom-named PK, and listing_type/condition as plain string columns (like

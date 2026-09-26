@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - Main Discovery Viewport
+ * Gonachi Swap Marketplace - Main Discovery Viewport
  *
  * Ported from the standalone gonachi-swap app (its static marketing
  * home.php + real /listings browse page) into gonachi-home's own project
@@ -61,7 +61,7 @@ $categories = SwapListingsController::categories();
                     <svg class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" /></svg>
                 </div>
                 <div>
-                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-purple-600 dark:text-purple-400 uppercase mb-2">Swap</span>
+                    <span class="inline-block text-xs font-semibold tracking-[0.2em] text-purple-600 dark:text-purple-400 uppercase mb-2">Swap Marketplace</span>
                     <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Don't Throw It. Swap It.</h1>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mt-2 max-w-md">Exchange, sell, or gift items within your local community. No cash? No problem.</p>
                 </div>
@@ -118,7 +118,7 @@ $categories = SwapListingsController::categories();
 
         <!-- Primary Listings Column -->
         <div class="lg:col-span-2 space-y-4" id="swap-listings-grid">
-            <div class="flex items-center justify-between gap-3">
+            <div data-swap-grid-header class="flex items-center justify-between gap-3">
                 <h3 class="text-lg font-bold text-gray-900 dark:text-white"><?= ($search || $categorySlug || $type) ? 'Search Results' : 'Recent Listings' ?></h3>
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-purple-600 bg-purple-50 dark:bg-purple-950/40 px-2 py-1 rounded font-medium whitespace-nowrap"><?= $listings->total() ?> Listed</span>
@@ -135,7 +135,7 @@ $categories = SwapListingsController::categories();
             </div>
 
             <?php if ($listings->isEmpty()): ?>
-                <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
+                <div data-swap-empty-state class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
                     <p class="text-sm text-gray-400 dark:text-gray-500">No listings match that search yet.</p>
                 </div>
             <?php else: ?>

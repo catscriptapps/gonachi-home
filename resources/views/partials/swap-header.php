@@ -4,7 +4,7 @@
 declare(strict_types=1);
 
 /**
- * Gonachi Swap - Core Dynamic Topbar
+ * Gonachi Swap Marketplace - Core Dynamic Topbar
  */
 ?>
 <header class="h-20 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 flex items-center justify-between px-4 sm:px-6 lg:px-8 sticky top-0 z-40 transition-colors duration-300">

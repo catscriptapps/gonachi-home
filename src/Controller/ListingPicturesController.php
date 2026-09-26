@@ -8,6 +8,7 @@ namespace Src\Controller;
 use App\Models\Listing;
 use App\Models\ListingPic;
 use Src\Service\ImageUploadService;
+use Src\Service\PictureOrderService;
 
 /**
  * Picture management for one listing's photos — up to getMediaLimit() (12)
@@ -89,6 +90,29 @@ class ListingPicturesController
         $listing->load(ListingsController::EAGER);
 
         return ['success' => true, 'files' => $uploaded, 'cardHtml' => ListingsController::renderCard($listing, $userId)];
+    }
+
+    /**
+     * @param int[] $order Picture entry_ids in the desired order.
+     */
+    public static function reorder(int $listingId, array $order, int $userId): array
+    {
+        $listing = Listing::where('listing_id', $listingId)->where('orig_user_id', $userId)->first();
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        $pics = ListingPic::where('listing_id', $listingId)->get();
+
+        if (!PictureOrderService::apply($pics, $order, 'entry_id', 'pos_index')) {
+            return ['success' => false, 'message' => 'That picture order is out of date — please reopen the listing and try again.'];
+        }
+
+        // The card's thumbnail is the first picture, so it can change.
+        $listing->load(ListingsController::EAGER);
+
+        return ['success' => true, 'cardHtml' => ListingsController::renderCard($listing, $userId)];
     }
 
     public static function delete(int $picId, int $userId): array

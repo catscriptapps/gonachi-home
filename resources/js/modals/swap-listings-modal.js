@@ -1,10 +1,10 @@
 // /resources/js/modals/swap-listings-modal.js
 //
-// Add/Edit Listing compose modal for Swap — mirrors Real Estate World's
+// Add/Edit Listing compose modal for Swap Marketplace — mirrors Real Estate World's
 // modals/listings-modal.js (Modal factory, capture-phase document click
 // delegation so .edit-swap-listing-btn's stopPropagation doesn't swallow
 // it) but folds form-building, photo upload, and submission into one file
-// since Swap's field set is small enough not to need three separate
+// since Swap Marketplace's field set is small enough not to need three separate
 // modules. Edit is prefilled entirely from the card's own data-*
 // attributes — no API fetch, same as the Real Estate World original.
 
@@ -140,7 +140,7 @@ function wireSubmit(p, mode, modalInstance) {
         errorSlot.innerHTML = `<p class="text-xs text-red-600 dark:text-red-400">${(result.messages || ['Please try again.']).join(' ')}</p>`;
       }
     } catch (err) {
-      console.error('Swap listing save error:', err);
+      console.error('Swap Marketplace listing save error:', err);
       errorSlot.innerHTML = `<p class="text-xs text-red-600 dark:text-red-400">Unexpected error. Please try again.</p>`;
     } finally {
       submitBtn.disabled = false;
@@ -155,7 +155,15 @@ function applyCardToGrids(existingEncodedId, encodedId, cardHtml) {
       const card = grid.querySelector(`[data-listing-wrapper][data-encoded-id="${existingEncodedId}"]`);
       if (card) card.outerHTML = cardHtml;
     } else {
-      grid.insertAdjacentHTML('afterbegin', cardHtml);
+      grid.classList.remove('hidden');
+      document.querySelectorAll('[data-swap-empty-state]').forEach((el) => el.classList.add('hidden'));
+
+      const header = grid.querySelector(':scope > [data-swap-grid-header]');
+      if (header) {
+        header.insertAdjacentHTML('afterend', cardHtml);
+      } else {
+        grid.insertAdjacentHTML('afterbegin', cardHtml);
+      }
     }
   });
 }

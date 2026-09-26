@@ -113,9 +113,16 @@ export class LoginModal {
                 const result = await response.json();
 
                 if (result.success) {
+                    // An unverified account is signed in but told so, in amber
+                    // and for long enough to actually read before the reload.
+                    const unverified = !!result.email_unverified;
+                    const tone = unverified
+                        ? 'bg-amber-50 border border-amber-300 text-amber-800'
+                        : 'bg-green-100 border border-green-400 text-green-700';
+
                     if (apiMessageContainer) {
                         apiMessageContainer.innerHTML = result.messages
-                            .map(msg => `<div class="bg-green-100 border border-green-400 text-green-700 px-4 py-2 rounded-md mt-2 flex items-center gap-2"><span>${msg}</span></div>`)
+                            .map(msg => `<div class="${tone} px-4 py-2 rounded-md mt-2 flex items-center gap-2"><span>${msg}</span></div>`)
                             .join('');
                         submitBtn.style.display = 'none';
                     }
@@ -130,7 +137,7 @@ export class LoginModal {
                         // reload (not a partial load) is required so the server
                         // re-renders with the now-authenticated session.
                         window.location.reload();
-                    }, 1200);
+                    }, unverified ? 4500 : 1200);
                 } else {
                     if (apiMessageContainer) {
                         let html = result.messages.map(msg => `<p class="text-red-500 text-sm mt-1">${msg}</p>`).join('');

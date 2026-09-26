@@ -170,7 +170,9 @@ $issueLabels = [
                                 Reject
                             </button>
                         </form>
-                        <form method="POST" action="<?= $baseUrl ?>api/landlord-report-review" data-review-form>
+                        <form method="POST" action="<?= $baseUrl ?>api/landlord-report-review" data-review-form
+                            data-confirm-message="Approve this report and publish it so it counts toward the property's public confidence score?"
+                            data-confirm-action-label="Approve & Publish" data-confirm-color="bg-secondary-600 hover:bg-secondary-700">
                             <input type="hidden" name="action" value="approve">
                             <input type="hidden" name="id" value="<?= $report->id ?>">                            <button type="submit" class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-indigo-600 dark:hover:bg-indigo-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm">
                                 Approve &amp; Publish

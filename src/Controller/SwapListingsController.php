@@ -13,6 +13,7 @@ use App\Traits\RecentActivityLogger;
 use App\Utils\IdEncoder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Src\Service\PictureOrderService;
 
 /**
  * SwapListingsController
@@ -22,7 +23,7 @@ use Illuminate\Pagination\LengthAwarePaginator;
  * (src/Controller/ListingsController.php, rew_listings) — same
  * modal-based add/edit, card-embedded edit/delete, IdEncoder-obfuscated
  * ids, and owner-scoped `where('user_id', $userId)` permission model —
- * simplified to Swap's own (much smaller) field set. Named distinctly to
+ * simplified to Swap Marketplace's own (much smaller) field set. Named distinctly to
  * avoid colliding with that class/its rew_ tables.
  */
 class SwapListingsController
@@ -305,6 +306,27 @@ class SwapListingsController
     /**
      * @return array{success: bool, message?: string, listing?: SwapListing}
      */
+    /**
+     * @param int[] $order Picture ids in the desired order.
+     * @return array{success: bool, message?: string, listing?: SwapListing}
+     */
+    public static function reorderPhotos(string $encodedId, array $order, int $userId): array
+    {
+        $listing = self::ownedListing($encodedId, $userId);
+
+        if (!$listing) {
+            return ['success' => false, 'message' => 'Listing not found, or not yours to manage.'];
+        }
+
+        if (!PictureOrderService::apply($listing->pictures()->get(), $order, 'id', 'position')) {
+            return ['success' => false, 'message' => 'That photo order is out of date — please reopen the listing and try again.'];
+        }
+
+        $listing->load(['category', 'pictures', 'user']);
+
+        return ['success' => true, 'listing' => $listing];
+    }
+
     public static function removeVideo(string $encodedId, int $userId): array
     {
         $listing = self::ownedListing($encodedId, $userId);

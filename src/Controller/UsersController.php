@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Follow;
 use App\Utils\IdEncoder;
 use Src\Service\AuthService;
+use Src\Service\MailService;
 use App\Traits\RecentActivityLogger;
 
 class UsersController
@@ -312,15 +313,40 @@ class UsersController
             $appEnv = $_ENV['APP_ENV'] ?? '';
             $isLocal = $appEnv === 'local';
 
+            // With no SMTP credentials configured (MAIL_HOST blank) a
+            // verification link can't be delivered, so a production
+            // sign-up would otherwise be locked out entirely. In that case
+            // the account is activated (status_id = 1, so it can sign in
+            // now and later) and a guest is signed in immediately — but
+            // email_verified is left false, so the account still counts as
+            // unverified until a real verification happens once mail is set
+            // up (see VerificationController::verify()/resend()).
+            $provisionalSignup = $isNew && !$isLocal && !MailService::isConfigured();
+            $isGuestSignup = $isNew && !AuthService::isLoggedIn();
+
             if ($isNew) {
-                $user->status_id = $isLocal ? 1 : 0;
+                $user->status_id = ($isLocal || $provisionalSignup) ? 1 : 0;
+                $user->email_verified = false;
             } elseif (array_key_exists('status_id', $data)) {
                 $user->status_id = (int) $data['status_id'] === 1 ? 1 : 0;
             }
 
             $user->save();
 
-            if ($isNew && !$isLocal) {
+            if ($provisionalSignup && $isGuestSignup) {
+                AuthService::loginAsUser($user);
+
+                return [
+                    'success' => true,
+                    'is_registration' => true,
+                    'logged_in' => true,
+                    'messages' => [
+                        "Welcome to Gonachi, {$user->first_name}! Your account has been created and you're now signed in.",
+                    ],
+                ];
+            }
+
+            if ($isNew && !$isLocal && MailService::isConfigured()) {
                 // Where to send them back to once they click the link —
                 // see UserVerification.resume_url's doc comment. Only ever
                 // set by a true guest self-registration (register-new-user.js

@@ -61,6 +61,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_animations.min.js"
@@ -69,6 +70,10 @@
   "_modal-factory.min.js": {
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
+  },
+  "_pic-reorder.min.js": {
+    "file": "js/pic-reorder.min.js",
+    "name": "pic-reorder"
   },
   "_preload-helper.min.js": {
     "file": "js/preload-helper.min.js",
@@ -89,6 +94,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_animations.min.js"
@@ -183,7 +189,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/css/app.css": {
@@ -428,6 +435,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -506,6 +514,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -525,6 +534,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -542,7 +552,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -559,6 +570,7 @@
       "_preview.min.js",
       "_header-avatar.min.js",
       "_animations.min.js",
+      "_resend-activation.min.js",
       "_modal-factory.min.js",
       "_regions-component.min.js",
       "_countries-api.min.js",
@@ -582,6 +594,7 @@
       "_view-counter.min.js",
       "_modal-factory.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -667,7 +680,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/settings-page.js": {
@@ -717,7 +731,8 @@
       "_modal-factory.min.js",
       "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_preview.min.js"
+      "_preview.min.js",
+      "_pic-reorder.min.js"
     ]
   },
   "resources/js/pages/transactions-page.js": {

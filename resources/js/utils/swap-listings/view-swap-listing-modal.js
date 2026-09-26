@@ -14,6 +14,7 @@ import { confirmDialog } from '../../ui/confirm.js';
 import { videoUploadModal, createVideoUploadHandler } from '../../modals/video-upload-modal.js';
 import { openEditListingModal } from '../../modals/swap-listings-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
+import { reorderButtonHtml, wirePicReorder } from '../pic-reorder.js';
 
 export function initViewSwapListingModal() {
   const modal = document.getElementById('view-swap-modal');
@@ -28,6 +29,8 @@ export function initViewSwapListingModal() {
   });
 
   modal.querySelectorAll('.close-swap-modal').forEach((el) => el.addEventListener('click', closeModal));
+
+  wirePicReorder(document.getElementById('swap-pics-wrapper'), (order) => reorderPhotos(modal, order));
 
   document.getElementById('swap-add-video-btn')?.addEventListener('click', () => triggerVideoUpload(modal));
   document.getElementById('swap-remove-video-btn')?.addEventListener('click', () => removeVideo(modal));
@@ -111,7 +114,7 @@ function openModal(el) {
     primaryBtn.classList.add('hidden');
   }
 
-  renderPictures(JSON.parse(d.photos || '[]'));
+  renderPictures(JSON.parse(d.photos || '[]'), canManage);
   renderVideo(modal, d.videoUrl || '', canManage);
 
   modal.classList.remove('hidden');
@@ -159,7 +162,7 @@ async function quickToggleStatus(modal) {
       showToast(result.message || 'Could not update listing.', 'error');
     }
   } catch (err) {
-    console.error('Swap listing status update error:', err);
+    console.error('Swap Marketplace listing status update error:', err);
     showToast('Unexpected error.', 'error');
   }
 }
@@ -211,7 +214,7 @@ async function quickToggleSave(modal) {
       showToast(result.message || 'Could not update saved listings.', 'error');
     }
   } catch (err) {
-    console.error('Swap listing save-toggle error:', err);
+    console.error('Swap Marketplace listing save-toggle error:', err);
     showToast('Unexpected error.', 'error');
   } finally {
     primaryBtn.disabled = false;
@@ -230,7 +233,7 @@ function statusBadgeHtml(status) {
 // data-photos JSON, no fetch.
 // -------------------------------
 
-function renderPictures(pics) {
+function renderPictures(pics, canManage = false) {
   const wrapper = document.getElementById('swap-pics-wrapper');
   const countEl = document.getElementById('view-swap-pics-count');
 
@@ -239,11 +242,36 @@ function renderPictures(pics) {
   wrapper.innerHTML = pics
     .map(
       (pic) => `
-      <button type="button" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
+      <div data-pic-tile data-pic-id="${pic.id}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
         <img src="${pic.url}" data-img-src="${pic.url}" class="w-full h-full object-cover cursor-pointer">
-      </button>`
+        ${canManage && pics.length > 1 ? reorderButtonHtml() : ''}
+      </div>`
     )
     .join('') || '<p class="col-span-4 text-xs text-gray-400 text-center py-4">No photos yet.</p>';
+}
+
+async function reorderPhotos(modal, order) {
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+  const encodedId = modal.dataset.activeEncodedId;
+
+  try {
+    const response = await fetch(`${baseUrl}api/swap-listing-pic-reorder`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: encodedId, order }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      renderPictures(result.photos || [], true);
+      updateCardInGrid(encodedId, result.cardHtml);
+    } else {
+      showToast(result.message || 'Could not reorder photos.', 'error');
+    }
+  } catch (err) {
+    console.error('Swap Marketplace photo reorder error:', err);
+    showToast('Unexpected error. Please try again.', 'error');
+  }
 }
 
 // -------------------------------

@@ -1,7 +1,7 @@
 <?php
 // /server/api/swap-listing-upload-video.php
 //
-// Chunked video upload for a Swap listing (owner-only). Mirrors Real Estate
+// Chunked video upload for a Swap Marketplace listing (owner-only). Mirrors Real Estate
 // World's quotation-upload-video.php chunking protocol exactly (same
 // VideoUploadService, same video-upload-modal.js/createVideoUploadHandler
 // on the client). At most one video per listing — a successful upload here

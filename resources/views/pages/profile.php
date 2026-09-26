@@ -139,8 +139,16 @@ $primaryRole = 'User Profile';
                                 <svg class="w-4 h-4 text-green-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" />
                                 </svg>
+                            <?php else: ?>
+                                <button type="button" id="profile-verify-email-btn" data-email="<?= htmlspecialchars($user->email); ?>"
+                                    class="flex-shrink-0 px-2.5 py-1 text-[9px] font-black uppercase tracking-widest rounded-lg bg-amber-50 dark:bg-amber-900/20 text-amber-700 dark:text-amber-400 border border-amber-200 dark:border-amber-800/40 hover:bg-amber-100 dark:hover:bg-amber-900/40 transition-colors disabled:opacity-50">
+                                    Verify email
+                                </button>
                             <?php endif; ?>
                         </div>
+                        <?php if (!$user->email_verified): ?>
+                            <div id="profile-verify-email-message"></div>
+                        <?php endif; ?>
                     </div>
                     <div class="space-y-1">
                         <label class="text-[9px] font-black uppercase tracking-widest text-gray-400">Geo-Location</label>

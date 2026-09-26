@@ -16,6 +16,15 @@ use PHPMailer\PHPMailer\Exception;
 class MailService
 {
     /**
+     * True once real SMTP credentials have been supplied (MAIL_HOST set in
+     * .env) — i.e. once a verification link could actually be delivered.
+     */
+    public static function isConfigured(): bool
+    {
+        return trim((string) ($_ENV['MAIL_HOST'] ?? '')) !== '';
+    }
+
+    /**
      * Sends an email.
      *
      * Reads SMTP credentials from .env (MAIL_HOST / MAIL_PORT /

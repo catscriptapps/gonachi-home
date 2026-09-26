@@ -91,8 +91,21 @@ class VerificationController
             return ['success' => false, 'messages' => ['No account found with that email address.']];
         }
 
-        if ((int) $user->status_id === 1) {
+        // Keyed on email_verified, not status_id: accounts created while no
+        // mail server was configured are active (status_id = 1) but still
+        // unverified, and must be able to verify later.
+        if ($user->email_verified) {
             return ['success' => false, 'messages' => ['This account is already verified — you can sign in.']];
+        }
+
+        // sendVerificationEmail() deliberately swallows delivery failures, so
+        // without this a "resend" would report success while nothing can
+        // actually be sent.
+        if (!MailService::isConfigured()) {
+            return [
+                'success' => false,
+                'messages' => ["Email verification isn't available just yet — we couldn't send a link. Your account works normally in the meantime."],
+            ];
         }
 
         self::sendVerificationEmail($user, $resumeUrl);

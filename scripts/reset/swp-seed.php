@@ -1,7 +1,7 @@
 <?php
 // /scripts/reset/swp-seed.php
 //
-// Baseline categories + demo listings so the Swap home page isn't empty on
+// Baseline categories + demo listings so the Swap Marketplace home page isn't empty on
 // a fresh install. Categories are the real gonachi-swap product taxonomy
 // (ported from its own listing_categories seed); demo listings reuse the
 // curated home-page photos as stand-in thumbnails, same convention as
