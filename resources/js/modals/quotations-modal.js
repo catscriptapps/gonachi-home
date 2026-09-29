@@ -11,8 +11,27 @@ import { Modal } from '../factories/modal-factory.js';
 import { quotationForm } from '../forms/quotation-form.js';
 import { enableDynamicRegionLoading } from '../components/regions-component.js';
 import { handleQuoteFormSubmission } from '../utils/quotations/form-submit.js';
+import { createPhotoStrip } from '../utils/compose-photo-strip.js';
 
 let cache = null;
+
+// One strip shared between the add and edit modals (never open at the same
+// time) — see compose-photo-strip.js's docblock for why this isn't a
+// module-level singleton shared across *every* type's compose modal.
+const photoStrip = createPhotoStrip({ uploadPath: 'api/quotation-photo-upload', altText: 'Quotation photo' });
+
+async function fetchExistingPhotos(encodedId) {
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  try {
+    const response = await fetch(`${baseUrl}api/quotation-pictures?id=${encodeURIComponent(encodedId)}`);
+    const result = await response.json();
+    return result.pictures || [];
+  } catch (err) {
+    console.error('Load existing quotation pictures error:', err);
+    return [];
+  }
+}
 
 async function loadLookups() {
   if (cache) return cache;
@@ -54,14 +73,17 @@ function initFormFeatures(idPrefix, mode, modalInstance, existing) {
     }
   }
 
+  photoStrip.wire(idPrefix);
+
   const form = document.getElementById(formId);
   if (form) {
-    handleQuoteFormSubmission(form, mode, modalInstance);
+    handleQuoteFormSubmission(form, mode, modalInstance, photoStrip);
   }
 }
 
 export async function openAddQuoteModal() {
   const lookups = await loadLookups();
+  photoStrip.setPhotos([]);
 
   const modal = new Modal({
     id: 'add-quote-modal',
@@ -69,6 +91,7 @@ export async function openAddQuoteModal() {
     content: quotationForm({ mode: 'add', lookups }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();
@@ -100,12 +123,15 @@ export async function openEditQuoteModal(cardEl) {
     contactPhone: cardEl.dataset.contactPhone,
   };
 
+  photoStrip.setPhotos(await fetchExistingPhotos(existing.encodedId));
+
   const modal = new Modal({
     id: 'edit-quote-modal',
     title: 'Edit Quotation',
     content: quotationForm({ mode: 'edit', lookups, existing }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();

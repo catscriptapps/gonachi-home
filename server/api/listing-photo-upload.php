@@ -1,12 +1,17 @@
 <?php
-// /server/api/swap-listing-photo-upload.php
+// /server/api/listing-photo-upload.php
 //
-// Photo upload target for the Swap Marketplace listing compose/edit modal, called by
-// the shared upload modal (resources/js/modals/upload-modal.js's
-// createUploadHandler). Images arrive here already compressed client-side
-// by its WorkerPool, so this just stores them and returns URLs — the main
-// /api/swap-listings save references those URLs, it never receives raw
-// files itself (see SwapListingsController::save()).
+// Photo upload target for the listing compose/edit modal's Photos strip
+// (resources/js/utils/compose-photo-strip.js) — lets a listing be filled
+// out and photographed in one sitting, the same "add pictures right from
+// the form" pattern Swap Marketplace established
+// (server/api/swap-listing-photo-upload.php). Images arrive here already
+// compressed client-side by the shared upload modal's WorkerPool, so this
+// just stores them and returns URLs; the listing doesn't exist yet (or is
+// mid-edit) — ListingsController::save() attaches these URLs afterward via
+// ListingPicturesController::replacePhotos(), same as the existing
+// post-creation listing-upload-pics.php does for the view modal's own
+// "Add Photo" button.
 
 declare(strict_types=1);
 
@@ -30,13 +35,13 @@ if (empty($_FILES['images']) || empty($_FILES['images']['tmp_name'][0])) {
     exit;
 }
 
-$uploadDir = realpath(__DIR__ . '/../../public/images/uploads/') . '/swap-listings/';
+$uploadDir = __DIR__ . '/../../public/images/uploads/listings/';
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0755, true);
 }
 
-$service = new ImageUploadService($uploadDir);
-$relativePrefix = 'images/uploads/swap-listings/';
+$service = new ImageUploadService($uploadDir, 2000, 90);
+$relativePrefix = 'images/uploads/listings/';
 
 $uploaded = $service->upload($_FILES['images'], function (array $files) use ($relativePrefix) {
     foreach ($files as $key => $fileInfo) {
@@ -51,8 +56,8 @@ if (empty($uploaded) || (isset($uploaded['success']) && $uploaded['success'] ===
     exit;
 }
 
-// Tracked as "pending" until SwapListingsController::save() attaches it
-// (see SwapListingsController::replacePhotos()) or the client discards it —
+// Tracked as "pending" until ListingsController::save() attaches it (see
+// ListingPicturesController::replacePhotos()) or the client discards it —
 // see PendingUploadTracker's docblock for the full lifecycle.
 foreach ($uploaded as $file) {
     PendingUploadTracker::track($userId, $relativePrefix . $file['fileName']);

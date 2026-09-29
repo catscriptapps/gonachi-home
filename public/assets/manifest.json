@@ -6,7 +6,8 @@
       "_animations.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js"
+      "_spinner-utils.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "_animations.min.js": {
@@ -25,6 +26,15 @@
     "name": "auth-gate-modal",
     "imports": [
       "_modal-factory.min.js"
+    ]
+  },
+  "_compose-photo-strip.min.js": {
+    "file": "js/compose-photo-strip.min.js",
+    "name": "compose-photo-strip",
+    "imports": [
+      "_upload-modal.min.js",
+      "resources/js/ui/toast.js",
+      "_pic-reorder.min.js"
     ]
   },
   "_confirm.min.js": {
@@ -81,7 +91,8 @@
       "_pic-reorder.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
-      "_animations.min.js"
+      "_animations.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "_modal-factory.min.js": {
@@ -119,7 +130,8 @@
       "_pending-badge.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
-      "_animations.min.js"
+      "_animations.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "_regions-component.min.js": {
@@ -203,11 +215,11 @@
       "resources/js/ui/toast.js",
       "_video-upload-modal.min.js",
       "_modal-factory.min.js",
-      "_upload-modal.min.js",
       "_form-validator.min.js",
-      "_pic-reorder.min.js",
+      "_compose-photo-strip.min.js",
       "_auth-gate-modal.min.js",
       "_preview.min.js",
+      "_pic-reorder.min.js",
       "_pending-badge.min.js"
     ]
   },
@@ -290,7 +302,8 @@
       "_pic-reorder.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js"
+      "_spinner-utils.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -463,7 +476,8 @@
       "_preview.min.js",
       "_pic-reorder.min.js",
       "_regions-component.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/live-chat-page.js": {
@@ -524,7 +538,8 @@
       "_pic-reorder.min.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
-      "_spinner-utils.min.js"
+      "_spinner-utils.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/my-listings-page.js": {
@@ -544,7 +559,8 @@
       "_preview.min.js",
       "_pic-reorder.min.js",
       "_regions-component.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/my-quotations-page.js": {
@@ -565,7 +581,8 @@
       "_pic-reorder.min.js",
       "_pending-badge.min.js",
       "_regions-component.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/my-swap-listings-page.js": {
@@ -579,8 +596,9 @@
       "resources/js/ui/toast.js",
       "_video-upload-modal.min.js",
       "_modal-factory.min.js",
-      "_upload-modal.min.js",
       "_form-validator.min.js",
+      "_compose-photo-strip.min.js",
+      "_upload-modal.min.js",
       "_pic-reorder.min.js",
       "_auth-gate-modal.min.js",
       "_preview.min.js",
@@ -628,7 +646,8 @@
       "_pic-reorder.min.js",
       "_pending-badge.min.js",
       "_regions-component.min.js",
-      "_form-validator.min.js"
+      "_form-validator.min.js",
+      "_compose-photo-strip.min.js"
     ]
   },
   "resources/js/pages/ratings-page.js": {
@@ -711,8 +730,9 @@
       "resources/js/ui/toast.js",
       "_video-upload-modal.min.js",
       "_modal-factory.min.js",
-      "_upload-modal.min.js",
       "_form-validator.min.js",
+      "_compose-photo-strip.min.js",
+      "_upload-modal.min.js",
       "_pic-reorder.min.js",
       "_auth-gate-modal.min.js",
       "_preview.min.js",
@@ -764,8 +784,9 @@
       "resources/js/ui/toast.js",
       "_video-upload-modal.min.js",
       "_modal-factory.min.js",
-      "_upload-modal.min.js",
       "_form-validator.min.js",
+      "_compose-photo-strip.min.js",
+      "_upload-modal.min.js",
       "_pic-reorder.min.js",
       "_auth-gate-modal.min.js",
       "_preview.min.js",

@@ -151,6 +151,10 @@ class AdvertsController
             $advert = Advert::create($data);
         }
 
+        if (array_key_exists('photo_urls', $input) && is_array($input['photo_urls'])) {
+            AdvertsPicturesController::replacePhotos($advert, $input['photo_urls']);
+        }
+
         $advert->load(['owner', 'cta', 'package', 'pictures']);
 
         return ['success' => true, 'errors' => [], 'advert' => $advert];

@@ -9,8 +9,14 @@ import { Modal } from '../factories/modal-factory.js';
 import { advertForm } from '../forms/advert-form.js';
 import { initCountryTargeting } from '../utils/adverts/country-targeting.js';
 import { handleAdFormSubmission } from '../utils/adverts/form-submit.js';
+import { createPhotoStrip } from '../utils/compose-photo-strip.js';
 
 let cache = null;
+
+// One strip shared between the add and edit modals (never open at the same
+// time) — see compose-photo-strip.js's docblock for why this isn't a
+// module-level singleton shared across *every* type's compose modal.
+const photoStrip = createPhotoStrip({ uploadPath: 'api/advert-photo-upload', altText: 'Advert photo' });
 
 async function loadLookups() {
   if (cache) return cache;
@@ -60,15 +66,31 @@ function initFormFeatures(idPrefix, mode, modalInstance, initialCountries) {
     });
   });
 
+  photoStrip.wire(idPrefix);
+
   const form = document.getElementById(`${idPrefix}-form`);
   const gridSelector = document.getElementById('ads-grid') ? '#ads-grid' : null;
   if (form && gridSelector) {
-    handleAdFormSubmission(form, mode, modalInstance, gridSelector);
+    handleAdFormSubmission(form, mode, modalInstance, gridSelector, photoStrip);
+  }
+}
+
+async function fetchExistingPhotos(encodedId) {
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  try {
+    const response = await fetch(`${baseUrl}api/advert-pictures?id=${encodeURIComponent(encodedId)}`);
+    const result = await response.json();
+    return result.pictures || [];
+  } catch (err) {
+    console.error('Load existing advert pictures error:', err);
+    return [];
   }
 }
 
 export async function openAddAdModal() {
   const { ctas, packages } = await loadLookups();
+  photoStrip.setPhotos([]);
 
   const modal = new Modal({
     id: 'add-ad-modal',
@@ -76,6 +98,7 @@ export async function openAddAdModal() {
     content: advertForm({ mode: 'add', ctas, packages }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();
@@ -96,12 +119,15 @@ export async function openEditAdModal(cardEl) {
     countries: JSON.parse(cardEl.dataset.selectedCountries || '["ALL"]'),
   };
 
+  photoStrip.setPhotos(await fetchExistingPhotos(existing.encodedId));
+
   const modal = new Modal({
     id: 'edit-ad-modal',
     title: 'Edit Advert',
     content: advertForm({ mode: 'edit', ctas, packages, existing }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();

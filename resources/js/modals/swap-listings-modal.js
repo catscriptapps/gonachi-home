@@ -3,22 +3,28 @@
 // Add/Edit Listing compose modal for Swap Marketplace — mirrors Real Estate World's
 // modals/listings-modal.js (Modal factory, capture-phase document click
 // delegation so .edit-swap-listing-btn's stopPropagation doesn't swallow
-// it) but folds form-building, photo upload, and submission into one file
-// since Swap Marketplace's field set is small enough not to need three separate
+// it) but folds form-building and submission into one file since Swap
+// Marketplace's field set is small enough not to need three separate
 // modules. Edit is prefilled entirely from the card's own data-*
-// attributes — no API fetch, same as the Real Estate World original.
+// attributes — no API fetch, same as the Real Estate World original. Photo
+// upload/remove/reorder is the shared compose-photo-strip.js (this was the
+// original implementation those three Real Estate World modals were later
+// modeled on, now consolidated onto the shared helper so this gets its
+// orphan-upload cleanup too, instead of maintaining a second copy of that
+// logic here).
 
 import { Modal } from '../factories/modal-factory.js';
 import { swapListingFormHtml } from '../forms/swap-listing-form.js';
-import { uploadModal, createUploadHandler } from './upload-modal.js';
 import { FormValidator } from '../utils/form-validator.js';
 import { showToast } from '../ui/toast.js';
-import { reorderButtonHtml, wirePicReorder } from '../utils/pic-reorder.js';
-
-const MAX_PHOTOS = 12; // matches server/helpers.php's getMediaLimit()
+import { createPhotoStrip } from '../utils/compose-photo-strip.js';
 
 let lookupsCache = null;
-let photos = []; // { url, fileName }
+
+// One strip shared between the add and edit modals (never open at the same
+// time) — see compose-photo-strip.js's docblock for why this isn't a
+// module-level singleton shared across *every* type's compose modal.
+const photoStrip = createPhotoStrip({ uploadPath: 'api/swap-listing-photo-upload', altText: 'Listing photo' });
 
 function getLookups() {
   if (lookupsCache) return lookupsCache;
@@ -40,61 +46,6 @@ function wireConditionalFields(p) {
 
   typeSelect.addEventListener('change', sync);
   sync();
-}
-
-function renderPhotosPreview(p) {
-  const preview = document.getElementById(`${p}-photos-preview`);
-  if (!preview) return;
-
-  preview.innerHTML = photos.map((file, i) => `
-    <div data-pic-tile data-pic-id="${i}" class="relative rounded-lg overflow-hidden border border-gray-200 dark:border-gray-800 h-20">
-      <img src="${file.url}" class="w-full h-full object-cover" alt="Listing photo" />
-      ${photos.length > 1 ? reorderButtonHtml() : ''}
-      <button type="button" data-remove-photo="${i}" title="Remove" class="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs shadow">&times;</button>
-    </div>
-  `).join('');
-}
-
-function wirePhotoUpload(p) {
-  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
-  const addBtn = document.getElementById(`${p}-add-photos-btn`);
-  const preview = document.getElementById(`${p}-photos-preview`);
-
-  renderPhotosPreview(p);
-
-  preview.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-remove-photo]');
-    if (!btn) return;
-    photos.splice(Number(btn.dataset.removePhoto), 1);
-    renderPhotosPreview(p);
-  });
-
-  wirePicReorder(preview, (ids) => {
-    photos = ids.map((i) => photos[Number(i)]);
-    renderPhotosPreview(p);
-  });
-
-  addBtn.addEventListener('click', () => {
-    if (photos.length >= MAX_PHOTOS) {
-      showToast(`You can attach up to ${MAX_PHOTOS} photos.`, 'error');
-      return;
-    }
-
-    uploadModal.open();
-    setTimeout(() => {
-      createUploadHandler(
-        `${baseUrl}api/swap-listing-photo-upload`,
-        'swap-listing-photos',
-        (files) => {
-          photos.push(...files.map((f) => ({ url: f.url, fileName: f.fileName })));
-          renderPhotosPreview(p);
-        },
-        6,
-        true,
-        { maxFiles: MAX_PHOTOS - photos.length }
-      );
-    }, 50);
-  });
 }
 
 function wireSubmit(p, mode, modalInstance) {
@@ -122,7 +73,7 @@ function wireSubmit(p, mode, modalInstance) {
       price: formData.get('price') || null,
       trade_pref: (formData.get('trade_pref') || '').trim(),
       city: (formData.get('city') || '').trim(),
-      photo_urls: photos.map((f) => f.url),
+      photo_urls: photoStrip.getUrls(),
     };
 
     submitBtn.disabled = true;
@@ -139,6 +90,7 @@ function wireSubmit(p, mode, modalInstance) {
       const result = await response.json();
 
       if (result.success) {
+        photoStrip.markSaved();
         applyCardToGrids(payload.encoded_id, result.encoded_id, result.cardHtml);
         showToast(mode === 'edit' ? 'Listing updated.' : 'Listing posted.', 'success');
         window.dispatchEvent(new CustomEvent('swap-listing:saved'));
@@ -176,7 +128,7 @@ function applyCardToGrids(existingEncodedId, encodedId, cardHtml) {
 }
 
 export function openAddListingModal() {
-  photos = [];
+  photoStrip.setPhotos([]);
   const lookups = getLookups();
 
   const modal = new Modal({
@@ -185,10 +137,11 @@ export function openAddListingModal() {
     content: swapListingFormHtml({ mode: 'add', lookups }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   wireConditionalFields('swap-add');
-  wirePhotoUpload('swap-add');
+  photoStrip.wire('swap-add');
   wireSubmit('swap-add', 'add', modal);
   modal.open();
 }
@@ -208,7 +161,7 @@ export function openEditListingModal(cardEl) {
     city: cardEl.dataset.city,
   };
 
-  photos = JSON.parse(cardEl.dataset.photos || '[]').map((p) => ({ url: p.url, fileName: p.url }));
+  photoStrip.setPhotos(JSON.parse(cardEl.dataset.photos || '[]'));
 
   const modal = new Modal({
     id: 'edit-swap-listing-modal',
@@ -216,10 +169,11 @@ export function openEditListingModal(cardEl) {
     content: swapListingFormHtml({ mode: 'edit', lookups, existing }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   wireConditionalFields('swap-edit');
-  wirePhotoUpload('swap-edit');
+  photoStrip.wire('swap-edit');
   wireSubmit('swap-edit', 'edit', modal);
   modal.open();
 }

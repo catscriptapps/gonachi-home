@@ -77,6 +77,7 @@ $tablesToDrop = [
     'system_settings',
     'messages',
     'recent_activities',
+    'pending_photo_uploads',
     'users',
     'users_types',
 
@@ -216,6 +217,9 @@ $messages = array_merge($messages, resetChatAiSettingsTable());
 require_once __DIR__ . '/../../scripts/reset/system-settings.php';
 $messages = array_merge($messages, resetSystemSettingsTable());
 $messages = array_merge($messages, restoreSystemSettings($systemSettingsBackup));
+
+require_once __DIR__ . '/../../scripts/reset/pending-photo-uploads.php';
+$messages = array_merge($messages, resetPendingPhotoUploadsTable());
 
 /**
  * 4. CREATION PHASE - PROJECT: real-estate-leads (rel_ prefixed tables)

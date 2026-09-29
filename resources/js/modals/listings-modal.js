@@ -12,8 +12,27 @@ import { Modal } from '../factories/modal-factory.js';
 import { listingForm } from '../forms/listing-form.js';
 import { enableDynamicRegionLoading } from '../components/regions-component.js';
 import { handleListingFormSubmission } from '../utils/listings/listing-form-submit.js';
+import { createPhotoStrip } from '../utils/compose-photo-strip.js';
 
 let cache = null;
+
+// One strip shared between the add and edit modals (never open at the same
+// time) — see compose-photo-strip.js's docblock for why this isn't a
+// module-level singleton shared across *every* type's compose modal.
+const photoStrip = createPhotoStrip({ uploadPath: 'api/listing-photo-upload', altText: 'Listing photo' });
+
+async function fetchExistingPhotos(encodedId) {
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  try {
+    const response = await fetch(`${baseUrl}api/listing-pictures?id=${encodeURIComponent(encodedId)}`);
+    const result = await response.json();
+    return result.pictures || [];
+  } catch (err) {
+    console.error('Load existing listing pictures error:', err);
+    return [];
+  }
+}
 
 async function loadLookups() {
   if (cache) return cache;
@@ -90,14 +109,17 @@ function initFormFeatures(idPrefix, mode, modalInstance, existing, lookups) {
     }
   }
 
+  photoStrip.wire(idPrefix);
+
   const form = document.getElementById(formId);
   if (form) {
-    handleListingFormSubmission(form, mode, modalInstance);
+    handleListingFormSubmission(form, mode, modalInstance, photoStrip);
   }
 }
 
 export async function openAddListingModal() {
   const lookups = await loadLookups();
+  photoStrip.setPhotos([]);
 
   const modal = new Modal({
     id: 'add-listing-modal',
@@ -105,6 +127,7 @@ export async function openAddListingModal() {
     content: listingForm({ mode: 'add', lookups }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();
@@ -141,12 +164,15 @@ export async function openEditListingModal(cardEl) {
     contactPhone: cardEl.dataset.contactPhone,
   };
 
+  photoStrip.setPhotos(await fetchExistingPhotos(existing.encodedId));
+
   const modal = new Modal({
     id: 'edit-listing-modal',
     title: 'Edit Listing',
     content: listingForm({ mode: 'edit', lookups, existing }),
     size: 'lg',
     showFooter: false,
+    onDismiss: () => photoStrip.discardAbandoned(),
   });
 
   modal.open();

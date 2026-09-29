@@ -9,7 +9,7 @@
 import { FormValidator } from '../form-validator.js';
 import { AnimationEngine } from '../animations.js';
 
-function getPayload(form) {
+function getPayload(form, photoStrip) {
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
 
@@ -38,10 +38,13 @@ function getPayload(form) {
     amenities: formData.getAll('amenities').map((v) => parseInt(v, 10)),
     youtube_url: data.youtube_url?.trim() || '',
     contact_phone: data.contact_phone?.trim() || '',
+    photo_urls: photoStrip.getUrls(),
   };
 }
 
-export function handleListingFormSubmission(form, mode, modalInstance) {
+const NULL_PHOTO_STRIP = { getUrls: () => [], markSaved: () => {} };
+
+export function handleListingFormSubmission(form, mode, modalInstance, photoStrip = NULL_PHOTO_STRIP) {
   if (form._listingFormListenerAttached) return;
   form._listingFormListenerAttached = true;
 
@@ -66,7 +69,7 @@ export function handleListingFormSubmission(form, mode, modalInstance) {
     submitBtn.textContent = mode === 'edit' ? 'Saving...' : 'Posting...';
 
     try {
-      const payload = getPayload(form);
+      const payload = getPayload(form, photoStrip);
       const baseUrl = window.APP_CONFIG?.baseUrl || '/';
       const response = await fetch(`${baseUrl}api/listings`, {
         method: 'POST',
@@ -76,6 +79,7 @@ export function handleListingFormSubmission(form, mode, modalInstance) {
       const result = await response.json();
 
       if (result.success) {
+        photoStrip.markSaved();
         const grid = document.getElementById('listings-grid');
 
         if (grid) {

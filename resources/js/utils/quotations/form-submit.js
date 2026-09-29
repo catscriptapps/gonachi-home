@@ -8,7 +8,7 @@
 import { FormValidator } from '../form-validator.js';
 import { AnimationEngine } from '../animations.js';
 
-function getPayload(form) {
+function getPayload(form, photoStrip) {
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
 
@@ -32,10 +32,13 @@ function getPayload(form) {
     quotation_dest_id: parseInt(data.quotation_dest_id || 0, 10),
     youtube_url: data.youtube_url?.trim(),
     contact_phone: data.contact_phone?.trim(),
+    photo_urls: photoStrip.getUrls(),
   };
 }
 
-export function handleQuoteFormSubmission(form, mode, modalInstance) {
+const NULL_PHOTO_STRIP = { getUrls: () => [], markSaved: () => {} };
+
+export function handleQuoteFormSubmission(form, mode, modalInstance, photoStrip = NULL_PHOTO_STRIP) {
   if (form._quoteFormListenerAttached) return;
   form._quoteFormListenerAttached = true;
 
@@ -70,7 +73,7 @@ export function handleQuoteFormSubmission(form, mode, modalInstance) {
     submitBtn.textContent = mode === 'edit' ? 'Saving...' : 'Posting...';
 
     try {
-      const payload = getPayload(form);
+      const payload = getPayload(form, photoStrip);
       const baseUrl = window.APP_CONFIG?.baseUrl || '/';
       const response = await fetch(`${baseUrl}api/quotations`, {
         method: 'POST',
@@ -80,6 +83,7 @@ export function handleQuoteFormSubmission(form, mode, modalInstance) {
       const result = await response.json();
 
       if (result.success) {
+        photoStrip.markSaved();
         const grid = document.getElementById('quotes-grid');
 
         if (grid) {

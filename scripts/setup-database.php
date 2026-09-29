@@ -87,6 +87,9 @@ require_once __DIR__ . '/reset/system-settings.php';
 $messages = array_merge($messages, resetSystemSettingsTable());
 $messages = array_merge($messages, restoreSystemSettings($systemSettingsBackup));
 
+require_once __DIR__ . '/reset/pending-photo-uploads.php';
+$messages = array_merge($messages, resetPendingPhotoUploadsTable());
+
 // --------------------------------------------------
 // Project: real-estate-leads (rel_ prefixed tables)
 // --------------------------------------------------

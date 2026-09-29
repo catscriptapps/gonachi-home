@@ -189,6 +189,15 @@ export function listingForm({ mode, lookups, existing }) {
         </div>
       </div>
 
+      <div>
+        <label class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-3">Photos <span class="font-normal text-gray-400">(up to 12)</span></label>
+        <button type="button" id="${idPrefix}-add-photos-btn" class="w-full flex flex-col items-center justify-center gap-2 border border-dashed border-gray-300 dark:border-gray-700 rounded-xl p-5 text-sm text-gray-500 dark:text-gray-400 hover:border-teal-400 hover:text-teal-600 dark:hover:text-teal-400 transition-colors">
+          <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14M14 8h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
+          <span>Add Photos</span>
+        </button>
+        <div id="${idPrefix}-photos-preview" class="grid grid-cols-3 sm:grid-cols-4 gap-3 mt-3 empty:mt-0"></div>
+      </div>
+
       <div class="grid sm:grid-cols-2 gap-4">
         <div>
           <label for="${idPrefix}-youtube-input" class="block text-xs font-bold text-gray-700 dark:text-gray-300 mb-1.5">YouTube URL <span class="font-normal text-gray-400">(optional)</span></label>

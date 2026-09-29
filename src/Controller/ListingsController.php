@@ -172,6 +172,10 @@ class ListingsController
             $listing = Listing::create($data);
         }
 
+        if (array_key_exists('photo_urls', $input) && is_array($input['photo_urls'])) {
+            ListingPicturesController::replacePhotos($listing, $input['photo_urls']);
+        }
+
         $listing->load(self::EAGER);
         $actionLabel = $id ? 'Updated listing' : 'Posted new listing';
         self::logActivity("{$actionLabel}: {$listing->listing_title}", 'Listings', $listing->listing_id, $userId);

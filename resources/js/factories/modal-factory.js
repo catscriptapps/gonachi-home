@@ -20,14 +20,23 @@ export class Modal {
    * @param {Array} options.footerButtons - Array of footer button configs {id, text, classes, onClick, hidden}
    * @param {string} options.size - Modal size: sm, md, lg, xl
    * @param {boolean} options.showFooter - Whether to display the footer
+   * @param {Function} [options.onDismiss] - Called every time the modal is
+   *   hidden, by ANY path (X button, overlay click, Escape, or a
+   *   programmatic .close()) — including after a successful save that
+   *   itself calls .close(). Consumers that only care about an abandoned
+   *   (unsaved) close, like compose-photo-strip.js's discardAbandoned(),
+   *   should make their own callback a no-op once the relevant state is
+   *   already settled (e.g. clear it on successful submit) rather than
+   *   relying on this to distinguish "cancelled" from "saved".
    */
-  constructor({ id, title, content, footerButtons = [], size = 'lg', showFooter = true }) {
+  constructor({ id, title, content, footerButtons = [], size = 'lg', showFooter = true, onDismiss = null }) {
     this.id = id;                     // Modal container ID
     this.title = title;               // Modal title
     this.content = content;           // Body content
     this.footerButtons = footerButtons; // Footer button configs
     this.size = size;                 // Size class for modal width
     this.showFooter = showFooter;     // Whether footer is visible
+    this.onDismiss = onDismiss;       // Fired whenever the modal is hidden
     this.modal = null;                // Reference to modal DOM element
     this.overlay = null;              // Reference to overlay DOM element
 
@@ -180,6 +189,8 @@ export class Modal {
         // 💎 Remove the signal for high priority active modal
         document.body.classList.remove('modal-open-priority');
 
+        this.onDismiss?.();
+
         overlay.classList.remove('opacity-100');
         modal.classList.remove('opacity-100', 'scale-100');
         modal.classList.add('opacity-0', 'scale-95');
@@ -204,11 +215,24 @@ export class Modal {
     // recreated when a modal id is reused — only wire their listeners once
     // per element, or repeated open() calls for the same modal would stack
     // one more overlay-click/Escape listener each time.
-    if (overlay && !overlay.dataset.listenersAttached) {
-      overlay.dataset.listenersAttached = 'true';
+    if (modal && !modal.dataset.listenersAttached) {
+      modal.dataset.listenersAttached = 'true';
 
-      // Clicking overlay closes modal
-      overlay.addEventListener('click', () => this.toggle(false));
+      // "Click outside the panel closes the modal" is wired on the WRAPPER
+      // (`modal`), not the dimmed backdrop (`overlay`), even though the
+      // backdrop is the visual cue for "outside": the wrapper is a
+      // fixed inset-0 flex container that also spans the full viewport, and
+      // its z-index (2147483648) exceeds the CSS integer range and gets
+      // clamped to the same max value as the overlay's (2147483647) — a
+      // tie the wrapper wins by being painted later, so it intercepts every
+      // click before the overlay ever sees one. A listener on the overlay
+      // itself is therefore unreachable dead code. `e.target === modal`
+      // is true only when the click landed on the wrapper's own empty
+      // area (its padding around the centered panel), not inside the panel
+      // or any of its contents.
+      modal.addEventListener('click', (e) => {
+        if (e.target === modal) this.toggle(false);
+      });
 
       // Escape key closes modal safely
       document.addEventListener('keydown', (e) => {

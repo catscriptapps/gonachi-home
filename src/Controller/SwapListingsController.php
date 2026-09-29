@@ -13,6 +13,7 @@ use App\Traits\RecentActivityLogger;
 use App\Utils\IdEncoder;
 use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Src\Service\PendingUploadTracker;
 use Src\Service\PictureOrderService;
 
 /**
@@ -518,6 +519,10 @@ class SwapListingsController
                 }
             }
         });
+
+        // Every path in the final desired set is now backed by a real
+        // SwapListingPic row — no longer "pending" (see PendingUploadTracker).
+        PendingUploadTracker::untrackAttached($desiredPaths);
     }
 
     private static function ownedListing(string $encodedId, int $userId): ?SwapListing

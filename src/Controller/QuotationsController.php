@@ -149,6 +149,10 @@ class QuotationsController
             $quote = Quotation::create($data);
         }
 
+        if (array_key_exists('photo_urls', $input) && is_array($input['photo_urls'])) {
+            QuotationPicturesController::replacePhotos($quote, $input['photo_urls']);
+        }
+
         $quote->load(self::EAGER);
         $actionLabel = $id ? 'Updated quotation' : 'Posted new quotation';
         self::logActivity("{$actionLabel}: {$quote->quotation_title}", 'Quotation', $quote->quotation_id, $userId);

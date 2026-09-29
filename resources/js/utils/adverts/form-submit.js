@@ -8,7 +8,7 @@ import { FormValidator } from '../form-validator.js';
 import { buttonSpinner } from '../spinner-utils.js';
 import { AnimationEngine } from '../animations.js';
 
-function getPayload(form) {
+function getPayload(form, photoStrip) {
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
 
@@ -39,10 +39,13 @@ function getPayload(form) {
     // Audience-type targeting is hidden in the form for now (see
     // forms/advert-form.js) — every advert targets all users by default.
     selected_user_types: ['ALL'],
+    photo_urls: photoStrip.getUrls(),
   };
 }
 
-export function handleAdFormSubmission(form, mode, modalInstance, gridSelector = '#ads-grid') {
+const NULL_PHOTO_STRIP = { getUrls: () => [], markSaved: () => {} };
+
+export function handleAdFormSubmission(form, mode, modalInstance, gridSelector = '#ads-grid', photoStrip = NULL_PHOTO_STRIP) {
   if (form._adFormListenerAttached) return;
   form._adFormListenerAttached = true;
 
@@ -72,7 +75,7 @@ export function handleAdFormSubmission(form, mode, modalInstance, gridSelector =
     submitBtn.innerHTML = buttonSpinner;
 
     try {
-      const payload = getPayload(form);
+      const payload = getPayload(form, photoStrip);
       const baseUrl = window.APP_CONFIG?.baseUrl || '/';
       const response = await fetch(`${baseUrl}api/adverts`, {
         method: 'POST',
@@ -82,6 +85,7 @@ export function handleAdFormSubmission(form, mode, modalInstance, gridSelector =
       const result = await response.json();
 
       if (result.success) {
+        photoStrip.markSaved();
         const grid = document.querySelector(gridSelector);
 
         if (grid) {
