@@ -1,4 +1,14 @@
 {
+  "_adverts-modal.min.js": {
+    "file": "js/adverts-modal.min.js",
+    "name": "adverts-modal",
+    "imports": [
+      "_animations.min.js",
+      "_modal-factory.min.js",
+      "_form-validator.min.js",
+      "_spinner-utils.min.js"
+    ]
+  },
   "_animations.min.js": {
     "file": "js/animations.min.js",
     "name": "animations",
@@ -119,13 +129,6 @@
   "_resend-activation.min.js": {
     "file": "js/resend-activation.min.js",
     "name": "resend-activation"
-  },
-  "_search.min.js": {
-    "file": "js/search.min.js",
-    "name": "search",
-    "imports": [
-      "_animations.min.js"
-    ]
   },
   "_spa-router.min.js": {
     "file": "js/spa-router.min.js",
@@ -277,14 +280,17 @@
     "imports": [
       "_animations.min.js",
       "_view-advert-modal.min.js",
-      "_search.min.js",
+      "_adverts-modal.min.js",
       "resources/js/ui/toast.js",
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
       "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_modal-factory.min.js",
+      "_form-validator.min.js",
+      "_spinner-utils.min.js"
     ]
   },
   "resources/js/pages/contact-page.js": {
@@ -508,17 +514,17 @@
     "imports": [
       "_animations.min.js",
       "_view-advert-modal.min.js",
-      "_modal-factory.min.js",
-      "_form-validator.min.js",
-      "_spinner-utils.min.js",
-      "_search.min.js",
+      "_adverts-modal.min.js",
       "resources/js/ui/toast.js",
       "_confirm.min.js",
       "_upload-modal.min.js",
       "_video-upload-modal.min.js",
       "_view-counter.min.js",
       "_preview.min.js",
-      "_pic-reorder.min.js"
+      "_pic-reorder.min.js",
+      "_modal-factory.min.js",
+      "_form-validator.min.js",
+      "_spinner-utils.min.js"
     ]
   },
   "resources/js/pages/my-listings-page.js": {

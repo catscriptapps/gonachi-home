@@ -6,6 +6,7 @@
 import { AnimationEngine } from '../utils/animations.js';
 import { initViewAdvertModal } from '../utils/adverts/view-advert-modal.js';
 import { initAdvertSearch } from '../utils/adverts/search.js';
+import { initAdvertsModalTriggers } from '../modals/adverts-modal.js';
 
 export function init() {
   AnimationEngine.refresh();
@@ -14,4 +15,8 @@ export function init() {
 
   initViewAdvertModal();
   initAdvertSearch({ endpointParam: 'all=1' });
+  // No composer here, but a viewer's own advert can still surface in this
+  // public feed (e.g. their own advert matching the current search) — its
+  // card's edit/delete buttons need this wired, same as /my-adverts.
+  initAdvertsModalTriggers();
 }

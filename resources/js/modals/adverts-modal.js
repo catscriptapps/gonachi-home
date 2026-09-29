@@ -128,5 +128,10 @@ export function initAdvertsModalTriggers() {
         openEditAdModal(card);
       }
     }
-  });
+    // Capture phase: the card's own edit/delete buttons sit inside a
+    // wrapper with onclick="event.stopPropagation()" (so clicking them
+    // doesn't also open the view modal underneath) — that stops the click
+    // from ever reaching a bubble-phase document listener, so this one has
+    // to run on the way down instead.
+  }, true);
 }

@@ -58,10 +58,15 @@ export function initViewAdvertModal() {
   document.getElementById('admin-deactivate-ad-btn')?.addEventListener('click', () => setAdvertStatus(modal, 'inactive', 'Deactivate this advert?'));
   document.getElementById('admin-reject-ad-btn')?.addEventListener('click', () => setAdvertStatus(modal, 'rejected', 'Reject this advert?'));
 
+  // Capture phase: the card's own edit/delete buttons sit inside a wrapper
+  // with onclick="event.stopPropagation()" (so clicking them doesn't also
+  // open the view modal underneath) — that stops the click from ever
+  // reaching a bubble-phase document listener, so this one has to run on
+  // the way down instead.
   document.addEventListener('click', (e) => {
     const delBtn = e.target.closest('.delete-ad-btn');
     if (delBtn) deleteAdvert(delBtn);
-  });
+  }, true);
 }
 
 function closeModal() {
