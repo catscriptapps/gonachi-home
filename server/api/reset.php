@@ -161,6 +161,7 @@ $tablesToDrop = [
     'rew_rating_criteria',
 
     // Project: swap
+    'swp_listing_responses',
     'swp_saved_listings',
     'swp_listing_pics',
     'swp_listings',
@@ -449,6 +450,9 @@ $messages = array_merge($messages, resetSwpListingPicsTable());
 
 require_once __DIR__ . '/../../scripts/reset/swp-saved-listings.php';
 $messages = array_merge($messages, resetSwpSavedListingsTable());
+
+require_once __DIR__ . '/../../scripts/reset/swp-listing-responses.php';
+$messages = array_merge($messages, resetSwpListingResponsesTable());
 
 require_once __DIR__ . '/../../scripts/reset/swp-seed.php';
 $messages = array_merge($messages, seedSwpBaselineData());

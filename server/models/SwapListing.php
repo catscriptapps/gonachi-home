@@ -60,6 +60,13 @@ class SwapListing extends Model
         static::deleting(function (SwapListing $listing) {
             $listing->pictures()->get()->each(fn(SwapListingPic $pic) => $pic->delete());
 
+            // No FK constraint on swp_* tables, so responses (and bookmarks)
+            // to a deleted listing must be cleaned up explicitly.
+            if (\Illuminate\Database\Capsule\Manager::schema()->hasTable('swp_listing_responses')) {
+                SwapListingResponse::where('listing_id', $listing->id)->delete();
+            }
+            SwapSavedListing::where('listing_id', $listing->id)->delete();
+
             // Real Estate World's own equivalent (rew_quotations.video_name)
             // never does this and orphans the file on delete — fixed here.
             if ($listing->video_name) {

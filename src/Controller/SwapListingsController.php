@@ -407,6 +407,14 @@ class SwapListingsController
             ? SwapSavedListing::where('user_id', $viewerId)->where('listing_id', $listing->id)->exists()
             : false;
 
+        $responseStatus = $viewerId && (int) $listing->user_id !== $viewerId
+            ? SwapListingResponsesController::latestStatusFor($listing->id, $viewerId)
+            : '';
+
+        $pendingCount = $viewerId && (int) $listing->user_id === $viewerId
+            ? SwapListingResponsesController::pendingCountFor($listing->id)
+            : 0;
+
         $owner = $listing->user;
 
         return [
@@ -440,6 +448,8 @@ class SwapListingsController
             'viewer_id' => $viewerId,
             'is_card_owner' => $viewerId !== null && (int) $listing->user_id === $viewerId,
             'is_saved' => $isSaved,
+            'response_status' => $responseStatus,
+            'pending_count' => $pendingCount,
         ];
     }
 

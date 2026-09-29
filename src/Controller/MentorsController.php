@@ -151,6 +151,12 @@ class MentorsController
     private static function buildItemArray(Mentor $mentor, int $viewerId): array
     {
         $owner = $mentor->user;
+        $isOwner = (int) $mentor->orig_user_id === $viewerId;
+        $pendingCount = $isOwner
+            ? \App\Models\MentorRequest::where('mentor_id', $mentor->id)
+                ->where('status', \App\Models\MentorRequest::STATUS_PENDING)
+                ->count()
+            : 0;
 
         return [
             'encoded_id' => IdEncoder::encode((int) $mentor->id),
@@ -176,7 +182,8 @@ class MentorsController
             'owner_avatar' => $owner->avatar_url ?? null,
             'owner_initial' => strtoupper(substr($owner->full_name ?? 'U', 0, 1)),
             'owner_location' => $owner ? trim(($owner->city ?: 'Remote') . ', ' . ($owner->country->country ?? '')) : 'Unknown',
-            'is_card_owner' => (int) $mentor->orig_user_id === $viewerId,
+            'is_card_owner' => $isOwner,
+            'pending_count' => $pendingCount,
         ];
     }
 

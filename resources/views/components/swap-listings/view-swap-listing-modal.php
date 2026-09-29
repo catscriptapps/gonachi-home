@@ -95,6 +95,11 @@ $modalDetailOwnerTitle = 'Posted By';
                     <p id="view-swap-trade-pref" class="text-sm text-gray-700 dark:text-gray-300"></p>
                 </div>
 
+                <div id="view-swap-responses-wrapper" class="swap-owner-only hidden">
+                    <label class="block text-[10px] font-bold uppercase tracking-widest text-purple-600 mb-2">Messages From Interested Users</label>
+                    <div id="view-swap-responses-list" class="space-y-2"></div>
+                </div>
+
                 <div class="grid grid-cols-3 gap-3 pt-3 border-t border-gray-100 dark:border-gray-800 text-center">
                     <div>
                         <p id="view-swap-created" class="text-xs font-bold text-gray-700 dark:text-gray-300"></p>
@@ -113,6 +118,7 @@ $modalDetailOwnerTitle = 'Posted By';
 
             <div class="bg-gray-50 dark:bg-gray-800/50 px-6 py-4 flex flex-wrap items-center justify-end gap-2">
                 <button type="button" id="view-swap-edit-btn" class="swap-owner-only hidden px-4 py-2 text-xs font-bold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors">Edit Listing</button>
+                <button type="button" id="view-swap-save-btn" class="hidden px-4 py-2 text-xs font-bold rounded-lg bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 transition-colors disabled:opacity-50"></button>
                 <button type="button" class="close-swap-modal px-4 py-2 text-xs font-bold rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">Dismiss</button>
                 <button type="button" id="view-swap-primary-btn" class="px-4 py-2 text-xs font-bold rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-colors"></button>
             </div>

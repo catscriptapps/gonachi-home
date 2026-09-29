@@ -298,6 +298,12 @@ class QuotationsController
     {
         $owner = $quote->owner;
         $firstPic = $quote->pictures->sortBy('pos_index')->first();
+        $isOwner = (int) $quote->orig_user_id === $viewerId;
+        $pendingCount = $isOwner
+            ? \App\Models\QuotationResponse::where('quotation_id', $quote->quotation_id)
+                ->where('status', \App\Models\QuotationResponse::STATUS_PENDING)
+                ->count()
+            : 0;
 
         return [
             'encoded_id' => IdEncoder::encode((int) $quote->quotation_id),
@@ -338,7 +344,8 @@ class QuotationsController
             'owner_avatar' => $owner->avatar_url ?? null,
             'owner_initial' => strtoupper(substr($owner->full_name ?? 'U', 0, 1)),
             'owner_location' => $owner ? trim(($owner->city ?: 'Remote') . ', ' . ($owner->country->country ?? '')) : 'Unknown',
-            'is_card_owner' => (int) $quote->orig_user_id === $viewerId,
+            'is_card_owner' => $isOwner,
+            'pending_count' => $pendingCount,
         ];
     }
 

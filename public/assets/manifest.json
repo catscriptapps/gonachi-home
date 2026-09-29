@@ -10,6 +10,13 @@
     "file": "css/app.min2.css",
     "src": "_app.min2.css"
   },
+  "_auth-gate-modal.min.js": {
+    "file": "js/auth-gate-modal.min.js",
+    "name": "auth-gate-modal",
+    "imports": [
+      "_modal-factory.min.js"
+    ]
+  },
   "_confirm.min.js": {
     "file": "js/confirm.min.js",
     "name": "confirm"
@@ -71,6 +78,10 @@
     "file": "js/modal-factory.min.js",
     "name": "modal-factory"
   },
+  "_pending-badge.min.js": {
+    "file": "js/pending-badge.min.js",
+    "name": "pending-badge"
+  },
   "_pic-reorder.min.js": {
     "file": "js/pic-reorder.min.js",
     "name": "pic-reorder"
@@ -95,6 +106,7 @@
       "_modal-factory.min.js",
       "_preview.min.js",
       "_pic-reorder.min.js",
+      "_pending-badge.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js",
       "_animations.min.js"
@@ -191,7 +203,9 @@
       "_upload-modal.min.js",
       "_form-validator.min.js",
       "_pic-reorder.min.js",
-      "_preview.min.js"
+      "_auth-gate-modal.min.js",
+      "_preview.min.js",
+      "_pending-badge.min.js"
     ]
   },
   "resources/css/app.css": {
@@ -218,6 +232,7 @@
       "resources/js/pages/messages-page.js",
       "_confirm.min.js",
       "_users-modal.min.js",
+      "_auth-gate-modal.min.js",
       "_table-pagination-count.min.js",
       "_delete-factory.min.js",
       "_animations.min.js",
@@ -465,6 +480,7 @@
       "resources/js/ui/toast.js",
       "_confirm.min.js",
       "_modal-factory.min.js",
+      "_pending-badge.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -541,6 +557,7 @@
       "_modal-factory.min.js",
       "_preview.min.js",
       "_pic-reorder.min.js",
+      "_pending-badge.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -559,7 +576,9 @@
       "_upload-modal.min.js",
       "_form-validator.min.js",
       "_pic-reorder.min.js",
-      "_preview.min.js"
+      "_auth-gate-modal.min.js",
+      "_preview.min.js",
+      "_pending-badge.min.js"
     ]
   },
   "resources/js/pages/profile-page.js": {
@@ -601,6 +620,7 @@
       "_modal-factory.min.js",
       "_preview.min.js",
       "_pic-reorder.min.js",
+      "_pending-badge.min.js",
       "_regions-component.min.js",
       "_form-validator.min.js"
     ]
@@ -688,7 +708,9 @@
       "_upload-modal.min.js",
       "_form-validator.min.js",
       "_pic-reorder.min.js",
-      "_preview.min.js"
+      "_auth-gate-modal.min.js",
+      "_preview.min.js",
+      "_pending-badge.min.js"
     ]
   },
   "resources/js/pages/settings-page.js": {
@@ -739,7 +761,9 @@
       "_upload-modal.min.js",
       "_form-validator.min.js",
       "_pic-reorder.min.js",
-      "_preview.min.js"
+      "_auth-gate-modal.min.js",
+      "_preview.min.js",
+      "_pending-badge.min.js"
     ]
   },
   "resources/js/pages/transactions-page.js": {

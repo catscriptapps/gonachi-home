@@ -17,6 +17,7 @@ import { ViewCounter } from '../globals/view-counter.js';
 import { openQuotationResponseModal } from '../../modals/quotation-response-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
 import { reorderButtonHtml, wirePicReorder } from '../pic-reorder.js';
+import { setPendingBadge } from '../pending-badge.js';
 
 export function initViewQuotationModal() {
   const modal = document.getElementById('view-quote-modal');
@@ -412,6 +413,9 @@ async function loadResponses(encodedId) {
     const responses = result.responses || [];
 
     list.innerHTML = responses.map(renderResponseRow).join('') || '<p class="text-xs text-gray-400">No responses yet.</p>';
+
+    const pendingCount = responses.filter((r) => r.status === 'pending').length;
+    document.querySelectorAll(`.quote-card-wrapper[data-encoded-id="${encodedId}"]`).forEach((card) => setPendingBadge(card, pendingCount));
   } catch (err) {
     console.error('Load quotation responses error:', err);
     list.innerHTML = '<p class="text-xs text-gray-400">Couldn\'t load responses.</p>';

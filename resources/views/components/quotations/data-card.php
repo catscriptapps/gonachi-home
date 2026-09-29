@@ -89,8 +89,11 @@ $fTime = $data['finish_time'] ? date('g:i A', strtotime($data['finish_time'])) :
     <?php endif; ?>
 
     <div class="px-5 pt-3">
-        <div class="mb-2">
+        <div class="mb-2 flex flex-wrap items-center justify-between gap-2">
             <?php include __DIR__ . '/../ui/status-badge-and-views-count.php'; ?>
+            <?php if ($data['is_card_owner']): ?>
+                <?php $pendingCount = (int) ($data['pending_count'] ?? 0); $pendingNoun = 'Message'; $pendingBgClass = 'bg-teal-600'; include __DIR__ . '/../ui/pending-badge.php'; ?>
+            <?php endif; ?>
         </div>
         <span class="text-[10px] font-black text-teal-600 dark:text-teal-400 uppercase tracking-widest"><?= htmlspecialchars($data['skilled_trade_name']) ?></span>
         <h3 class="text-base font-bold text-gray-900 dark:text-white leading-snug mt-0.5 mb-1.5"><?= htmlspecialchars($title) ?></h3>

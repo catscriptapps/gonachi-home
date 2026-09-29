@@ -40,7 +40,8 @@ declare(strict_types=1);
     data-owner-initial="<?= htmlspecialchars($data['owner_initial']) ?>"
     data-owner-location="<?= htmlspecialchars($data['owner_location'] ?? '') ?>"
     data-is-card-owner="<?= $data['is_card_owner'] ? '1' : '0' ?>"
-    data-is-saved="<?= $data['is_saved'] ? '1' : '0' ?>">
+    data-is-saved="<?= $data['is_saved'] ? '1' : '0' ?>"
+    data-response-status="<?= htmlspecialchars($data['response_status'] ?? '') ?>">
 
     <?php if ($data['viewer_id']): ?>
         <div class="absolute top-4 right-4 flex items-center gap-1.5 z-10" onclick="event.stopPropagation()">
@@ -62,9 +63,12 @@ declare(strict_types=1);
         </div>
     <?php endif; ?>
 
-    <div class="flex items-start justify-between gap-4 mb-3 pr-8">
+    <div class="flex items-start justify-between gap-4 mb-3 <?= $data['is_card_owner'] ? 'pr-24' : 'pr-8' ?>">
         <div>
             <div class="flex items-center gap-2 flex-wrap">
+                <?php if ($data['is_card_owner']): ?>
+                    <?php $pendingCount = (int) ($data['pending_count'] ?? 0); $pendingNoun = 'Message'; $pendingBgClass = 'bg-purple-600'; include __DIR__ . '/../ui/pending-badge.php'; ?>
+                <?php endif; ?>
                 <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-400">
                     <?= htmlspecialchars($data['type_label']) ?>
                 </span>
@@ -123,6 +127,26 @@ declare(strict_types=1);
                     Mark As Completed
                 </button>
             <?php endif; ?>
+        </div>
+    <?php elseif (($data['response_status'] ?? '') !== ''): ?>
+        <?php
+        $threadLabels = ['pending' => 'Message Sent', 'accepted' => 'Accepted', 'declined' => 'Declined'];
+        $threadLabel = $threadLabels[$data['response_status']] ?? 'Message Sent';
+        ?>
+        <div class="pt-2 border-t border-gray-100 dark:border-gray-800/80" onclick="event.stopPropagation()">
+            <button type="button" class="view-swap-thread-trigger w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-purple-50 hover:bg-purple-100 dark:bg-purple-950/40 dark:hover:bg-purple-950/70 text-purple-700 dark:text-purple-300 border border-purple-200 dark:border-purple-900/40 font-bold text-xs rounded-lg transition-colors active:scale-95"
+                data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" data-owner-id="<?= (int) $data['owner_id'] ?>" data-title="<?= htmlspecialchars($data['title']) ?>">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg>
+                <?= htmlspecialchars($threadLabel) ?> &middot; View Conversation
+            </button>
+        </div>
+    <?php elseif ($data['status'] !== 'completed'): ?>
+        <div class="pt-2 border-t border-gray-100 dark:border-gray-800/80" onclick="event.stopPropagation()">
+            <button type="button" class="connect-swap-trigger w-full inline-flex justify-center items-center gap-2 px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs rounded-lg transition-colors shadow-sm active:scale-95"
+                data-encoded-id="<?= htmlspecialchars($data['encoded_id']) ?>" data-owner-id="<?= (int) $data['owner_id'] ?>" data-title="<?= htmlspecialchars($data['title']) ?>">
+                Connect with Owner
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" /></svg>
+            </button>
         </div>
     <?php endif; ?>
 </div>

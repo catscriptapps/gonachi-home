@@ -13,8 +13,11 @@ import { showToast } from '../../ui/toast.js';
 import { confirmDialog } from '../../ui/confirm.js';
 import { videoUploadModal, createVideoUploadHandler } from '../../modals/video-upload-modal.js';
 import { openEditListingModal } from '../../modals/swap-listings-modal.js';
+import { initSwapListingResponseTriggers } from '../../modals/swap-listing-response-modal.js';
+import { initSwapListingThreadTriggers } from '../../modals/swap-listing-thread-modal.js';
 import { registerImagePreview } from '../globals/preview.js';
 import { reorderButtonHtml, wirePicReorder } from '../pic-reorder.js';
+import { setPendingBadge } from '../pending-badge.js';
 
 export function initViewSwapListingModal() {
   const modal = document.getElementById('view-swap-modal');
@@ -46,6 +49,15 @@ export function initViewSwapListingModal() {
   });
 
   document.getElementById('view-swap-primary-btn')?.addEventListener('click', () => handlePrimaryAction(modal));
+  document.getElementById('view-swap-save-btn')?.addEventListener('click', () => quickToggleSave(modal));
+
+  document.getElementById('view-swap-responses-list')?.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-response-action]');
+    if (btn) handleResponseAction(btn, modal);
+  });
+
+  initSwapListingResponseTriggers();
+  initSwapListingThreadTriggers();
 }
 
 function closeModal() {
@@ -108,14 +120,39 @@ function openModal(el) {
   document.querySelectorAll('.swap-owner-only').forEach((el2) => el2.classList.toggle('hidden', !canManage));
 
   const primaryBtn = document.getElementById('view-swap-primary-btn');
+  const saveBtn = document.getElementById('view-swap-save-btn');
+  const isCompleted = d.status === 'completed';
+
+  primaryBtn.classList.remove('is-connect', 'is-thread', 'auth-gate-btn');
+
   if (canManage) {
     primaryBtn.classList.remove('hidden');
-    primaryBtn.textContent = d.status === 'completed' ? 'Reactivate Listing' : 'Mark As Completed';
-  } else if (isLoggedIn) {
+    primaryBtn.textContent = isCompleted ? 'Reactivate Listing' : 'Mark As Completed';
+  } else if (isLoggedIn && d.responseStatus) {
+    // Already wrote to this owner: show the read-only conversation instead.
     primaryBtn.classList.remove('hidden');
-    primaryBtn.textContent = d.isSaved === '1' ? 'Remove from Saved' : 'Save This Listing';
+    primaryBtn.textContent = 'View Conversation';
+    primaryBtn.classList.add('is-thread');
+  } else if (!isCompleted) {
+    // Visitors' main action: message the owner. Signed-in visitors get the
+    // "Connect with Owner" modal (swap-listing-response-modal.js, wired via
+    // .is-connect); guests get the sign-in gate instead.
+    primaryBtn.classList.remove('hidden');
+    primaryBtn.textContent = 'Connect with Owner';
+    primaryBtn.classList.add(isLoggedIn ? 'is-connect' : 'auth-gate-btn');
   } else {
     primaryBtn.classList.add('hidden');
+  }
+
+  saveBtn.classList.toggle('hidden', !isLoggedIn || canManage);
+  saveBtn.textContent = d.isSaved === '1' ? 'Remove from Saved' : 'Save This Listing';
+
+  const responsesWrapper = document.getElementById('view-swap-responses-wrapper');
+  if (canManage) {
+    responsesWrapper.classList.remove('hidden');
+    loadResponses(d.encodedId);
+  } else {
+    responsesWrapper.classList.add('hidden');
   }
 
   renderPictures(JSON.parse(d.photos || '[]'), canManage);
@@ -130,9 +167,13 @@ function handlePrimaryAction(modal) {
 
   if (canManage) {
     quickToggleStatus(modal);
-  } else {
-    quickToggleSave(modal);
+  } else if (currentUserId === null) {
+    // Guest: the sign-in gate (.auth-gate-btn) opens on its own — just get
+    // this modal out of its way.
+    closeModal();
   }
+  // Signed-in visitors: the .is-connect capture-phase trigger already
+  // opened the Connect modal.
 }
 
 async function quickToggleStatus(modal) {
@@ -174,7 +215,7 @@ async function quickToggleStatus(modal) {
 async function quickToggleSave(modal) {
   const baseUrl = window.APP_CONFIG?.baseUrl || '/';
   const encodedId = modal.dataset.activeEncodedId;
-  const primaryBtn = document.getElementById('view-swap-primary-btn');
+  const primaryBtn = document.getElementById('view-swap-save-btn');
 
   primaryBtn.disabled = true;
 
@@ -225,6 +266,88 @@ async function quickToggleSave(modal) {
   }
 }
 
+// -------------------------------
+// Responses (the "Connect with Owner" messages — owner-only). Mirrors
+// Real Estate World's quotation Responses list.
+// -------------------------------
+
+async function loadResponses(encodedId) {
+  const list = document.getElementById('view-swap-responses-list');
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  list.innerHTML = `<div class="flex justify-center py-3"><div class="animate-spin rounded-full h-5 w-5 border-2 border-purple-500 border-t-transparent"></div></div>`;
+
+  try {
+    const response = await fetch(`${baseUrl}api/swap-listing-responses?id=${encodeURIComponent(encodedId)}`);
+    const result = await response.json();
+    const responses = result.responses || [];
+
+    list.innerHTML = responses.map(renderResponseRow).join('') || '<p class="text-xs text-gray-400">No messages yet.</p>';
+
+    const pendingCount = responses.filter((r) => r.status === 'pending').length;
+    document.querySelectorAll(`[data-listing-wrapper][data-encoded-id="${encodedId}"]`).forEach((card) => setPendingBadge(card, pendingCount));
+  } catch (err) {
+    console.error('Load Swap Marketplace responses error:', err);
+    list.innerHTML = '<p class="text-xs text-gray-400">Couldn\'t load messages.</p>';
+  }
+}
+
+function renderResponseRow(r) {
+  const statusMap = {
+    pending: 'bg-yellow-50 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 border-yellow-100 dark:border-yellow-800/30',
+    accepted: 'bg-green-50 dark:bg-green-900/20 text-green-600 dark:text-green-400 border-green-100 dark:border-green-800/30',
+    declined: 'bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 border-red-100 dark:border-red-800/30',
+  };
+  const badge = `<span class="inline-flex items-center rounded-full px-2 py-0.5 text-[9px] font-black uppercase tracking-wider border ${statusMap[r.status] || statusMap.pending}">${escapeHtml(r.status)}</span>`;
+
+  const actions = r.status === 'pending'
+    ? `<div class="flex items-center gap-2 mt-2">
+        <button type="button" data-response-action="accept" data-response-id="${r.id}" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700">Accept</button>
+        <button type="button" data-response-action="decline" data-response-id="${r.id}" class="text-[11px] font-bold text-red-500 hover:text-red-600">Decline</button>
+      </div>`
+    : '';
+
+  return `
+    <div class="p-3 rounded-xl border border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30">
+      <div class="flex items-center justify-between gap-2 mb-1">
+        <span class="text-xs font-bold text-gray-800 dark:text-gray-200">${escapeHtml(r.sender_name)}</span>
+        ${badge}
+      </div>
+      <p class="text-xs text-gray-600 dark:text-gray-400 whitespace-pre-line">${escapeHtml(r.message || '')}</p>
+      <p class="text-[10px] text-gray-400 mt-1">${escapeHtml(r.created_at || '')}</p>
+      ${actions}
+    </div>`;
+}
+
+async function handleResponseAction(btn, modal) {
+  const action = btn.dataset.responseAction;
+  const responseId = btn.dataset.responseId;
+  const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+  try {
+    const response = await fetch(`${baseUrl}api/swap-listing-responses`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ action, response_id: responseId }),
+    });
+    const result = await response.json();
+
+    if (result.success) {
+      showToast(`Message ${action}ed.`, 'success');
+      loadResponses(modal.dataset.activeEncodedId);
+    } else {
+      showToast(result.message || 'Could not update message.', 'error');
+    }
+  } catch (err) {
+    console.error('Swap Marketplace response action error:', err);
+    showToast('Unexpected error.', 'error');
+  }
+}
+
+function escapeHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+
 function statusBadgeHtml(status) {
   return status === 'completed'
     ? '<span class="inline-flex items-center rounded-full bg-gray-100 dark:bg-gray-800 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-gray-600 dark:text-gray-400 border border-gray-200 dark:border-gray-700">Completed</span>'
@@ -232,9 +355,9 @@ function statusBadgeHtml(status) {
 }
 
 // -------------------------------
-// Pictures — read-only gallery (add/remove happens via the Edit modal's
-// own photo picker, not here), sourced entirely from the card's
-// data-photos JSON, no fetch.
+// Pictures — sourced entirely from the card's data-photos JSON, no fetch.
+// Owners can also reorder/remove photos here; adding new ones happens via
+// the Edit modal's photo picker.
 // -------------------------------
 
 function renderPictures(pics, canManage = false) {

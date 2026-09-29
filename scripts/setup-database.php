@@ -321,6 +321,9 @@ $messages = array_merge($messages, resetSwpListingPicsTable());
 require_once __DIR__ . '/reset/swp-saved-listings.php';
 $messages = array_merge($messages, resetSwpSavedListingsTable());
 
+require_once __DIR__ . '/reset/swp-listing-responses.php';
+$messages = array_merge($messages, resetSwpListingResponsesTable());
+
 require_once __DIR__ . '/reset/swp-seed.php';
 $messages = array_merge($messages, seedSwpBaselineData());
 

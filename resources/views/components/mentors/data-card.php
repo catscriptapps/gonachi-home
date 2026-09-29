@@ -54,6 +54,12 @@ $skills = $data['skills'] ?: [];
         <?php endif; ?>
     </div>
 
+    <?php if ($data['is_card_owner']): ?>
+        <div class="px-5 pt-3">
+            <?php $pendingCount = (int) ($data['pending_count'] ?? 0); $pendingNoun = 'Request'; $pendingBgClass = 'bg-teal-600'; include __DIR__ . '/../ui/pending-badge.php'; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="px-5 pt-4">
         <div class="flex items-center gap-3 mb-3">
             <?php if ($ownerAvatarUrl): ?>

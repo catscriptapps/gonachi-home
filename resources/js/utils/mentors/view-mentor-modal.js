@@ -12,6 +12,7 @@
 import { showToast } from '../../ui/toast.js';
 import { confirmDialog } from '../../ui/confirm.js';
 import { openMentorRequestModal } from '../../modals/mentor-request-modal.js';
+import { setPendingBadge } from '../pending-badge.js';
 
 export function initViewMentorModal() {
   const modal = document.getElementById('view-mentor-modal');
@@ -188,6 +189,9 @@ async function loadRequests(encodedMentorId) {
     const requests = result.requests || [];
 
     list.innerHTML = requests.map(renderRequestRow).join('') || '<p class="text-xs text-gray-400">No requests yet.</p>';
+
+    const pendingCount = requests.filter((r) => r.status === 'pending').length;
+    document.querySelectorAll(`.mentor-card-wrapper[data-encoded-id="${encodedMentorId}"]`).forEach((card) => setPendingBadge(card, pendingCount));
   } catch (err) {
     console.error('Load mentor requests error:', err);
     list.innerHTML = '<p class="text-xs text-gray-400">Couldn\'t load requests.</p>';
