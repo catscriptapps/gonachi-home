@@ -62,6 +62,7 @@ class LeadCategoryController
             ->where('category_id', $category->id)
             ->whereIn('location_id', $locationIds)
             ->active()
+            ->complete()
             ->orderByDesc('posted_at')
             ->orderByDesc('scraped_at')
             ->paginate($perPage);

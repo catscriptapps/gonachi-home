@@ -28,8 +28,8 @@ class LeadsController
     public static function activeCounts(): array
     {
         return [
-            'buyer' => Lead::active()->where('request_type', 'buyer')->count(),
-            'seller' => Lead::active()->where('request_type', 'seller')->count(),
+            'buyer' => Lead::active()->complete()->where('request_type', 'buyer')->count(),
+            'seller' => Lead::active()->complete()->where('request_type', 'seller')->count(),
         ];
     }
 
@@ -40,6 +40,7 @@ class LeadsController
     {
         return Lead::with(['location.parent', 'category', 'source'])
             ->active()
+            ->complete()
             ->orderByDesc('posted_at')
             ->orderByDesc('scraped_at')
             ->limit($limit)
@@ -47,14 +48,15 @@ class LeadsController
     }
 
     /**
-     * Searchable, region-filterable, paginated active leads — powers the
-     * search bar + region select on the real-estate-leads discovery page.
-     * $regionSlug matches a region (see regions()) or any of its child
-     * locations, e.g. "lagos" also matches leads located in "Lekki".
+     * Searchable, region- and request-type-filterable, paginated active
+     * leads — powers the search bar + region select + Buyer/Seller tabs on
+     * the real-estate-leads discovery page. $regionSlug matches a region
+     * (see regions()) or any of its child locations, e.g. "lagos" also
+     * matches leads located in "Lekki".
      */
-    public static function browse(?string $search, ?string $regionSlug, int $perPage = 6): LengthAwarePaginator
+    public static function browse(?string $search, ?string $regionSlug, ?string $requestType = null, int $perPage = 6): LengthAwarePaginator
     {
-        return self::matchingQuery($search, $regionSlug)
+        return self::matchingQuery($search, $regionSlug, $requestType)
             ->with(['location.parent', 'category', 'source'])
             ->orderByDesc('posted_at')
             ->orderByDesc('scraped_at')
@@ -88,14 +90,19 @@ class LeadsController
 
     /**
      * Shared filter logic behind browse()/countMatching()/countNewMatching()
-     * — same (search, region) semantics everywhere so a saved alert's match
-     * count always agrees with what "View Matches" actually shows.
-     * $regionSlug matches a region (see regions()) or any of its child
-     * locations, e.g. "lagos" also matches leads located in "Lekki".
+     * — same (search, region, request type, completeness) semantics
+     * everywhere so a saved alert's match count always agrees with what
+     * "View Matches" actually shows. $regionSlug matches a region (see
+     * regions()) or any of its child locations, e.g. "lagos" also matches
+     * leads located in "Lekki".
      */
-    private static function matchingQuery(?string $search, ?string $regionSlug)
+    private static function matchingQuery(?string $search, ?string $regionSlug, ?string $requestType = null)
     {
-        $query = Lead::active();
+        $query = Lead::active()->complete();
+
+        if ($requestType) {
+            $query->where('request_type', $requestType);
+        }
 
         if ($search) {
             $term = '%' . $search . '%';
@@ -173,6 +180,7 @@ class LeadsController
     private static function topCategoryLocationCombo(?Carbon $since)
     {
         $query = Lead::active()
+            ->complete()
             ->whereNotNull('category_id')
             ->whereNotNull('location_id');
 

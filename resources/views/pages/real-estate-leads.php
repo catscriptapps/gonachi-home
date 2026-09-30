@@ -18,9 +18,13 @@ $leadCounts = LeadsController::activeCounts();
 
 $search = trim($_GET['q'] ?? '');
 $region = trim($_GET['region'] ?? '');
+// Agents overwhelmingly come here seeking buyer leads (people to sell to),
+// so that's the default tab; Seller Leads is one click away for the
+// opposite side of the same pipeline.
+$requestType = ($_GET['type'] ?? '') === 'seller' ? 'seller' : 'buyer';
 
-$leads = LeadsController::browse($search ?: null, $region ?: null)
-    ->appends(['q' => $search, 'region' => $region]);
+$leads = LeadsController::browse($search ?: null, $region ?: null, $requestType)
+    ->appends(['q' => $search, 'region' => $region, 'type' => $requestType]);
 
 $regions = LeadsController::regions();
 
@@ -74,6 +78,7 @@ $spotlight = LeadsController::spotlight();
 
     <!-- Search Routing & Location Filtering Bar -->
     <form method="GET" action="<?= $baseUrl ?>real-estate-leads" id="lead-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+        <input type="hidden" name="type" value="<?= $requestType ?>" />
         <div class="w-full md:flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -92,18 +97,40 @@ $spotlight = LeadsController::spotlight();
             Search
         </button>
         <?php if ($search || $region): ?>
-            <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="text-xs font-semibold text-gray-500 hover:text-primary-600 whitespace-nowrap">Clear</a>
+            <a href="<?= $baseUrl ?>real-estate-leads?type=<?= $requestType ?>" data-partial class="text-xs font-semibold text-gray-500 hover:text-primary-600 whitespace-nowrap">Clear</a>
         <?php endif; ?>
     </form>
 
     <!-- Active Feed Streams Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        
+
         <!-- Primary Stream Listing Column (Spans 2 cols for visibility) -->
         <div class="lg:col-span-2 space-y-4">
-            <div class="flex items-center justify-between">
-                <h3 class="text-lg font-bold text-gray-900 dark:text-white"><?= ($search || $region) ? 'Search Results' : 'Recently Extracted Lead Activity' ?></h3>
+            <div class="flex items-center justify-between gap-3 flex-wrap">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-white">
+                    <?php if ($search || $region): ?>
+                        Search Results
+                    <?php else: ?>
+                        <?= $requestType === 'seller' ? 'Recent Sellers Activity' : 'Recent Buyers Activity' ?>
+                    <?php endif; ?>
+                </h3>
                 <span class="text-xs text-primary-600 bg-primary-50 dark:bg-primary-950/40 px-2 py-1 rounded font-medium"><?= ($search || $region) ? $leads->total() . ' Found' : 'Real-time Stream' ?></span>
+            </div>
+
+            <!-- Buyer / Seller Toggle -->
+            <div class="inline-flex items-center gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-0.5">
+                <?php
+                $buyerQuery = http_build_query(array_filter(['q' => $search, 'region' => $region, 'type' => 'buyer']));
+                $sellerQuery = http_build_query(array_filter(['q' => $search, 'region' => $region, 'type' => 'seller']));
+                ?>
+                <a href="<?= $baseUrl ?>real-estate-leads?<?= $buyerQuery ?>" data-partial
+                    class="px-4 py-1.5 text-xs font-bold rounded-md transition-colors <?= $requestType === 'buyer' ? 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-sm' : 'text-gray-500 dark:text-gray-400' ?>">
+                    Buyer Leads
+                </a>
+                <a href="<?= $baseUrl ?>real-estate-leads?<?= $sellerQuery ?>" data-partial
+                    class="px-4 py-1.5 text-xs font-bold rounded-md transition-colors <?= $requestType === 'seller' ? 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-sm' : 'text-gray-500 dark:text-gray-400' ?>">
+                    Seller Leads
+                </a>
             </div>
 
             <?php if ($leads->isEmpty()): ?>

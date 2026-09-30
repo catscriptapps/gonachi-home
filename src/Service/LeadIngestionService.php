@@ -26,6 +26,11 @@ final class LeadIngestionService
         $this->classifier = $classifier ?? new LeadIntentClassifier(
             Location::pluck('name')->all()
         );
+
+        // Lazily adds rel_leads.phone/email to an already-deployed database
+        // (see Lead::ensureContactColumns()) before the first create() below
+        // needs to write to them.
+        Lead::ensureContactColumns();
     }
 
     /**
@@ -68,6 +73,13 @@ final class LeadIngestionService
 
             $category = $this->resolveCategory($classified->requestType, $classified->propertyType);
 
+            // Contact info can appear in either the source's own dedicated
+            // field (contactInfoRaw) or just inline in the listing text
+            // itself — check both. See ContactInfoParser's docblock.
+            $contactText = trim(($candidate->contactInfoRaw ?? '') . ' ' . $candidate->text);
+            $phone = ContactInfoParser::extractPhone($contactText);
+            $email = ContactInfoParser::extractEmail($contactText);
+
             Lead::create([
                 'lead_source_id' => $source->id,
                 'external_id' => $candidate->externalId,
@@ -82,6 +94,8 @@ final class LeadIngestionService
                 'budget_max' => $classified->budgetMax,
                 'intent_level' => $classified->intentLevel,
                 'contact_info_raw' => $candidate->contactInfoRaw,
+                'phone' => $phone,
+                'email' => $email,
                 'status' => 'pending_review',
                 'category_id' => $category?->id,
                 'posted_at' => $candidate->postedAt,

@@ -5,6 +5,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Capsule\Manager as Capsule;
 use Illuminate\Database\Eloquent\Model;
 
 class Lead extends Model
@@ -25,6 +26,8 @@ class Lead extends Model
         'budget_max',
         'intent_level',
         'contact_info_raw',
+        'phone',
+        'email',
         'status',
         'category_id',
         'posted_at',
@@ -62,5 +65,78 @@ class Lead extends Model
     public function scopeActive($query)
     {
         return $query->where('status', 'active');
+    }
+
+    /**
+     * Only leads carrying the 4 pieces of "surface level information buyers
+     * seek": a phone number, an email address, a specific (not just
+     * country/state-level) resolved location, and a property type. Applied
+     * everywhere leads surface publicly (LeadsController, LeadCategoryController)
+     * — junk/incomplete scraped rows still get stored (an admin reviewing the
+     * pipeline may still want to see them), they just never reach a buyer.
+     *
+     * "Specific location" = resolves to a depth-2 node in the location tree
+     * (an area, e.g. "Lekki") rather than stopping at depth 0 (a bare
+     * country) or depth 1 (a bare state) — there's no explicit level column,
+     * so this is checked via two parent hops. See Location::parent().
+     */
+    public function scopeComplete($query)
+    {
+        self::ensureContactColumns();
+
+        return $query
+            ->whereNotNull('phone')
+            ->whereNotNull('email')
+            ->whereNotNull('property_type')
+            ->whereHas('location', function ($q) {
+                $q->whereNotNull('parent_id')
+                    ->whereHas('parent', fn ($q2) => $q2->whereNotNull('parent_id'));
+            });
+    }
+
+    /**
+     * Instance-level equivalent of scopeComplete(), for a lead that's
+     * already been loaded (with its `location.parent` relation) rather than
+     * queried — e.g. leads/detail.php's credit-gated unlock page, which must
+     * never let a viewer spend a credit on a lead with no usable phone/email
+     * to actually unlock.
+     */
+    public function isComplete(): bool
+    {
+        return $this->phone !== null
+            && $this->email !== null
+            && $this->property_type !== null
+            && $this->location !== null
+            && $this->location->parent_id !== null
+            && $this->location->parent !== null
+            && $this->location->parent->parent_id !== null;
+    }
+
+    /**
+     * Adds the `phone`/`email` columns to an already-deployed rel_leads
+     * table on first use, without a (data-wiping) full reset — mirrors the
+     * lazy-table-creation pattern used elsewhere in this app (e.g.
+     * Src\Service\PendingUploadTracker::ensureTable()), generalized to an
+     * ALTER since this table already holds real scraped lead data that must
+     * never be dropped. A fresh install gets these columns directly from
+     * scripts/reset/rel-leads.php instead.
+     */
+    public static function ensureContactColumns(): void
+    {
+        static $checked = false;
+        if ($checked) {
+            return;
+        }
+        $checked = true;
+
+        $schema = Capsule::schema();
+        $table = (new self())->getTable();
+
+        if (!$schema->hasColumn($table, 'phone')) {
+            $schema->table($table, fn ($t) => $t->string('phone')->nullable()->after('contact_info_raw'));
+        }
+        if (!$schema->hasColumn($table, 'email')) {
+            $schema->table($table, fn ($t) => $t->string('email')->nullable()->after('phone'));
+        }
     }
 }

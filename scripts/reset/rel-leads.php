@@ -42,6 +42,12 @@ function resetRelLeadsTable(): array
 
             // Only populated when the source publicly displayed contact info
             $table->text('contact_info_raw')->nullable();
+            // Extracted from contact_info_raw/raw_text at ingest time — see
+            // Src\Service\ContactInfoParser — and required (alongside
+            // property_type + a specific location) for a lead to pass
+            // Lead::scopeComplete() and surface publicly.
+            $table->string('phone')->nullable();
+            $table->string('email')->nullable();
 
             // pending_review | active | expired | rejected
             $table->string('status')->default('pending_review')->index();
