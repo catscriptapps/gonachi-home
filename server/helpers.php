@@ -238,6 +238,14 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
             ];
         }
 
+        // Set here, not in leads/detail.php itself — by the time that page
+        // file runs, the layout has already echoed the sidebar/header, so
+        // headers are already sent and http_response_code() there just
+        // raises a "headers already sent" warning without actually changing
+        // anything (confirmed in production logs). This runs from
+        // resolvePageRoute(), called before any layout output starts.
+        http_response_code(404);
+
         return [
             'title'   => 'Lead Not Found',
             'summary' => 'This lead is no longer available.',
@@ -275,6 +283,10 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
                 'summary' => "View {$contractor->business_name}'s profile, request a quote, and connect directly on Gonachi Contractor Discovery.",
             ];
         }
+
+        // Set here, not in contractor/detail.php itself — see the matching
+        // comment on the 'leads' branch above for why.
+        http_response_code(404);
 
         return [
             'title'   => 'Contractor Not Found',

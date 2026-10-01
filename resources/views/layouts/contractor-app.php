@@ -43,6 +43,7 @@ declare(strict_types=1);
             mediaLimit: <?= getMediaLimit() ?>,
             isLoggedIn: <?= json_encode($isLoggedIn ?? false) ?>,
             isAdmin: <?= json_encode($isAdmin ?? false) ?>,
+            jsVersion: <?= json_encode(assetVersion('assets/js/app.min.js')) ?>,
         };
     </script>
 

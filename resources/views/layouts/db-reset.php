@@ -48,6 +48,7 @@ $isLoggedIn = false; // We force this for the reset screen
             assetBase: <?= json_encode($assetBase) ?>,
             appName: <?= json_encode($appName) ?>,
             protectedPaths: <?= json_encode($protectedPaths ?? []) ?>,
+            jsVersion: <?= json_encode(assetVersion('assets/js/app.min.js')) ?>,
         };
     </script>
 

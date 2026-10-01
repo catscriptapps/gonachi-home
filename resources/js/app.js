@@ -148,7 +148,13 @@ async function loadModule(scriptKey) {
   // Extra safety: Don't try to load if manifest isn't an array or doesn't have the key
   if (!Array.isArray(PAGE_MANIFEST) || !PAGE_MANIFEST.includes(scriptKey)) return;
 
-  const scriptPath = `${window.APP_CONFIG.assetBase}assets/js/${scriptKey}.min.js`;
+  // ?v= cache-busts this entry file itself, same as every layout's
+  // <script src="...app.min.js?v=...">  tag — without it, a page-specific
+  // bundle whose own content changed (but keeps its fixed, unhashed
+  // filename by convention) could keep serving a browser's stale cached
+  // copy after a deploy until a hard refresh. jsVersion is app.min.js's
+  // mtime (see assetVersion() in server/helpers.php), set once per layout.
+  const scriptPath = `${window.APP_CONFIG.assetBase}assets/js/${scriptKey}.min.js?v=${window.APP_CONFIG.jsVersion || '1'}`;
 
   try {
     const module = await import(/* @vite-ignore */ scriptPath);

@@ -29,7 +29,10 @@ $contractorSlugOrId = (string) ($GLOBALS['encodedId'] ?? '');
 $contractor = $contractorSlugOrId !== '' ? ContractorController::findBySlugOrId($contractorSlugOrId) : null;
 
 if (!$contractor):
-    http_response_code(404);
+    // The 404 status itself is set earlier, in resolveDynamicPageMeta()
+    // (server/helpers.php) — by the time this file runs, the layout has
+    // already echoed the sidebar/header, so a call here would just raise a
+    // "headers already sent" warning without changing anything.
 ?>
     <div class="max-w-lg mx-auto text-center py-20">
         <svg class="h-10 w-10 text-gray-300 dark:text-gray-700 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
