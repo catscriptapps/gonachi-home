@@ -21,7 +21,13 @@ function seedRelLeadsBaselineData(): array
     // --------------------------------------------------
     // Locations (Nigeria > state > area)
     // --------------------------------------------------
-    $nigeria = Location::create(['name' => 'Nigeria', 'slug' => 'nigeria']);
+    $nigeria = Location::create(['name' => 'Nigeria', 'slug' => 'nigeria', 'country_id' => \Src\Utils\CountryScope::IDS['ng']]);
+
+    // USA/Canada roots — empty for now (no states/areas yet), so their
+    // /real-estate-leads/{us|ca} feeds are real but show zero leads until
+    // scraping expands there. See the country-scoping rollout plan.
+    Location::create(['name' => 'United States', 'slug' => 'united-states', 'country_id' => \Src\Utils\CountryScope::IDS['us']]);
+    Location::create(['name' => 'Canada', 'slug' => 'canada', 'country_id' => \Src\Utils\CountryScope::IDS['ca']]);
 
     $states = [
         'Lagos' => ['Lekki', 'Ikeja', 'Ajah', 'Yaba', 'Ikoyi', 'Victoria Island'],

@@ -111,12 +111,16 @@ class RentalListingController
      * Published listings, optionally filtered to one area, paginated for
      * the dedicated Rental Opportunities page.
      */
-    public static function browse(?string $area = null, int $perPage = 9): LengthAwarePaginator
+    public static function browse(?string $area = null, int $perPage = 9, ?int $countryId = null): LengthAwarePaginator
     {
         $query = RentalListing::with(['property', 'landlord'])->published();
 
         if ($area !== null && $area !== '') {
             $query->where('area', $area);
+        }
+
+        if ($countryId !== null) {
+            $query->whereHas('property', fn($q) => $q->where('country_id', $countryId));
         }
 
         return $query->orderByDesc('created_at')->paginate($perPage);
@@ -133,9 +137,15 @@ class RentalListingController
      *
      * @return array<int, array{area: string, count: int}>
      */
-    public static function countsByArea(int $limit = 3): array
+    public static function countsByArea(int $limit = 3, ?int $countryId = null): array
     {
-        return RentalListing::published()
+        $query = RentalListing::published();
+
+        if ($countryId !== null) {
+            $query->whereHas('property', fn($q) => $q->where('country_id', $countryId));
+        }
+
+        return $query
             ->selectRaw('area, COUNT(*) as listing_count')
             ->groupBy('area')
             ->orderByDesc('listing_count')

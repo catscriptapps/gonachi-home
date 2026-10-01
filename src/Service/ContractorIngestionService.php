@@ -66,6 +66,7 @@ final class ContractorIngestionService
                 'business_name' => $candidate->businessName,
                 'service_category' => $candidate->serviceCategory,
                 'location' => $candidate->location,
+                'country_id' => $candidate->countryId,
                 'phone' => $candidate->phone,
                 'email' => $candidate->email,
                 'website' => $candidate->website,

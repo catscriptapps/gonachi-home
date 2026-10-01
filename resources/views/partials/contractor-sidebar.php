@@ -39,7 +39,7 @@ declare(strict_types=1);
 
     <!-- Navigation Directory -->
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar" data-nav-accent="secondary">
-        <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/contractor-discovery' ? $navActiveClasses : $navInactiveClasses ?>">
+        <a href="<?= $baseUrl ?>contractor-discovery/<?= $GLOBALS['countryCode'] ?? 'ng' ?>" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= str_starts_with($currentPath, '/contractor-discovery') ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z" />
             </svg>

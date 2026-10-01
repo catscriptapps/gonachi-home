@@ -72,9 +72,9 @@ class LeadsController
      * (see regions()) or any of its child locations, e.g. "lagos" also
      * matches leads located in "Lekki".
      */
-    public static function browse(?string $search, ?string $regionSlug, ?string $requestType = null, int $perPage = 6): LengthAwarePaginator
+    public static function browse(?string $search, ?string $regionSlug, ?string $requestType = null, int $perPage = 6, ?int $countryId = null): LengthAwarePaginator
     {
-        return self::matchingQuery($search, $regionSlug, $requestType)
+        return self::matchingQuery($search, $regionSlug, $requestType, $countryId)
             ->with(['location.parent', 'category', 'source'])
             ->orderByDesc('posted_at')
             ->orderByDesc('scraped_at')
@@ -114,7 +114,7 @@ class LeadsController
      * regions()) or any of its child locations, e.g. "lagos" also matches
      * leads located in "Lekki".
      */
-    private static function matchingQuery(?string $search, ?string $regionSlug, ?string $requestType = null)
+    private static function matchingQuery(?string $search, ?string $regionSlug, ?string $requestType = null, ?int $countryId = null)
     {
         $query = Lead::active()->complete();
 
@@ -138,6 +138,18 @@ class LeadsController
             }
         }
 
+        if ($countryId !== null) {
+            $root = Location::where('country_id', $countryId)->whereNull('parent_id')->first();
+            // Root (country) + state + area ids — the location tree is only
+            // ever 3 levels deep (country > state > area), see rel-seed.php.
+            $countryLocationIds = $root
+                ? collect([$root->id])
+                    ->merge($stateIds = $root->children()->pluck('id'))
+                    ->merge(Location::whereIn('parent_id', $stateIds)->pluck('id'))
+                : collect();
+            $query->whereIn('location_id', $countryLocationIds);
+        }
+
         return $query;
     }
 
@@ -147,9 +159,14 @@ class LeadsController
      * top-level (country) location. Deliberately not hardcoded so a future
      * admin-managed location list stays in sync automatically.
      */
-    public static function regions(): Collection
+    public static function regions(?int $countryId = null): Collection
     {
-        return Location::whereHas('parent', fn($q) => $q->whereNull('parent_id'))
+        return Location::whereHas('parent', function ($q) use ($countryId) {
+            $q->whereNull('parent_id');
+            if ($countryId !== null) {
+                $q->where('country_id', $countryId);
+            }
+        })
             ->orderBy('name')
             ->get();
     }

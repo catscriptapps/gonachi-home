@@ -52,7 +52,7 @@ declare(strict_types=1);
 
     <!-- Navigation Directory -->
     <nav class="flex-1 px-4 py-6 space-y-1 overflow-y-auto custom-scrollbar" data-nav-accent="primary">
-        <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= $currentPath === '/real-estate-leads' ? $navActiveClasses : $navInactiveClasses ?>">
+        <a href="<?= $baseUrl ?>real-estate-leads/<?= $GLOBALS['countryCode'] ?? 'ng' ?>" data-partial class="flex items-center space-x-3 px-3 py-2.5 rounded-xl transition-colors group <?= str_starts_with($currentPath, '/real-estate-leads') ? $navActiveClasses : $navInactiveClasses ?>">
             <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
             </svg>

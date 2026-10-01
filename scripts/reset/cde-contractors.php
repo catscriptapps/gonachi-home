@@ -38,6 +38,10 @@ function resetCdeContractorsTable(): array
             // interior_design | renovation | solar_installation | other
             $table->string('service_category')->index();
             $table->string('location');
+            // Nigeria (161) / USA (233) / Canada (39) — see Src\Utils\CountryScope.
+            // Nullable so pre-expansion rows don't break; a backfill script
+            // sets 161 on any already-deployed NULL rows.
+            $table->unsignedInteger('country_id')->nullable()->index();
             $table->text('operating_areas')->nullable();
             $table->string('phone')->nullable();
             // Admin/outreach-only, like website — see ContractorOutreachService.

@@ -127,9 +127,9 @@ class LandlordDirectoryController
      *
      * @return \Illuminate\Support\Collection<int, PropertyRecord>
      */
-    public static function recentPublished(int $limit = 1)
+    public static function recentPublished(int $limit = 1, ?int $countryId = null)
     {
-        return self::publishedPropertiesQuery()
+        return self::publishedPropertiesQuery($countryId)
             ->orderByDesc('latest_report_at')
             ->limit($limit)
             ->get();
@@ -138,11 +138,11 @@ class LandlordDirectoryController
     /**
      * Search published property records by landlord name or address.
      */
-    public static function search(string $query, int $perPage = 12): LengthAwarePaginator
+    public static function search(string $query, int $perPage = 12, ?int $countryId = null): LengthAwarePaginator
     {
         $needle = trim($query);
 
-        return self::publishedPropertiesQuery()
+        return self::publishedPropertiesQuery($countryId)
             ->where(function ($q) use ($needle) {
                 $q->where('address', 'like', "%{$needle}%")
                     ->orWhereHas('landlord', fn($lq) => $lq->where('name', 'like', "%{$needle}%"));
@@ -155,18 +155,26 @@ class LandlordDirectoryController
      * Distinct property records with at least one published report — the
      * landing page's "Property Records" live counter.
      */
-    public static function totalPublishedProperties(): int
+    public static function totalPublishedProperties(?int $countryId = null): int
     {
-        return PropertyRecord::whereHas('reports', fn($q) => $q->published())->count();
+        $query = PropertyRecord::whereHas('reports', fn($q) => $q->published());
+        if ($countryId !== null) {
+            $query->where('country_id', $countryId);
+        }
+        return $query->count();
     }
 
     /**
      * Total published reports across every property — the landing page's
      * "Landlord Reports" live counter.
      */
-    public static function totalPublishedReports(): int
+    public static function totalPublishedReports(?int $countryId = null): int
     {
-        return LandlordReport::published()->count();
+        $query = LandlordReport::published();
+        if ($countryId !== null) {
+            $query->whereHas('property', fn($q) => $q->where('country_id', $countryId));
+        }
+        return $query->count();
     }
 
     /**
@@ -175,13 +183,19 @@ class LandlordDirectoryController
      * average_rating — the public display shows stars (see starHtml()) built
      * from this instead of a bare report count.
      */
-    private static function publishedPropertiesQuery()
+    private static function publishedPropertiesQuery(?int $countryId = null)
     {
-        return PropertyRecord::whereHas('reports', fn($q) => $q->published())
+        $query = PropertyRecord::whereHas('reports', fn($q) => $q->published())
             ->with('landlord')
             ->withCount(['reports as published_reports_count' => fn($q) => $q->published()])
             ->withMax(['reports as latest_report_at' => fn($q) => $q->published()], 'created_at')
             ->withAvg(['reports as average_rating' => fn($q) => $q->published()], 'rating');
+
+        if ($countryId !== null) {
+            $query->where('country_id', $countryId);
+        }
+
+        return $query;
     }
 
     /**

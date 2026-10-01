@@ -21,6 +21,10 @@ function resetRelLocationsTable(): array
             $table->string('name');
             $table->string('slug')->unique();
             $table->unsignedBigInteger('parent_id')->nullable()->index();
+            // Only ever set on root-level (country) rows — see
+            // scripts/reset/rel-seed.php and Src\Utils\CountryScope. State/
+            // area rows inherit their country implicitly via parent_id.
+            $table->unsignedInteger('country_id')->nullable()->index();
             $table->timestamps();
         });
 

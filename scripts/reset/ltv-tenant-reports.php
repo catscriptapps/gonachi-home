@@ -21,6 +21,10 @@ function resetLtvTenantReportsTable(): array
             $table->unsignedBigInteger('tenant_id');
             $table->unsignedBigInteger('user_id');
             $table->string('property_address')->nullable();
+            // No property FK to piggyback on (property_address is free
+            // text) so tenant reports carry their own country_id directly —
+            // see Src\Utils\CountryScope.
+            $table->unsignedInteger('country_id')->nullable()->index();
             $table->string('duration_of_tenancy')->nullable();
             $table->string('conduct_type');
             $table->text('notes')->nullable();

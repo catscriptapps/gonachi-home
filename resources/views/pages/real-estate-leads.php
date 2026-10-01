@@ -11,9 +11,14 @@ declare(strict_types=1);
 
 use Src\Controller\LeadsController;
 use Src\Service\AuthService;
+use Src\Utils\CountryScope;
 use Src\Utils\CuratedPhotos;
 
 $isAdmin = AuthService::isAdmin();
+
+$countryCode = $GLOBALS['countryCode'] ?? 'ng';
+$countryId = CountryScope::idFor($countryCode);
+
 $leadCounts = LeadsController::activeCounts();
 
 $search = trim($_GET['q'] ?? '');
@@ -23,10 +28,10 @@ $region = trim($_GET['region'] ?? '');
 // opposite side of the same pipeline.
 $requestType = ($_GET['type'] ?? '') === 'seller' ? 'seller' : 'buyer';
 
-$leads = LeadsController::browse($search ?: null, $region ?: null, $requestType)
+$leads = LeadsController::browse($search ?: null, $region ?: null, $requestType, 6, $countryId)
     ->appends(['q' => $search, 'region' => $region, 'type' => $requestType]);
 
-$regions = LeadsController::regions();
+$regions = LeadsController::regions($countryId);
 
 $featurePhotos = CuratedPhotos::fromHomeFolder($assetBase);
 $slideshowImages = $featurePhotos;
@@ -36,10 +41,17 @@ $spotlight = LeadsController::spotlight();
 <!-- Search Optimization Metadata Block -->
 <div class="space-y-6">
 
-    <?php
-    $breadcrumbs = [['label' => 'Real Estate Leads']];
-    include __DIR__ . '/../components/breadcrumbs.php';
-    ?>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <?php
+        $breadcrumbs = [['label' => 'Real Estate Leads']];
+        include __DIR__ . '/../components/breadcrumbs.php';
+        ?>
+        <?php
+        $countrySwitcherProject = 'real-estate-leads';
+        $countrySwitcherCurrent = $countryCode;
+        include __DIR__ . '/../components/country-switcher.php';
+        ?>
+    </div>
 
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
@@ -77,7 +89,7 @@ $spotlight = LeadsController::spotlight();
     </section>
 
     <!-- Search Routing & Location Filtering Bar -->
-    <form method="GET" action="<?= $baseUrl ?>real-estate-leads" id="lead-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET" action="<?= $baseUrl ?>real-estate-leads/<?= $countryCode ?>" id="lead-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <input type="hidden" name="type" value="<?= $requestType ?>" />
         <div class="w-full md:flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
@@ -97,7 +109,7 @@ $spotlight = LeadsController::spotlight();
             Search
         </button>
         <?php if ($search || $region): ?>
-            <a href="<?= $baseUrl ?>real-estate-leads?type=<?= $requestType ?>" data-partial class="text-xs font-semibold text-gray-500 hover:text-primary-600 whitespace-nowrap">Clear</a>
+            <a href="<?= $baseUrl ?>real-estate-leads/<?= $countryCode ?>?type=<?= $requestType ?>" data-partial class="text-xs font-semibold text-gray-500 hover:text-primary-600 whitespace-nowrap">Clear</a>
         <?php endif; ?>
     </form>
 
@@ -123,11 +135,11 @@ $spotlight = LeadsController::spotlight();
                 $buyerQuery = http_build_query(array_filter(['q' => $search, 'region' => $region, 'type' => 'buyer']));
                 $sellerQuery = http_build_query(array_filter(['q' => $search, 'region' => $region, 'type' => 'seller']));
                 ?>
-                <a href="<?= $baseUrl ?>real-estate-leads?<?= $buyerQuery ?>" data-partial
+                <a href="<?= $baseUrl ?>real-estate-leads/<?= $countryCode ?>?<?= $buyerQuery ?>" data-partial
                     class="px-4 py-1.5 text-xs font-bold rounded-md transition-colors <?= $requestType === 'buyer' ? 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-sm' : 'text-gray-500 dark:text-gray-400' ?>">
                     Buyer Leads
                 </a>
-                <a href="<?= $baseUrl ?>real-estate-leads?<?= $sellerQuery ?>" data-partial
+                <a href="<?= $baseUrl ?>real-estate-leads/<?= $countryCode ?>?<?= $sellerQuery ?>" data-partial
                     class="px-4 py-1.5 text-xs font-bold rounded-md transition-colors <?= $requestType === 'seller' ? 'bg-white dark:bg-gray-900 text-gray-800 dark:text-gray-200 shadow-sm' : 'text-gray-500 dark:text-gray-400' ?>">
                     Seller Leads
                 </a>
@@ -139,11 +151,13 @@ $spotlight = LeadsController::spotlight();
                     <svg class="h-8 w-8 text-gray-300 dark:text-gray-700 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     <?php if ($search || $region): ?>
                         <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">No Leads Match That Search</h4>
-                        <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">Try a different keyword or region, or <a href="<?= $baseUrl ?>real-estate-leads" data-partial class="text-primary-600 hover:underline">clear the filters</a>.</p>
+                        <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">Try a different keyword or region, or <a href="<?= $baseUrl ?>real-estate-leads/<?= $countryCode ?>" data-partial class="text-primary-600 hover:underline">clear the filters</a>.</p>
                     <?php else: ?>
                         <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">No Active Leads Yet</h4>
                         <p class="text-xs text-gray-400 dark:text-gray-500 max-w-sm mx-auto mt-1">
-                            The extraction pipeline is running in the background. New requests appear here once they've been reviewed and marked active.
+                            <?= $countryCode === 'ng'
+                                ? "The extraction pipeline is running in the background. New requests appear here once they've been reviewed and marked active."
+                                : "We're still building out the " . htmlspecialchars(CountryScope::nameFor($countryCode)) . ' pipeline — check back soon, or try Nigeria above.' ?>
                         </p>
                     <?php endif; ?>
                 </div>

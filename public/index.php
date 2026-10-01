@@ -60,6 +60,18 @@ $assetBase = $baseUrl;
 $baseUrl = rtrim($baseUrl, '/') . '/';
 $assetBase = rtrim($assetBase, '/') . '/';
 
+// Country-scoped projects: the bare URL (e.g. /contractor-discovery) always
+// redirects to its Nigeria variant (/contractor-discovery/ng) so existing
+// links/bookmarks/SEO keep working unchanged, just landing on Nigeria's feed
+// by default. See resolvePageRoute() in server/helpers.php for the actual
+// /{project}/{cc} page resolution.
+$countryScopedProjects = ['real-estate-leads', 'contractor-discovery', 'landlord-tenant-validation'];
+if (in_array(trim($path, '/'), $countryScopedProjects, true)) {
+    $qs = $_SERVER['QUERY_STRING'] ?? '';
+    header('Location: ' . $baseUrl . trim($path, '/') . '/ng' . ($qs !== '' ? '?' . $qs : ''));
+    exit;
+}
+
 // ------------------------------------------------------------
 // Layout resolution — which project shell (sidebar + header) a path
 // belongs to. Resolved once, up front, so every early-exit branch below
@@ -81,13 +93,19 @@ $swapPaths = ['/swap', '/my-swap-listings', '/saved-swap-listings'];
 // so it can never exact-match the static list above. Without this prefix
 // check it silently fell through to the default (Real Estate Leads) shell,
 // showing the wrong project's sidebar on every contractor profile page.
-$isContractorPath = in_array($path, $contractorPaths, true) || str_starts_with($path, '/contractor/');
+// /contractor-discovery/{ng|us|ca} needs the same prefix treatment — it
+// never exact-matches $contractorPaths either, since it always carries a
+// country-code suffix.
+$isContractorPath = in_array($path, $contractorPaths, true) || str_starts_with($path, '/contractor/')
+    || (bool) preg_match('#^/contractor-discovery/(ng|us|ca)$#', $path);
+$isLandlordPath = in_array($path, $landlordPaths, true)
+    || (bool) preg_match('#^/landlord-tenant-validation/(ng|us|ca)$#', $path);
 
 if (in_array($path, $portalPaths, true)) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/portal.php';
 } elseif ($isContractorPath) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/contractor-app.php';
-} elseif (in_array($path, $landlordPaths, true)) {
+} elseif ($isLandlordPath) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/landlord-app.php';
 } elseif (in_array($path, $realEstateWorldPaths, true)) {
     $resolvedLayout = __DIR__ . '/../resources/views/layouts/real-estate-world-app.php';

@@ -20,6 +20,7 @@ final class ContractorCandidate
         public readonly ?string $description,
         public readonly ?string $phone = null,
         public readonly ?string $email = null,
+        public readonly ?int $countryId = null,
     ) {
     }
 }

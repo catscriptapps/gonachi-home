@@ -28,9 +28,13 @@ declare(strict_types=1);
 use Src\Controller\ContractorController;
 use Src\Controller\JobRequestController;
 use Src\Service\AuthService;
+use Src\Utils\CountryScope;
 use Src\Utils\CuratedPhotos;
 
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
+
+$countryCode = $GLOBALS['countryCode'] ?? 'ng';
+$countryId = CountryScope::idFor($countryCode);
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
 $spotlightPhoto = $slideshowImages[0] ?? null;
@@ -39,21 +43,28 @@ $category = trim($_GET['category'] ?? '');
 $location = trim($_GET['location'] ?? '');
 $search = trim($_GET['search'] ?? '');
 
-$contractors = ContractorController::browse($category ?: null, $location ?: null, $search ?: null)
+$contractors = ContractorController::browse($category ?: null, $location ?: null, $search ?: null, 10, $countryId)
     ->appends(['category' => $category, 'location' => $location, 'search' => $search]);
 
-$totalContractors = ContractorController::totalCount();
+$totalContractors = ContractorController::totalCount($countryId);
 $totalOpenRequests = JobRequestController::totalOpenCount();
 
 $categoryLabels = ContractorController::CATEGORY_LABELS;
 ?>
 <div class="space-y-6">
 
-    <?php
-    $breadcrumbs = [['label' => 'Contractor Discovery']];
-    $breadcrumbAccent = 'secondary';
-    include __DIR__ . '/../components/breadcrumbs.php';
-    ?>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <?php
+        $breadcrumbs = [['label' => 'Contractor Discovery']];
+        $breadcrumbAccent = 'secondary';
+        include __DIR__ . '/../components/breadcrumbs.php';
+        ?>
+        <?php
+        $countrySwitcherProject = 'contractor-discovery';
+        $countrySwitcherCurrent = $countryCode;
+        include __DIR__ . '/../components/country-switcher.php';
+        ?>
+    </div>
 
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
@@ -91,7 +102,7 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
     </section>
 
     <!-- Search & Category Filtering Bar -->
-    <form method="GET" action="<?= $baseUrl ?>contractor-discovery" id="contractor-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
+    <form method="GET" action="<?= $baseUrl ?>contractor-discovery/<?= $countryCode ?>" id="contractor-search" data-partial class="bg-white dark:bg-gray-900 p-4 rounded-xl border border-gray-200 dark:border-gray-800 shadow-sm flex flex-col md:flex-row gap-4 items-center">
         <div class="w-full md:flex-1 relative">
             <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -113,7 +124,7 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
             Search
         </button>
         <?php if ($category || $location || $search): ?>
-            <a href="<?= $baseUrl ?>contractor-discovery" data-partial class="text-xs font-semibold text-gray-500 hover:text-secondary-600 whitespace-nowrap">Clear</a>
+            <a href="<?= $baseUrl ?>contractor-discovery/<?= $countryCode ?>" data-partial class="text-xs font-semibold text-gray-500 hover:text-secondary-600 whitespace-nowrap">Clear</a>
         <?php endif; ?>
         <a href="<?= $baseUrl ?>job-requests" data-partial class="w-full md:w-auto px-6 py-2.5 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white text-center font-bold text-sm rounded-lg transition-colors shadow-sm whitespace-nowrap">
             Get Quotes
@@ -134,7 +145,11 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
 
             <?php if ($contractors->isEmpty()): ?>
                 <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-xl p-8 text-center">
-                    <p class="text-sm text-gray-400 dark:text-gray-500">No contractors match that search yet.</p>
+                    <p class="text-sm text-gray-400 dark:text-gray-500">
+                        <?= $countryCode === 'ng'
+                            ? 'No contractors match that search yet.'
+                            : "We're still building out the " . htmlspecialchars(CountryScope::nameFor($countryCode)) . ' directory — check back soon, or try Nigeria above.' ?>
+                    </p>
                 </div>
             <?php else: ?>
                 <?php foreach ($contractors as $contractor): ?>
@@ -244,6 +259,7 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
                 </div>
             <?php endif; ?>
 
+            <?php if ($countryCode === 'ng'): ?>
             <h3 class="text-lg font-bold text-gray-900 dark:text-white">Popular Searches</h3>
             <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-xl divide-y divide-gray-100 dark:divide-gray-800 overflow-hidden shadow-sm">
                 <?php
@@ -255,12 +271,13 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
                 ];
                 ?>
                 <?php foreach ($popularSearches as $item): ?>
-                    <a href="<?= $baseUrl ?>contractor-discovery?category=<?= urlencode($item['category']) ?>&location=<?= urlencode($item['location']) ?>" data-partial class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
+                    <a href="<?= $baseUrl ?>contractor-discovery/<?= $countryCode ?>?category=<?= urlencode($item['category']) ?>&location=<?= urlencode($item['location']) ?>" data-partial class="flex items-center justify-between p-3.5 hover:bg-gray-50 dark:hover:bg-gray-800/40 text-sm group transition-colors">
                         <span class="font-medium text-gray-700 dark:text-gray-300 group-hover:text-secondary-600"><?= htmlspecialchars($item['label']) ?></span>
                         <svg class="h-4 w-4 text-gray-400 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                     </a>
                 <?php endforeach; ?>
             </div>
+            <?php endif; ?>
 
             <div class="bg-secondary-50 dark:bg-secondary-950/40 rounded-xl p-4 border border-secondary-100 dark:border-secondary-900/30">
                 <h4 class="text-sm font-bold text-secondary-900 dark:text-secondary-300">Own A Contractor Business?</h4>

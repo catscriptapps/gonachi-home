@@ -29,12 +29,16 @@ use Src\Controller\TenantDirectoryController;
 use Src\Service\AuthService;
 use Src\Service\LandlordCreditService;
 use Src\Utils\ContactMasker;
+use Src\Utils\CountryScope;
 use Src\Utils\CuratedPhotos;
+
+$countryCode = $GLOBALS['countryCode'] ?? 'ng';
+$countryId = CountryScope::idFor($countryCode);
 
 $slideshowImages = CuratedPhotos::fromHomeFolder($assetBase);
 $spotlightPhoto = $slideshowImages[0] ?? null;
 
-$opportunities = RentalListingController::countsByArea(3);
+$opportunities = RentalListingController::countsByArea(3, $countryId);
 
 $currentUserId = $isLoggedIn ? AuthService::userId() : null;
 $isAdmin = $currentUserId ? AuthService::isAdmin() : false;
@@ -45,27 +49,34 @@ $searchQuery = trim($_GET['q'] ?? '');
 // paginating would silently drop the search term. The same query searches
 // both directories at once — one search box covers the whole platform
 // instead of forcing a "landlord or tenant" mode choice up front.
-$searchResults = $searchQuery !== '' ? LandlordDirectoryController::search($searchQuery)->appends(['q' => $searchQuery]) : null;
-$tenantSearchResults = $searchQuery !== '' ? TenantDirectoryController::search($searchQuery)->appends(['q' => $searchQuery]) : null;
+$searchResults = $searchQuery !== '' ? LandlordDirectoryController::search($searchQuery, 12, $countryId)->appends(['q' => $searchQuery]) : null;
+$tenantSearchResults = $searchQuery !== '' ? TenantDirectoryController::search($searchQuery, 12, $countryId)->appends(['q' => $searchQuery]) : null;
 
-$totalProperties = LandlordDirectoryController::totalPublishedProperties();
-$totalReports = LandlordDirectoryController::totalPublishedReports();
-$totalTenants = TenantDirectoryController::totalPublishedTenants();
-$totalTenantReports = TenantDirectoryController::totalPublishedReports();
+$totalProperties = LandlordDirectoryController::totalPublishedProperties($countryId);
+$totalReports = LandlordDirectoryController::totalPublishedReports($countryId);
+$totalTenants = TenantDirectoryController::totalPublishedTenants($countryId);
+$totalTenantReports = TenantDirectoryController::totalPublishedReports($countryId);
 
-$recentRecord = LandlordDirectoryController::recentPublished(1)->first();
+$recentRecord = LandlordDirectoryController::recentPublished(1, $countryId)->first();
 $recentConfidence = $recentRecord ? LandlordDirectoryController::confidenceScore($recentRecord) : 0;
 
-$recentTenant = TenantDirectoryController::recentPublished(1)->first();
+$recentTenant = TenantDirectoryController::recentPublished(1, $countryId)->first();
 $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceScore($recentTenant) : 0;
 ?>
 <div class="max-w-5xl mx-auto space-y-12">
 
-    <?php
-    $breadcrumbs = [['label' => 'Landlord & Tenant Validation']];
-    $breadcrumbAccent = 'indigo';
-    include __DIR__ . '/../components/breadcrumbs.php';
-    ?>
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <?php
+        $breadcrumbs = [['label' => 'Landlord & Tenant Validation']];
+        $breadcrumbAccent = 'indigo';
+        include __DIR__ . '/../components/breadcrumbs.php';
+        ?>
+        <?php
+        $countrySwitcherProject = 'landlord-tenant-validation';
+        $countrySwitcherCurrent = $countryCode;
+        include __DIR__ . '/../components/country-switcher.php';
+        ?>
+    </div>
 
     <!-- Hero Banner -->
     <section class="relative overflow-hidden rounded-3xl shadow-sm">
@@ -85,7 +96,7 @@ $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceS
                 Check If Your Landlord Has Previous Complaints — Before Renting
             </h1>
             <p class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                A searchable record of landlords and tenants in Nigeria. Report a problem, help the next renter, and unlock the rental opportunity feed.
+                A searchable record of landlords and tenants in <?= htmlspecialchars(CountryScope::nameFor($countryCode)) ?>. Report a problem, help the next renter, and unlock the rental opportunity feed.
             </p>
 
             <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
@@ -95,7 +106,7 @@ $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceS
                 <a href="<?= $baseUrl ?>report-tenant" data-partial class="inline-flex items-center justify-center w-full sm:w-auto px-6 py-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-indigo-400 text-gray-700 dark:text-gray-300 font-bold text-sm rounded-xl transition-colors shadow-sm">
                     Report A Tenant
                 </a>
-                <form method="GET" action="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="w-full sm:w-80 relative">
+                <form method="GET" action="<?= $baseUrl ?>landlord-tenant-validation/<?= $countryCode ?>" data-partial class="w-full sm:w-80 relative">
                     <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-gray-400">
                         <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
                     </span>
@@ -136,7 +147,7 @@ $recentTenantConfidence = $recentTenant ? TenantDirectoryController::confidenceS
                 <h3 class="text-sm font-bold text-gray-400 uppercase tracking-wider">
                     Landlord Results for &ldquo;<?= htmlspecialchars($searchQuery) ?>&rdquo;
                 </h3>
-                <a href="<?= $baseUrl ?>landlord-tenant-validation" data-partial class="text-xs font-semibold text-indigo-600 hover:underline">Clear Search</a>
+                <a href="<?= $baseUrl ?>landlord-tenant-validation/<?= $countryCode ?>" data-partial class="text-xs font-semibold text-indigo-600 hover:underline">Clear Search</a>
             </div>
 
             <?php if ($searchResults->isEmpty()): ?>

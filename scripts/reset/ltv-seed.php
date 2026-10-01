@@ -28,6 +28,7 @@ function seedLtvBaselineData(): array
         'address' => 'House 14, Lekki',
         'normalized_address' => 'house 14, lekki',
         'property_type' => 'flat',
+        'country_id' => \Src\Utils\CountryScope::IDS['ng'],
     ]);
 
     LandlordReport::create([
@@ -55,6 +56,7 @@ function seedLtvBaselineData(): array
         'tenant_id' => $tenant->id,
         'user_id' => 1,
         'property_address' => 'House 14, Lekki',
+        'country_id' => \Src\Utils\CountryScope::IDS['ng'],
         'duration_of_tenancy' => '8 months',
         'conduct_type' => 'payment_default',
         'notes' => 'Rent was consistently paid 2-3 weeks late.',

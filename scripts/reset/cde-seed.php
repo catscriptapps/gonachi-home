@@ -119,7 +119,7 @@ function seedCdeBaselineData(): array
     ];
 
     foreach ($contractors as $contractor) {
-        $newContractor = Contractor::create($contractor + ['status' => 'active']);
+        $newContractor = Contractor::create($contractor + ['status' => 'active', 'country_id' => \Src\Utils\CountryScope::IDS['ng']]);
         $newContractor->update(['slug' => \Src\Controller\ContractorController::buildUniqueSlug($newContractor)]);
     }
 
@@ -144,12 +144,17 @@ function seedCdeBaselineData(): array
     ];
     $regions = ['Lagos', 'Abuja'];
 
+    // Nigeria-only for now — see Src\Utils\CountryScope. US/Canada get their
+    // own query entries (with their own region lists) once real scraping for
+    // those countries is turned on; until then their feeds stay real but
+    // empty (infrastructure-first, per the country-scoping rollout plan).
     $queries = [];
     foreach ($categoryQueries as $category => $plural) {
         foreach ($regions as $region) {
             $queries[] = [
                 'category' => $category,
                 'location' => $region,
+                'country_id' => \Src\Utils\CountryScope::IDS['ng'],
                 'query' => "{$plural} in {$region}, Nigeria",
             ];
         }

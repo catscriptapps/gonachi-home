@@ -167,6 +167,22 @@ function resolvePageMeta(string $pageTitle, bool $isLoggedIn = false): array
  */
 function resolvePageRoute(string $path): array
 {
+    // Country-scoped project landing pages: /real-estate-leads/{cc},
+    // /contractor-discovery/{cc}, /landlord-tenant-validation/{cc} — resolve
+    // to the SAME existing page file as the bare URL, with the country code
+    // captured into $GLOBALS['countryCode'] (same convention as encodedId
+    // below) for the page/controller to filter by. Checked before the
+    // generic /{resource}/{id} regex so it can never be shadowed by a future
+    // resources/views/pages/{project-slug}/detail.php file.
+    if (preg_match('#^/(real-estate-leads|contractor-discovery|landlord-tenant-validation)/(ng|us|ca)$#', $path, $m)) {
+        $pageFile = __DIR__ . "/../resources/views/pages/{$m[1]}.php";
+        if (file_exists($pageFile)) {
+            $GLOBALS['countryCode'] = $m[2];
+            $projectTitle = $m[1] === 'swap' ? 'Swap Marketplace' : ucwords(str_replace('-', ' ', $m[1]));
+            return [$pageFile, $projectTitle . ' — ' . \Src\Utils\CountryScope::nameFor($m[2])];
+        }
+    }
+
     if (preg_match('#^/([^/]+)/([^/]+)$#', $path, $m)) {
         $resource = $m[1];
         $id = urldecode($m[2]);

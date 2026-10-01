@@ -46,6 +46,7 @@ final class SerperContractorConnector implements ContractorSourceConnector
             $category = $entry['category'] ?? null;
             $location = $entry['location'] ?? null;
             $searchText = $entry['query'] ?? null;
+            $countryId = $entry['country_id'] ?? null;
 
             if (!$category || !$location || !$searchText) {
                 continue;
@@ -79,6 +80,7 @@ final class SerperContractorConnector implements ContractorSourceConnector
                     description: $snippet !== '' ? $snippet : null,
                     phone: $this->extractPhone($snippet),
                     email: $this->extractEmail($snippet),
+                    countryId: $countryId,
                 );
             }
         }

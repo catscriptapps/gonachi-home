@@ -108,9 +108,9 @@ class TenantDirectoryController
      *
      * @return \Illuminate\Support\Collection<int, TenantRecord>
      */
-    public static function recentPublished(int $limit = 1)
+    public static function recentPublished(int $limit = 1, ?int $countryId = null)
     {
-        return self::publishedTenantsQuery()
+        return self::publishedTenantsQuery($countryId)
             ->orderByDesc('latest_report_at')
             ->limit($limit)
             ->get();
@@ -119,11 +119,11 @@ class TenantDirectoryController
     /**
      * Search published tenant records by name.
      */
-    public static function search(string $query, int $perPage = 12): LengthAwarePaginator
+    public static function search(string $query, int $perPage = 12, ?int $countryId = null): LengthAwarePaginator
     {
         $needle = trim($query);
 
-        return self::publishedTenantsQuery()
+        return self::publishedTenantsQuery($countryId)
             ->where('name', 'like', "%{$needle}%")
             ->orderByDesc('latest_report_at')
             ->paginate($perPage);
@@ -133,18 +133,27 @@ class TenantDirectoryController
      * Distinct tenant records with at least one published report — the
      * landing page's "Tenant Records" live counter.
      */
-    public static function totalPublishedTenants(): int
+    public static function totalPublishedTenants(?int $countryId = null): int
     {
-        return TenantRecord::whereHas('reports', fn($q) => $q->published())->count();
+        return TenantRecord::whereHas('reports', function ($q) use ($countryId) {
+            $q->published();
+            if ($countryId !== null) {
+                $q->where('country_id', $countryId);
+            }
+        })->count();
     }
 
     /**
      * Total published tenant reports — the landing page's
      * "Tenant Reports" live counter.
      */
-    public static function totalPublishedReports(): int
+    public static function totalPublishedReports(?int $countryId = null): int
     {
-        return TenantReport::published()->count();
+        $query = TenantReport::published();
+        if ($countryId !== null) {
+            $query->where('country_id', $countryId);
+        }
+        return $query->count();
     }
 
     /**
@@ -152,9 +161,14 @@ class TenantDirectoryController
      * annotated with the count/recency/average_rating the read paths above
      * need.
      */
-    private static function publishedTenantsQuery()
+    private static function publishedTenantsQuery(?int $countryId = null)
     {
-        return TenantRecord::whereHas('reports', fn($q) => $q->published())
+        return TenantRecord::whereHas('reports', function ($q) use ($countryId) {
+            $q->published();
+            if ($countryId !== null) {
+                $q->where('country_id', $countryId);
+            }
+        })
             ->withCount(['reports as published_reports_count' => fn($q) => $q->published()])
             ->withMax(['reports as latest_report_at' => fn($q) => $q->published()], 'created_at')
             ->withAvg(['reports as average_rating' => fn($q) => $q->published()], 'rating');

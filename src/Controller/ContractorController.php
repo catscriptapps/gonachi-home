@@ -32,9 +32,13 @@ class ContractorController
     /**
      * Real, active contractors — newest first, optional category/location/search filters.
      */
-    public static function browse(?string $category, ?string $location, ?string $search, int $perPage = 10): LengthAwarePaginator
+    public static function browse(?string $category, ?string $location, ?string $search, int $perPage = 10, ?int $countryId = null): LengthAwarePaginator
     {
         $query = Contractor::active()->orderByDesc('created_at');
+
+        if ($countryId !== null) {
+            $query->where('country_id', $countryId);
+        }
 
         if ($category) {
             $query->where('service_category', $category);
@@ -113,8 +117,12 @@ class ContractorController
     /**
      * Live counter for the directory header.
      */
-    public static function totalCount(): int
+    public static function totalCount(?int $countryId = null): int
     {
-        return Contractor::active()->count();
+        $query = Contractor::active();
+        if ($countryId !== null) {
+            $query->where('country_id', $countryId);
+        }
+        return $query->count();
     }
 }

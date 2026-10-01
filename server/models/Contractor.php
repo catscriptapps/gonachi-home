@@ -19,6 +19,7 @@ class Contractor extends Model
         'slug',
         'service_category',
         'location',
+        'country_id',
         'operating_areas',
         'phone',
         'email',
@@ -37,6 +38,7 @@ class Contractor extends Model
     protected $casts = [
         'contractor_source_id' => 'integer',
         'claimed_by_user_id' => 'integer',
+        'country_id' => 'integer',
         'rating' => 'decimal:1',
         'review_count' => 'integer',
         'outreach_sms_sent_at' => 'datetime',
@@ -48,6 +50,11 @@ class Contractor extends Model
     public function source()
     {
         return $this->belongsTo(ContractorSource::class, 'contractor_source_id');
+    }
+
+    public function country()
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
     }
 
     public function claimedBy()
@@ -92,6 +99,9 @@ class Contractor extends Model
         }
         if (!$schema->hasColumn($table, 'avatar_url')) {
             $schema->table($table, fn ($t) => $t->string('avatar_url')->nullable()->after('review_count'));
+        }
+        if (!$schema->hasColumn($table, 'country_id')) {
+            $schema->table($table, fn ($t) => $t->unsignedInteger('country_id')->nullable()->index()->after('location'));
         }
     }
 }
