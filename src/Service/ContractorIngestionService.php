@@ -7,6 +7,7 @@ namespace Src\Service;
 
 use App\Models\Contractor;
 use App\Models\ContractorSource;
+use Src\Controller\ContractorController;
 use Src\Service\ContractorSources\ContractorCandidate;
 
 /**
@@ -59,7 +60,7 @@ final class ContractorIngestionService
                 continue;
             }
 
-            Contractor::create([
+            $contractor = Contractor::create([
                 'contractor_source_id' => $source->id,
                 'external_id' => $candidate->externalId,
                 'business_name' => $candidate->businessName,
@@ -72,6 +73,8 @@ final class ContractorIngestionService
                 'claim_status' => 'unclaimed',
                 'status' => 'active',
             ]);
+
+            $contractor->update(['slug' => ContractorController::buildUniqueSlug($contractor)]);
 
             $stats['new']++;
         }

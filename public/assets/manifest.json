@@ -332,6 +332,7 @@
     "isEntry": true,
     "imports": [
       "_contractor-claim.min.js",
+      "_preview.min.js",
       "resources/js/ui/toast.js",
       "_modal-factory.min.js",
       "_form-validator.min.js",
@@ -357,9 +358,11 @@
     "imports": [
       "_contractor-claim.min.js",
       "resources/js/ui/toast.js",
+      "_upload-modal.min.js",
+      "_preview.min.js",
+      "_confirm.min.js",
       "_modal-factory.min.js",
-      "_form-validator.min.js",
-      "_upload-modal.min.js"
+      "_form-validator.min.js"
     ]
   },
   "resources/js/pages/faqs-page.js": {

@@ -12,6 +12,9 @@
 
 import { wireContractorClaimButtons } from '../utils/contractor-claim.js';
 import { showToast } from '../ui/toast.js';
+import { uploadModal, createUploadHandler } from '../modals/upload-modal.js';
+import { registerImagePreview } from '../utils/globals/preview.js';
+import { confirmDialog } from '../ui/confirm.js';
 
 /**
  * navigator.clipboard only exists in a "secure context" — https, or
@@ -65,7 +68,104 @@ function wireCopyProfileLink() {
   });
 }
 
+/**
+ * Lets a claimed contractor's owner replace their generated-initials
+ * placeholder with a real photo — single-file replace, routed through the
+ * shared upload modal (client-side compression) exactly like Building
+ * Pictures elsewhere, except the target contractor is identified via
+ * ?contractor_id= on the endpoint URL (this upload replaces an existing
+ * record in place rather than staging photos for a not-yet-submitted form).
+ */
+function wireAvatarUpload() {
+  const btn = document.getElementById('contractor-avatar-change-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', () => {
+    const contractorId = btn.dataset.contractorId;
+    const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+    uploadModal.open();
+    setTimeout(() => {
+      createUploadHandler(
+        `${baseUrl}api/contractor-avatar-upload?contractor_id=${contractorId}`,
+        'contractor-avatar',
+        (files) => {
+          const url = files?.[0]?.url;
+          if (!url) return;
+
+          const wrapper = document.getElementById(`contractor-avatar-${contractorId}`);
+          if (wrapper) {
+            wrapper.style.background = '';
+            wrapper.classList.add('cursor-zoom-in');
+            wrapper.setAttribute('data-img-src', url);
+            wrapper.innerHTML = `<img src="${url}" alt="Profile photo" class="w-full h-full object-cover pointer-events-none" />`;
+          }
+          showToast('Profile photo updated.', 'success');
+
+          // A photo now exists where there wasn't one before — the delete
+          // button only renders server-side when avatar_url is already set,
+          // so a full refresh is the simplest way to reveal it without
+          // duplicating that button's markup here.
+          if (window.loadPartial) {
+            window.loadPartial(window.location.pathname, false);
+          }
+        },
+        1,
+        true,
+        { single: true, maxFiles: 1 }
+      );
+    }, 50);
+  });
+}
+
+/**
+ * Admin-only: removes a contractor's uploaded photo, reverting their card
+ * back to the generated initials placeholder. Uses the app's custom confirm
+ * dialog (never a native confirm()) before deleting.
+ */
+function wireAvatarDelete() {
+  const btn = document.getElementById('contractor-avatar-delete-btn');
+  if (!btn) return;
+
+  btn.addEventListener('click', async () => {
+    const contractorId = btn.dataset.contractorId;
+    const baseUrl = window.APP_CONFIG?.baseUrl || '/';
+
+    const confirmed = await confirmDialog(
+      'Remove this contractor\'s profile photo? It will revert to the generated initials placeholder.',
+      'Remove Photo',
+      'Cancel',
+      'bg-red-600 hover:bg-red-700'
+    );
+    if (!confirmed) return;
+
+    try {
+      const response = await fetch(`${baseUrl}api/contractor-avatar-delete`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ contractor_id: contractorId }),
+      });
+      const result = await response.json();
+
+      if (result.success) {
+        showToast(result.message || 'Photo removed.', 'success');
+        if (window.loadPartial) {
+          window.loadPartial(window.location.pathname, false);
+        }
+      } else {
+        showToast(result.message || 'Could not remove the photo.', 'error');
+      }
+    } catch (err) {
+      console.error('Contractor avatar delete error:', err);
+      showToast('Unexpected error removing the photo.', 'error');
+    }
+  });
+}
+
 export function init() {
   wireContractorClaimButtons();
   wireCopyProfileLink();
+  wireAvatarUpload();
+  wireAvatarDelete();
+  registerImagePreview();
 }

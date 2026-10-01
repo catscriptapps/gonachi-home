@@ -28,6 +28,11 @@ function resetCdeContractorsTable(): array
             $table->string('external_id')->nullable();
 
             $table->string('business_name');
+            // SEO-friendly URL segment for /contractor/{slug} — see
+            // Src\Controller\ContractorController::buildUniqueSlug(). Unique
+            // among non-null values only; numeric-id URLs keep working
+            // indefinitely (see ContractorController::findBySlugOrId()).
+            $table->string('slug')->nullable()->unique();
 
             // plumbing | electrical | painting | building_construction |
             // interior_design | renovation | solar_installation | other
@@ -44,6 +49,14 @@ function resetCdeContractorsTable(): array
             $table->text('description')->nullable();
             $table->decimal('rating', 2, 1)->nullable();
             $table->unsignedInteger('review_count')->default(0);
+
+            // Bare filename only (see Src\Utils\ContractorAvatar), same
+            // convention as App\Models\User::avatar_url — resolved against
+            // images/uploads/contractors/ wherever it's rendered. Null until
+            // the claimed owner uploads a real photo (server/api/contractor-
+            // avatar-upload.php); a deterministic initials card renders
+            // in its place until then.
+            $table->string('avatar_url')->nullable();
 
             $table->unsignedBigInteger('claimed_by_user_id')->nullable()->index();
             // unclaimed | pending | claimed

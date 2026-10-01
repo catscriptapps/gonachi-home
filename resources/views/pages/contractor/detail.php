@@ -25,8 +25,8 @@ use Src\Service\AuthService;
 use Src\Service\ContractorCreditService;
 use Src\Utils\ContactMasker;
 
-$contractorId = (int) ($GLOBALS['encodedId'] ?? 0);
-$contractor = $contractorId ? ContractorController::find($contractorId) : null;
+$contractorSlugOrId = (string) ($GLOBALS['encodedId'] ?? '');
+$contractor = $contractorSlugOrId !== '' ? ContractorController::findBySlugOrId($contractorSlugOrId) : null;
 
 if (!$contractor):
     http_response_code(404);
@@ -55,7 +55,8 @@ $categoryLabels = ContractorController::CATEGORY_LABELS;
 // ContractorOutreachService::profileUrl() and AuthController's password
 // reset link.
 $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https://' : 'http://';
-$profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'contractor/' . $contractor->id;
+$profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'contractor/' . ($contractor->slug ?? $contractor->id);
+$isOwner = $currentUserId !== null && (int) $contractor->claimed_by_user_id === $currentUserId;
 ?>
 <div class="max-w-3xl mx-auto space-y-6">
     <?php
@@ -73,21 +74,42 @@ $profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'c
 
     <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl p-6 sm:p-8 shadow-sm">
         <div class="flex items-start justify-between gap-4 mb-4">
-            <div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800 dark:bg-secondary-950 dark:text-secondary-400">
-                        <?= htmlspecialchars($categoryLabels[$contractor->service_category] ?? ucfirst($contractor->service_category)) ?>
-                    </span>
-                    <?php if ($isClaimed): ?>
-                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
-                            <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                            Verified
-                        </span>
-                    <?php else: ?>
-                        <span class="inline-flex items-center gap-1 text-xs font-semibold text-gray-400">Unclaimed Profile</span>
+            <div class="flex items-start gap-4">
+                <div class="relative flex-shrink-0" id="contractor-avatar-wrapper">
+                    <?php
+                    $avatarSizeClasses = 'h-20 w-20 text-2xl rounded-2xl';
+                    include __DIR__ . '/../../components/contractor-avatar.php';
+                    ?>
+                    <?php // Admin-only for now — a claimed owner's own self-service photo upload may follow later. ?>
+                    <?php if ($isAdmin): ?>
+                        <button type="button" id="contractor-avatar-change-btn" data-contractor-id="<?= $contractor->id ?>" title="Change photo"
+                            class="absolute -bottom-1.5 -right-1.5 h-7 w-7 rounded-full bg-gray-900 dark:bg-secondary-600 text-white flex items-center justify-center shadow-sm hover:bg-gray-700 dark:hover:bg-secondary-500 transition-colors border-2 border-white dark:border-gray-900">
+                            <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                        </button>
+                        <?php if ($contractor->avatar_url): ?>
+                            <button type="button" id="contractor-avatar-delete-btn" data-contractor-id="<?= $contractor->id ?>" title="Remove photo"
+                                class="absolute -top-1.5 -right-1.5 h-6 w-6 rounded-full bg-red-600 text-white flex items-center justify-center shadow-sm hover:bg-red-500 transition-colors border-2 border-white dark:border-gray-900">
+                                <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                            </button>
+                        <?php endif; ?>
                     <?php endif; ?>
                 </div>
-                <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-3"><?= htmlspecialchars($contractor->business_name) ?></h1>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-secondary-100 text-secondary-800 dark:bg-secondary-950 dark:text-secondary-400">
+                            <?= htmlspecialchars($categoryLabels[$contractor->service_category] ?? ucfirst($contractor->service_category)) ?>
+                        </span>
+                        <?php if ($isClaimed): ?>
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                                <svg class="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                                Verified
+                            </span>
+                        <?php else: ?>
+                            <span class="inline-flex items-center gap-1 text-xs font-semibold text-gray-400">Unclaimed Profile</span>
+                        <?php endif; ?>
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-900 dark:text-white mt-3"><?= htmlspecialchars($contractor->business_name) ?></h1>
+                </div>
             </div>
             <?php if ($contractor->rating !== null): ?>
                 <span class="text-sm font-medium text-amber-500 whitespace-nowrap">&#9733; <?= number_format((float) $contractor->rating, 1) ?> (<?= $contractor->review_count ?> reviews)</span>
@@ -199,7 +221,7 @@ $profileUrl = $protocol . ($_SERVER['HTTP_HOST'] ?? 'localhost') . $baseUrl . 'c
             <?php if ($isClaimed): ?>
                 <div class="flex items-center gap-3">
                     <span class="text-xs font-semibold text-emerald-600 dark:text-emerald-400">Claimed & Verified</span>
-                    <?php if ($currentUserId && (int) $contractor->claimed_by_user_id === $currentUserId): ?>
+                    <?php if ($isOwner): ?>
                         <!-- Owner-only: lets a verified contractor grab their own
                              profile link to share on social media, business cards,
                              etc. — helps them get discovered without relying on

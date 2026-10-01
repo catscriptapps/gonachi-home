@@ -8,7 +8,9 @@
 // navigation (see spa-router.js).
 
 import { wireContractorClaimButtons } from '../utils/contractor-claim.js';
+import { registerImagePreview } from '../utils/globals/preview.js';
 
 export function init() {
   wireContractorClaimButtons();
+  registerImagePreview();
 }

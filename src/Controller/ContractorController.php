@@ -60,6 +60,57 @@ class ContractorController
     }
 
     /**
+     * Resolves a contractor from the URL segment used in /contractor/{slug-or-id}
+     * — the SEO-friendly slug (see buildUniqueSlug()) for any contractor
+     * created after that feature shipped, or a bare numeric id for backward
+     * compatibility with links already sent out (outreach SMS/email, social
+     * shares, bookmarks). Scoped to active, matching find()'s existing
+     * behavior — there's no draft/pending-review state for contractors to
+     * distinguish from "not found" the way Leads' findBySlugOrId() does.
+     */
+    public static function findBySlugOrId(string $slugOrId): ?Contractor
+    {
+        $query = Contractor::active();
+
+        return ctype_digit($slugOrId)
+            ? $query->find((int) $slugOrId)
+            : $query->where('slug', $slugOrId)->first();
+    }
+
+    /**
+     * Deterministic slug from the business name + the city/area portion of
+     * its location (e.g. "Interior Edge Design Studio" in "Ikoyi, Lagos" ->
+     * "interior-edge-design-studio-ikoyi") — mirrors
+     * LeadsController::buildUniqueSlug()'s numeric-suffix collision handling.
+     * Unlike leads, every contractor has a business_name + location from
+     * creation, so this always produces a slug (no "incomplete record" gate).
+     */
+    public static function buildUniqueSlug(Contractor $contractor): ?string
+    {
+        $businessName = trim((string) $contractor->business_name);
+        if ($businessName === '') {
+            return null;
+        }
+
+        $areaPart = trim(explode(',', (string) $contractor->location)[0] ?? '');
+        $base = \Illuminate\Support\Str::slug(trim("{$businessName} {$areaPart}"));
+
+        if ($base === '') {
+            return null;
+        }
+
+        $slug = $base;
+        $suffix = 2;
+
+        while (Contractor::where('slug', $slug)->where('id', '!=', $contractor->id)->exists()) {
+            $slug = "{$base}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
+    }
+
+    /**
      * Live counter for the directory header.
      */
     public static function totalCount(): int

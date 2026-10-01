@@ -263,6 +263,25 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
         ];
     }
 
+    if ($resource === 'contractor') {
+        $contractor = \Src\Controller\ContractorController::findBySlugOrId($id);
+
+        if ($contractor) {
+            $categoryLabel = \Src\Controller\ContractorController::CATEGORY_LABELS[$contractor->service_category]
+                ?? ucfirst($contractor->service_category);
+
+            return [
+                'title'   => "{$contractor->business_name} — {$categoryLabel} in {$contractor->location}",
+                'summary' => "View {$contractor->business_name}'s profile, request a quote, and connect directly on Gonachi Contractor Discovery.",
+            ];
+        }
+
+        return [
+            'title'   => 'Contractor Not Found',
+            'summary' => 'This contractor profile is no longer available.',
+        ];
+    }
+
     return null;
 }
 

@@ -119,7 +119,8 @@ function seedCdeBaselineData(): array
     ];
 
     foreach ($contractors as $contractor) {
-        Contractor::create($contractor + ['status' => 'active']);
+        $newContractor = Contractor::create($contractor + ['status' => 'active']);
+        $newContractor->update(['slug' => \Src\Controller\ContractorController::buildUniqueSlug($newContractor)]);
     }
 
     $messages[] = 'seeded ' . count($contractors) . ' baseline contractor records';
