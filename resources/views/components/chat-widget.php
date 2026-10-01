@@ -1,23 +1,39 @@
 <?php
 // /resources/views/components/chat-widget.php
 //
-// Floating live-chat bubble, available to guests and logged-in
-// (non-admin) visitors on every page — see src/Controller/ChatController.php.
-// Admins manage conversations from the dedicated /live-chat inbox instead,
-// so this never renders for them (no "chat with yourself" case).
+// Floating live-chat bubble, available to guests and logged-in visitors on
+// every page — see src/Controller/ChatController.php. Admins get a reduced
+// variant of the SAME bubble: no panel (they don't chat with themselves),
+// just an unread-count badge that links straight to the /live-chat inbox —
+// see resources/js/ui/live-chat-badge.js, which drives this badge the same
+// way it drives the sidebar's nav badge.
 //
 // Included near the end of <body> in app.php, portal.php,
 // contractor-app.php, landlord-app.php — same spot as components/scroll-top.php.
+//
+// Position: starts at the page's exact bottom-right corner. Once
+// scroll-top.php's button becomes visible (scrolled past 200px),
+// resources/js/ui/scroll-to-top.js slides this bubble up to sit directly
+// above it, via the same scroll listener that shows/hides that button —
+// see its `bottom` transition there.
 
 declare(strict_types=1);
 
 use Src\Service\AuthService;
 
-if (AuthService::isAdmin()) {
-    return;
-}
+$isAdminWidget = AuthService::isAdmin();
 ?>
-<div id="chat-widget" class="fixed bottom-6 right-6 z-[9998] flex flex-col items-end">
+<?php if ($isAdminWidget): ?>
+    <div id="chat-widget" class="fixed right-6 z-[9998]" style="bottom: 1.5rem; transition: bottom 0.3s ease;">
+        <a href="<?= $baseUrl ?>live-chat" data-full-reload title="Live Chat Inbox" aria-label="Open the live chat admin inbox"
+            class="relative flex-shrink-0 h-14 w-14 rounded-full bg-primary-600 hover:bg-primary-500 text-white shadow-xl flex items-center justify-center transition-all hover:scale-105">
+            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+            <span id="chat-widget-unread-badge" class="hidden absolute -top-1 -right-1 min-w-[1.25rem] h-5 px-1 rounded-full bg-red-600 text-white text-xs font-bold flex items-center justify-center border-2 border-white dark:border-gray-950">0</span>
+        </a>
+    </div>
+    <?php return; ?>
+<?php endif; ?>
+<div id="chat-widget" class="fixed right-6 z-[9998] flex flex-col items-end" style="bottom: 1.5rem; transition: bottom 0.3s ease;">
 
     <!-- Panel -->
     <div id="chat-widget-panel" class="hidden mb-4 w-[22rem] max-w-[calc(100vw-3rem)] h-[30rem] max-h-[calc(100vh-8rem)] bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden">

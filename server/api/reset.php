@@ -43,6 +43,7 @@ if ($isAdminReset) {
 }
 
 require_once __DIR__ . '/../../scripts/reset/preserve-system-settings.php';
+require_once __DIR__ . '/../../scripts/reset/preserve-scraped-data.php';
 
 $messages = [];
 
@@ -50,10 +51,12 @@ $messages = [];
  * 1. PRE-FLIGHT CHECKS & DISABLE CONSTRAINTS
  */
 
-// Deliberately NOT preserving scraped leads/contractors across a reset —
-// this button is meant to be a total data wipe, leads included. (A
-// previous version of this endpoint snapshotted and restored them; removed
-// on request — see git history if that behavior is ever wanted back.)
+// Real, cron-discovered leads/contractors survive this reset too — see
+// scripts/reset/preserve-scraped-data.php for why this can't just be "skip
+// dropping those tables" (their foreign keys point at parent tables that
+// DO get reseeded with new IDs). Snapshot before the drop phase below;
+// restored once the relevant tables are back and reseeded.
+$scrapedDataBackup = backupScrapedData();
 
 // Settings page's scraping on/off toggles still survive a reset — see
 // scripts/reset/preserve-system-settings.php.
@@ -336,6 +339,12 @@ $messages = array_merge($messages, resetCdeContractorOutreachLogTable());
 require_once __DIR__ . '/../../scripts/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
 
+// Both real-estate-leads' and contractor-discovery's parent lookup tables
+// (locations/categories/sources) are reseeded by this point, so their IDs
+// are stable for restoreScrapedData() to resolve against — see
+// scripts/reset/preserve-scraped-data.php.
+$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
+
 /**
  * 4d. CREATION PHASE - PROJECT: real-estate-world (rew_ prefixed tables)
  */
@@ -489,8 +498,13 @@ if ($deleteAllPicturesAndPDFs) {
 
         $deletedCount = 0;
         foreach ($entries as $entry) {
-            // NEVER delete current, parent, or .gitkeep (keeps the folder structure in Git)
-            if (in_array($entry, ['.', '..', '.gitkeep'])) continue;
+            // NEVER delete current, parent, .gitkeep (keeps the folder
+            // structure in Git), or contractors/ — restoreScrapedData()
+            // (scripts/reset/preserve-scraped-data.php) carries a
+            // contractor's avatar_url filename through a reset, so deleting
+            // the actual file out from under it here would leave that
+            // avatar_url pointing at nothing.
+            if (in_array($entry, ['.', '..', '.gitkeep', 'contractors'])) continue;
 
             $path = $resolved . DIRECTORY_SEPARATOR . $entry;
 
@@ -503,7 +517,7 @@ if ($deleteAllPicturesAndPDFs) {
             }
         }
 
-        $messages[] = "purged $deletedCount item(s) from $folder. (Avatars preserved)";
+        $messages[] = "purged $deletedCount item(s) from $folder. (Contractor photos preserved)";
     }
 }
 

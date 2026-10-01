@@ -1,29 +1,35 @@
 // /resources/js/ui/live-chat-badge.js
 //
 // Fast-polled (~3s) unread count for the "Live Chat" sidebar nav item (see
-// resources/views/partials/layout-sidebar.php's #live-chat-nav-badge) so an
-// admin sees a new conversation land no matter what page they're on —
-// mirrors initUnreadPolling()'s gate (only runs for a logged-in session)
-// but at a much shorter interval since this specifically answers "do I
-// have a new message right now." A plain poll rather than SSE: a
-// background badge doesn't need a held-open connection, see
+// resources/views/partials/layout-sidebar.php's #live-chat-nav-badge) AND
+// the admin variant of the floating chat bubble (chat-widget.php's
+// #chat-widget-unread-badge, same id/shape the guest-facing bubble already
+// used for its own badge) — one poll drives both, so an admin sees a new
+// conversation land no matter what page they're on. Mirrors
+// initUnreadPolling()'s gate (only runs for a logged-in session) but at a
+// much shorter interval since this specifically answers "do I have a new
+// message right now." A plain poll rather than SSE: a background badge
+// doesn't need a held-open connection, see
 // server/api/chat-admin-unread-count.php's docblock.
 
 const POLL_MS = 3000;
+const BADGE_IDS = ['live-chat-nav-badge', 'chat-widget-unread-badge'];
 
 let timer = null;
 let stopped = false;
 
 function updateBadge(count) {
-  const badge = document.getElementById('live-chat-nav-badge');
-  if (!badge) return;
+  BADGE_IDS.forEach((id) => {
+    const badge = document.getElementById(id);
+    if (!badge) return;
 
-  if (count > 0) {
-    badge.textContent = count > 99 ? '99+' : String(count);
-    badge.classList.remove('hidden');
-  } else {
-    badge.classList.add('hidden');
-  }
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : String(count);
+      badge.classList.remove('hidden');
+    } else {
+      badge.classList.add('hidden');
+    }
+  });
 }
 
 async function poll() {

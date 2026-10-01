@@ -15,13 +15,16 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 
 require_once __DIR__ . '/../server/bootstrap.php';
 require_once __DIR__ . '/reset/preserve-system-settings.php';
+require_once __DIR__ . '/reset/preserve-scraped-data.php';
 
 $messages = [];
 
-// Deliberately NOT preserving scraped leads/contractors across a reset —
-// this is meant to be a total data wipe, leads included. (A previous
-// version of this script snapshotted and restored them; removed on
-// request — see git history if that behavior is ever wanted back.)
+// Real, cron-discovered leads/contractors survive a reset — see
+// reset/preserve-scraped-data.php for why this can't just be "skip
+// dropping those tables" (their foreign keys point at parent tables that
+// DO get reseeded with new IDs). Snapshot before the drop phase; restored
+// once the relevant tables are back and reseeded, below.
+$scrapedDataBackup = backupScrapedData();
 
 // Settings page's scraping on/off toggles still survive a reset — see
 // reset/preserve-system-settings.php.
@@ -204,6 +207,12 @@ $messages = array_merge($messages, resetCdeContractorOutreachLogTable());
 
 require_once __DIR__ . '/reset/cde-seed.php';
 $messages = array_merge($messages, seedCdeBaselineData());
+
+// Both real-estate-leads' and contractor-discovery's parent lookup tables
+// (locations/categories/sources) are reseeded by this point, so their IDs
+// are stable for restoreScrapedData() to resolve against — see
+// reset/preserve-scraped-data.php.
+$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
 
 // --------------------------------------------------
 // Project: real-estate-world (rew_ prefixed tables)

@@ -5,6 +5,7 @@
 
 export function setupScrollToTop() {
     const scrollBtn = document.getElementById('scroll-top');
+    const chatWidget = document.getElementById('chat-widget'); // floating chat bubble, see components/chat-widget.php
     const mainContent = document.getElementById('main-content'); // Assuming this is the main scrollable area
 
     if (scrollBtn && mainContent) {
@@ -18,6 +19,15 @@ export function setupScrollToTop() {
             scrollBtn.style.opacity = visible ? '1' : '0';
             scrollBtn.style.pointerEvents = visible ? 'auto' : 'none';
             scrollBtn.style.display = visible ? 'flex' : 'none';
+
+            // Chat bubble sits at the page's exact bottom-right corner until
+            // this button appears, then slides up to rest directly above it
+            // (scroll-top.php's own button is `bottom: 6rem` + ~2.75rem
+            // tall, so 9.5rem clears it with a small gap) — same scroll
+            // threshold as the button itself so they always move together.
+            if (chatWidget) {
+                chatWidget.style.bottom = visible ? '9.5rem' : '1.5rem';
+            }
         };
 
         // Attach listeners

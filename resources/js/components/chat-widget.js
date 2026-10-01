@@ -379,6 +379,12 @@ export function init() {
   if (!widget || widget.dataset.initialized) return;
   widget.dataset.initialized = 'true';
 
+  // Admin variant (see chat-widget.php) is just a link to /live-chat with
+  // an unread badge — no panel/guest-form/composer exist in that markup, so
+  // there's nothing here to wire up. The badge itself is driven by
+  // resources/js/ui/live-chat-badge.js, same poller as the sidebar's badge.
+  if (!document.getElementById('chat-widget-bubble')) return;
+
   wireBubble();
   wireGuestForm();
   wireComposer();
