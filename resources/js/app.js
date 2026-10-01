@@ -44,6 +44,7 @@ import './utils/polyfills.js';
 import { setupScrollToTop } from './ui/scroll-to-top.js';
 import { setupSpinner } from './ui/spinner.js';
 import { bindPartialLinks } from './utils/spa-router.js';
+import { wireFullReloadLinks } from './utils/full-reload-links.js';
 import { initDarkMode } from './utils/dark-mode.js';
 import { LoginModal } from './modals/login-modal.js';
 import { LogoutModal } from './modals/logout-modal.js';
@@ -53,6 +54,7 @@ import { initHeaderSearch } from './ui/header-search.js';
 import { initFooterLinks } from './ui/footer-links.js';
 import { initUnreadPolling } from './ui/unread-handler.js';
 import { initLiveChatBadge } from './ui/live-chat-badge.js';
+import { initMessagesBadge } from './ui/messages-badge.js';
 import { init as initMessagesPage } from './pages/messages-page.js';
 import { cleanupModals } from './utils/modal-cleanup.js';
 import { init as initChatWidget } from './components/chat-widget.js';
@@ -182,6 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   setupSpinner();
   setupScrollToTop();
   bindPartialLinks();
+  wireFullReloadLinks();
   initDarkMode();
   initFooterLinks();
   initChatWidget();
@@ -225,6 +228,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // tells it to stop.
     if (window.APP_CONFIG?.isAdmin) {
       initLiveChatBadge();
+      initMessagesBadge();
     }
   }
 

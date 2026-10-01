@@ -179,6 +179,7 @@ class NavigationConfig
             $base . '/contractor-claims-review',
             $base . '/contractor-outreach',
             $base . '/live-chat',
+            $base . '/messages',
             $base . '/admin',
             $base . '/adverts-admin',
         ];
@@ -204,6 +205,7 @@ class NavigationConfig
             $base . '/contractor-claims-review',
             $base . '/contractor-outreach',
             $base . '/live-chat',
+            $base . '/messages',
             $base . '/admin',
             $base . '/adverts-admin',
         ];

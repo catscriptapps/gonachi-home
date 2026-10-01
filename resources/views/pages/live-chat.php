@@ -31,6 +31,14 @@ if (!AuthService::isAdmin()) {
 $conversations = ChatController::openConversations(20);
 ?>
 <div class="space-y-6" data-base-url="<?= $baseUrl ?>">
+    <?php
+    $breadcrumbs = [
+        ['label' => 'Admin Dashboard', 'href' => $baseUrl . 'admin'],
+        ['label' => 'Live Chat'],
+    ];
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Live Chat</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Conversations from guests and signed-in visitors.</p>

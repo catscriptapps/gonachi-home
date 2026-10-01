@@ -105,6 +105,17 @@ declare(strict_types=1);
                     </a>
                 <?php endif; ?>
 
+                <!-- Messages (admin only) -->
+                <?php if ($isLoggedIn && \Src\Service\AuthService::isAdmin()): ?>
+                    <a href="<?= $baseUrl ?>messages" data-partial title="Messages"
+                        class="relative p-2 rounded-xl text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 transition-all focus:outline-none">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="h-5 w-5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                        </svg>
+                        <span id="messages-nav-badge" class="hidden absolute -top-0.5 -right-0.5 min-w-[1.1rem] h-[1.1rem] px-1 rounded-full bg-red-600 text-white text-[10px] font-bold flex items-center justify-center border-2 border-white dark:border-gray-900">0</span>
+                    </a>
+                <?php endif; ?>
+
                 <?php if ($isLoggedIn): ?>
                     <?php $accountInfo = \Src\Config\NavigationConfig::getUserDisplayInfo(); ?>
                     <a href="#" data-logout-button class="flex items-center space-x-3 group cursor-pointer">
@@ -139,6 +150,7 @@ declare(strict_types=1);
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <span class="text-xs text-gray-400 dark:text-gray-500">&copy; <?= date('Y') ?> Gonachi. All rights reserved.</span>
                 <div class="flex space-x-6 text-xs font-medium text-gray-500 dark:text-gray-400">
+                    <a href="<?= $baseUrl ?>contact" data-full-reload class="hover:text-primary-600 transition-colors">Contact</a>
                     <a href="#" class="hover:text-primary-600 transition-colors">Terms of Service</a>
                     <a href="#" class="hover:text-primary-600 transition-colors">Privacy Policy</a>
                 </div>

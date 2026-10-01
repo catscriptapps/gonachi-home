@@ -153,7 +153,7 @@ if (is_dir($heroImagesPath)) {
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
         <?php foreach ($projects as $index => $project): ?>
             <?php $accent = $accentClasses[$project['accent']]; ?>
-            <a href="<?= htmlspecialchars($project['href']) ?>"
+            <a href="<?= htmlspecialchars($project['href']) ?>" data-full-reload
                 <?php if (!empty($project['external'])): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
                 data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>"
                 class="group relative flex flex-col bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-3xl p-8 shadow-sm overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
@@ -212,7 +212,7 @@ if (is_dir($heroImagesPath)) {
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mt-12 max-w-5xl mx-auto">
             <?php foreach ($projects as $index => $project): ?>
                 <?php $accent = $accentClasses[$project['accent']]; ?>
-                <a href="<?= htmlspecialchars($project['href']) ?>"
+                <a href="<?= htmlspecialchars($project['href']) ?>" data-full-reload
                     <?php if (!empty($project['external'])): ?>target="_blank" rel="noopener noreferrer"<?php endif; ?>
                     data-aos="fade-up" data-aos-duration="700" data-aos-delay="<?= $index * 100 ?>"
                     class="group bg-white dark:bg-gray-900 border border-gray-100 dark:border-gray-800 rounded-xl p-6 flex items-start gap-4 text-left hover:border-transparent hover:shadow-lg hover:-translate-y-0.5 transition-all duration-300">

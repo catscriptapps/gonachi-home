@@ -32,6 +32,14 @@ if (AuthService::isLoggedIn() && AuthService::isAdmin()) {
 
         <div class="max-w-7xl mx-auto pt-12 px-4 sm:px-6 lg:px-8">
 
+            <?php
+            $breadcrumbs = [
+                ['label' => 'Admin Dashboard', 'href' => $baseUrl . 'admin'],
+                ['label' => 'Messages'],
+            ];
+            include __DIR__ . '/../components/breadcrumbs.php';
+            ?>
+
             <div class="mb-12 flex flex-col md:flex-row md:items-end justify-between gap-6" data-aos="fade-down">
                 <div class="flex items-start gap-5">
                     <div class="hidden sm:flex w-20 h-20 rounded-[2rem] bg-gradient-to-br from-primary-800 to-black items-center justify-center text-white shadow-2xl shadow-secondary-900/20 -rotate-3 hover:rotate-0 transition-transform duration-500 border border-white/10">

@@ -20,6 +20,7 @@ use Src\Controller\ChatController;
 use Src\Controller\ContractorClaimController;
 use Src\Controller\LandlordReportReviewController;
 use Src\Controller\LeadReviewController;
+use Src\Controller\MessagesController;
 use Src\Service\AuthService;
 use Src\Service\ContractorOutreachService;
 
@@ -42,10 +43,12 @@ $pendingReports = LandlordReportReviewController::pending()->total();
 $pendingClaims = ContractorClaimController::pending()->total();
 $pendingAdverts = AdvertsController::pendingCount();
 $outreachableContractors = ContractorOutreachService::outreachable()->total();
+$unreadMessages = MessagesController::getUnreadCount();
 
 $tabs = [
     ['label' => 'Overview', 'href' => 'admin'],
     ['label' => 'Users', 'href' => 'users'],
+    ['label' => 'Messages', 'href' => 'messages', 'badge' => $unreadMessages],
     ['label' => 'Live Chats', 'href' => 'live-chat', 'badge' => $unreadChats],
     ['label' => 'Lead Review', 'href' => 'lead-review', 'badge' => $pendingLeads],
     ['label' => 'Landlord Reports', 'href' => 'landlord-report-review', 'badge' => $pendingReports],
@@ -116,9 +119,22 @@ $statCards = [
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
         'crossShell' => true,
     ],
+    [
+        'label' => 'Unread Messages',
+        'value' => $unreadMessages,
+        'sub' => $unreadMessages > 0 ? 'Awaiting a reply' : 'All caught up',
+        'href' => 'messages',
+        'accent' => 'text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/40',
+        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />',
+    ],
 ];
 ?>
 <div class="space-y-6">
+    <?php
+    $breadcrumbs = [['label' => 'Admin Dashboard']];
+    include __DIR__ . '/../components/breadcrumbs.php';
+    ?>
+
     <div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900 dark:text-white">Admin Dashboard</h1>
         <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Everything across all three projects that needs your attention, in one place.</p>
@@ -154,11 +170,11 @@ $statCards = [
         <?php endforeach; ?>
     </div>
 
-    <?php if ($openConversations === 0 && $pendingLeads === 0 && $pendingReports === 0 && $pendingClaims === 0 && $pendingAdverts === 0): ?>
+    <?php if ($openConversations === 0 && $pendingLeads === 0 && $pendingReports === 0 && $pendingClaims === 0 && $pendingAdverts === 0 && $unreadMessages === 0): ?>
         <div class="bg-white dark:bg-gray-900 border border-dashed border-gray-300 dark:border-gray-800 rounded-2xl p-10 text-center">
             <svg class="h-10 w-10 text-emerald-400 mx-auto mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <h4 class="text-sm font-bold text-gray-700 dark:text-gray-300">All caught up</h4>
-            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Nothing pending across chats, leads, reports, claims, or adverts right now.</p>
+            <p class="text-xs text-gray-400 dark:text-gray-500 mt-1">Nothing pending across chats, leads, reports, claims, adverts, or messages right now.</p>
         </div>
     <?php endif; ?>
 </div>
