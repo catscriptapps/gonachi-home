@@ -14,18 +14,16 @@ declare(strict_types=1);
 use Illuminate\Database\Capsule\Manager as Capsule;
 
 require_once __DIR__ . '/../server/bootstrap.php';
-require_once __DIR__ . '/reset/preserve-scraped-data.php';
 require_once __DIR__ . '/reset/preserve-system-settings.php';
 
 $messages = [];
 
-// Snapshot real, cron-discovered leads/contractors before anything is
-// dropped — see reset/preserve-scraped-data.php for why this can't just be
-// "skip dropping those tables" (their foreign keys point at parent tables
-// that DO get reseeded with new IDs).
-$scrapedDataBackup = backupScrapedData();
+// Deliberately NOT preserving scraped leads/contractors across a reset —
+// this is meant to be a total data wipe, leads included. (A previous
+// version of this script snapshotted and restored them; removed on
+// request — see git history if that behavior is ever wanted back.)
 
-// Same idea for the Settings page's scraping on/off toggles — see
+// Settings page's scraping on/off toggles still survive a reset — see
 // reset/preserve-system-settings.php.
 $systemSettingsBackup = backupSystemSettings();
 
@@ -329,10 +327,6 @@ $messages = array_merge($messages, resetSwpListingResponsesTable());
 
 require_once __DIR__ . '/reset/swp-seed.php';
 $messages = array_merge($messages, seedSwpBaselineData());
-
-// Re-attach the leads/contractors snapshotted at the top, now that their
-// parent tables (sources, categories, locations) have fresh IDs to resolve against.
-$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
 
 Capsule::schema()->enableForeignKeyConstraints();
 

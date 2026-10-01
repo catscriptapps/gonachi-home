@@ -48,6 +48,12 @@ function resetRelLeadsTable(): array
             // Lead::scopeComplete() and surface publicly.
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
+            // SEO-friendly URL slug (e.g. "3-bedroom-house-in-lekki-lagos"),
+            // built from the classified subject + specific location — see
+            // LeadsController::buildUniqueSlug(). Only set once a lead has
+            // both a property_type and a specific location; left null
+            // otherwise (never linked to publicly either way).
+            $table->string('slug')->nullable()->unique();
 
             // pending_review | active | expired | rejected
             $table->string('status')->default('pending_review')->index();

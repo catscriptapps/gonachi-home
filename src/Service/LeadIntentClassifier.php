@@ -64,15 +64,24 @@ final class LeadIntentClassifier
         '/\bfaqs?\b/i',
     ];
 
-    /** @var string[] */
+    /** @var array<int, array{name: string, depth: int}> */
     private array $knownLocations;
 
     /**
-     * @param string[] $knownLocations Location names to match against, longest first
+     * @param array<int, array{name: string, depth: int}> $knownLocations
+     *   Every location name paired with its depth in the location tree
+     *   (0 = country, 1 = state, 2 = area — see
+     *   LeadIngestionService::locationIndex()). detectLocation() scans the
+     *   whole text for every name that appears and keeps the DEEPEST (most
+     *   specific) match, not just the first or the longest one found — a
+     *   short area name like "Ikeja" must still beat "Nigeria" turning up
+     *   in the very same sentence, which a plain longest-string-wins or
+     *   first-found heuristic gets wrong almost every time (property
+     *   listings routinely mention the country name alongside the actual
+     *   specific area).
      */
     public function __construct(array $knownLocations = [])
     {
-        usort($knownLocations, fn (string $a, string $b) => strlen($b) <=> strlen($a));
         $this->knownLocations = $knownLocations;
     }
 
@@ -169,13 +178,35 @@ final class LeadIntentClassifier
 
     private function detectLocation(string $text): ?string
     {
+        $best = null;
+
         foreach ($this->knownLocations as $location) {
-            if (preg_match('/\b' . preg_quote($location, '/') . '\b/i', $text)) {
-                return $location;
+            if (!preg_match('/\b' . preg_quote($location['name'], '/') . '\b/i', $text)) {
+                continue;
+            }
+
+            if (
+                $best === null
+                || $location['depth'] > $best['depth']
+                || ($location['depth'] === $best['depth'] && strlen($location['name']) > strlen($best['name']))
+            ) {
+                $best = $location;
             }
         }
 
-        return null;
+        return $best['name'] ?? null;
+    }
+
+    /**
+     * Public entry point to just the location-detection step, for a
+     * standalone re-run against already-stored raw_text — see
+     * scripts/backfill-lead-locations.php. Kept separate from classify()
+     * so a location-only backfill can't also perturb a lead's already-
+     * reviewed request_type/property_type/budget.
+     */
+    public function findBestLocationName(string $text): ?string
+    {
+        return $this->detectLocation($text);
     }
 
     /**

@@ -42,7 +42,6 @@ if ($isAdminReset) {
     }
 }
 
-require_once __DIR__ . '/../../scripts/reset/preserve-scraped-data.php';
 require_once __DIR__ . '/../../scripts/reset/preserve-system-settings.php';
 
 $messages = [];
@@ -51,13 +50,12 @@ $messages = [];
  * 1. PRE-FLIGHT CHECKS & DISABLE CONSTRAINTS
  */
 
-// Snapshot real, cron-discovered leads/contractors before anything is
-// dropped — see scripts/reset/preserve-scraped-data.php for why this can't
-// just be "skip dropping those tables" (their foreign keys point at parent
-// tables that DO get reseeded with new IDs).
-$scrapedDataBackup = backupScrapedData();
+// Deliberately NOT preserving scraped leads/contractors across a reset —
+// this button is meant to be a total data wipe, leads included. (A
+// previous version of this endpoint snapshotted and restored them; removed
+// on request — see git history if that behavior is ever wanted back.)
 
-// Same idea for the Settings page's scraping on/off toggles — see
+// Settings page's scraping on/off toggles still survive a reset — see
 // scripts/reset/preserve-system-settings.php.
 $systemSettingsBackup = backupSystemSettings();
 
@@ -460,13 +458,6 @@ $messages = array_merge($messages, resetSwpListingResponsesTable());
 
 require_once __DIR__ . '/../../scripts/reset/swp-seed.php';
 $messages = array_merge($messages, seedSwpBaselineData());
-
-/**
- * 4f. RESTORE PRESERVED DATA
- * Re-attach the leads/contractors snapshotted in step 1, now that their
- * parent tables (sources, categories, locations) have fresh IDs to resolve against.
- */
-$messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
 
 /**
  * 5. FINALIZE

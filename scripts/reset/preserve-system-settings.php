@@ -5,10 +5,10 @@
 // reset/system-settings.php), which reseeds both scraping toggles back to
 // their default of true — silently undoing an admin's "paused" choice on
 // the Settings page every time the database gets reset, even though that
-// choice is an operational preference, not sample/demo data. Same
-// backup-before-drop, restore-after-reseed pattern as
-// reset/preserve-scraped-data.php, just for this one singleton row instead
-// of the scraped leads/contractors tables.
+// choice is an operational preference, not sample/demo data — unlike
+// scraped leads/contractors, which a reset is now meant to wipe entirely,
+// this one setting is deliberately still backed up before the drop and
+// restored after reseeding.
 
 declare(strict_types=1);
 

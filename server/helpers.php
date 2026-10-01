@@ -225,15 +225,16 @@ function resolvePageRoute(string $path): array
 function resolveDynamicPageMeta(string $resource, string $id): ?array
 {
     if ($resource === 'leads') {
-        $lead = \App\Models\Lead::with(['location.parent'])->find((int) $id);
+        $lead = \Src\Controller\LeadsController::findBySlugOrId($id);
 
-        if ($lead && $lead->status === 'active') {
+        if ($lead && $lead->status === 'active' && $lead->isComplete()) {
             return [
-                // headline() now bakes the location in itself (e.g. "For
-                // Sale: 3-Bedroom Duplex in Lekki") — no need to append
-                // locationLabel() again here like before.
-                'title'   => \Src\Controller\LeadsController::headline($lead),
-                'summary' => 'Full lead record: contact details, budget, and source.',
+                // seoTitle()/seoDescription() carry the same keywords (area,
+                // state, property type, bedrooms) as the lead's own URL
+                // slug, so the <title> tag, meta description, and URL all
+                // reinforce the same search terms.
+                'title'   => \Src\Controller\LeadsController::seoTitle($lead),
+                'summary' => \Src\Controller\LeadsController::seoDescription($lead),
             ];
         }
 

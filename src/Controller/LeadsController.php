@@ -21,6 +21,24 @@ use Src\Utils\ContactMasker;
 class LeadsController
 {
     /**
+     * Resolves a lead from the URL segment used in /leads/{slug-or-id} — the
+     * SEO-friendly slug (see buildUniqueSlug()) for any lead ingested after
+     * that feature shipped, or a bare numeric id for backward compatibility
+     * with links/bookmarks that predate it. Not scoped to active/complete —
+     * callers (resolveDynamicPageMeta(), leads/detail.php) each apply that
+     * check themselves, so a 404 can explain what's wrong (not found vs.
+     * not yet available) rather than this helper masking the difference.
+     */
+    public static function findBySlugOrId(string $slugOrId): ?Lead
+    {
+        $query = Lead::with(['location.parent', 'category', 'source']);
+
+        return ctype_digit($slugOrId)
+            ? $query->find((int) $slugOrId)
+            : $query->where('slug', $slugOrId)->first();
+    }
+
+    /**
      * Count of active leads per request type, for the homepage live counters.
      *
      * @return array<string, int>
@@ -259,6 +277,85 @@ class LeadsController
     }
 
     /**
+     * SEO-optimized title for the lead's detail page <title> tag, meta
+     * description, and its own URL slug — deliberately WITHOUT headline()'s
+     * "For Sale:"/"Seeking:" verb prefix, since a buyer searches "3-Bedroom
+     * House in Magodo, Lagos", not "For Sale: 3-Bedroom House in Magodo,
+     * Lagos". Always includes the specific area + state (see
+     * headlineLocationSuffix()), which Lead::scopeComplete() guarantees
+     * exists for any publicly-reachable lead.
+     */
+    public static function seoTitle(Lead $lead): string
+    {
+        $propertyLabel = self::specificPropertyLabel($lead) ?? self::propertyTypeLabel($lead);
+        $subject = $lead->bedrooms ? "{$lead->bedrooms}-Bedroom {$propertyLabel}" : $propertyLabel;
+
+        return $subject . self::headlineLocationSuffix($lead);
+    }
+
+    /**
+     * Detail-rich meta description for the lead's detail page — carries the
+     * same keywords as seoTitle() (property type, bedrooms, location) plus
+     * budget and buyer/seller context, so the title, URL, and description
+     * all reinforce the same search terms instead of three different ones.
+     */
+    public static function seoDescription(Lead $lead): string
+    {
+        $title = self::seoTitle($lead);
+
+        $context = match ($lead->request_type) {
+            'seller' => "{$title} is listed for sale.",
+            'renter' => "{$title} is available to rent.",
+            'investor' => "{$title} — an investment opportunity.",
+            default => "A buyer is actively looking for {$title}.",
+        };
+
+        $budget = self::budgetLabel($lead);
+        $budgetSentence = $budget ? " Budget: {$budget}." : '';
+
+        return "{$context}{$budgetSentence} View full contact details and connect directly on Gonachi.";
+    }
+
+    /**
+     * A unique, URL-safe slug for a lead's detail page — e.g.
+     * "3-bedroom-house-in-lekki-lagos" — derived from seoTitle() so the URL
+     * carries the same keywords as the page's own title and meta
+     * description (three SEO signals reinforcing each other instead of a
+     * bare numeric id). Called once, right after a lead is created (see
+     * LeadIngestionService::ingest()). A lead without a property_type or a
+     * specific (depth-2) location — the same bar Lead::isComplete() uses —
+     * gets no slug at all, since it can never pass scopeComplete() to be
+     * linked to publicly either way.
+     */
+    public static function buildUniqueSlug(Lead $lead): ?string
+    {
+        $location = $lead->location;
+        $hasSpecificLocation = $location
+            && $location->parent_id !== null
+            && $location->parent
+            && $location->parent->parent_id !== null;
+
+        if (!$lead->property_type || !$hasSpecificLocation) {
+            return null;
+        }
+
+        $base = \Illuminate\Support\Str::slug(self::seoTitle($lead));
+        if ($base === '') {
+            return null;
+        }
+
+        $slug = $base;
+        $suffix = 2;
+
+        while (Lead::where('slug', $slug)->where('id', '!=', $lead->id)->exists()) {
+            $slug = "{$base}-{$suffix}";
+            $suffix++;
+        }
+
+        return $slug;
+    }
+
+    /**
      * The generic property_type category label, upgraded to a more specific
      * term when one appears in the raw text (e.g. 'residential' -> "Duplex"
      * instead of the generic "House").
@@ -287,15 +384,19 @@ class LeadsController
     }
 
     /**
-     * " in Lekki" when a location is known, otherwise an empty string —
-     * appended to the headline rather than always shown, since
+     * " in Lekki, Lagos" when a location is known, otherwise an empty string
+     * — appended to the headline rather than always shown, since
      * locationLabel()'s own "Location Unspecified" fallback would read
-     * strangely tacked onto the end of a headline.
+     * strangely tacked onto the end of a headline. Includes the parent
+     * (state) alongside the area, same as locationLabel() itself — a buyer
+     * searches "3-Bedroom House in Magodo, Lagos", not "...in Nigeria" (the
+     * area alone, with no state, reads ambiguous for the more common
+     * same-named areas across different states).
      */
     private static function headlineLocationSuffix(Lead $lead): string
     {
         if ($lead->location) {
-            return ' in ' . $lead->location->name;
+            return ' in ' . self::locationLabel($lead);
         }
 
         if ($lead->location_raw) {

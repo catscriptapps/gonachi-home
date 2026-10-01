@@ -77,6 +77,27 @@ export async function loadPartial(url, pushState = true, clickedLink = null) {
       document.title = `${pageTitle} | ${appName}`;
     }
 
+    // Keep the live <meta name="description"> in sync with the same
+    // per-page summary that already drives the title above — a full page
+    // load always gets the right one server-side (see layouts/app.php),
+    // but a partial nav only swaps #main-content, so without this the tag
+    // would keep showing whatever page the visitor was on before. Always
+    // set it (never skip when pageSummary is blank) — most pages have no
+    // dynamic summary at all, and without a fallback here that case would
+    // leave a PREVIOUS page's (e.g. a lead's) description stuck on screen
+    // after navigating away from it. Same default copy as layouts/app.php's
+    // own fallback, so the two stay in sync.
+    let metaDescription = document.querySelector('meta[name="description"]');
+    if (!metaDescription) {
+      metaDescription = document.createElement('meta');
+      metaDescription.setAttribute('name', 'description');
+      document.head.appendChild(metaDescription);
+    }
+    metaDescription.setAttribute(
+      'content',
+      pageSummary || 'Live home buyer and seller leads, matched by location and intent — Gonachi Real Estate Leads.'
+    );
+
     // Dispatch global event caught by Alpine context within layout-header.php
     window.dispatchEvent(new CustomEvent('spa-navigation', {
       detail: { isHome, title: pageTitle, summary: pageSummary }

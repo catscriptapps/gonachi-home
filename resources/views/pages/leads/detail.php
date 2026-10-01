@@ -9,13 +9,12 @@ declare(strict_types=1);
 
 /** @var bool $isLoggedIn */
 
-use App\Models\Lead;
 use Src\Controller\LeadsController;
 use Src\Service\AuthService;
 use Src\Service\CreditService;
 
-$leadId = (int) ($GLOBALS['encodedId'] ?? 0);
-$lead = $leadId ? Lead::with(['location.parent', 'category', 'source'])->find($leadId) : null;
+$leadSlugOrId = (string) ($GLOBALS['encodedId'] ?? '');
+$lead = $leadSlugOrId !== '' ? LeadsController::findBySlugOrId($leadSlugOrId) : null;
 
 if (!$lead || $lead->status !== 'active' || !$lead->isComplete()):
     http_response_code(404);

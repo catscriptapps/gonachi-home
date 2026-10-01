@@ -19,7 +19,7 @@ require_once __DIR__ . '/../server/helpers.php';
 use App\Models\Lead;
 use Src\Service\ContactInfoParser;
 
-Lead::ensureContactColumns();
+Lead::ensureLeadColumns();
 
 $candidates = Lead::where(function ($q) {
     $q->whereNull('phone')->orWhereNull('email');

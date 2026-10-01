@@ -28,6 +28,7 @@ class Lead extends Model
         'contact_info_raw',
         'phone',
         'email',
+        'slug',
         'status',
         'category_id',
         'posted_at',
@@ -82,7 +83,7 @@ class Lead extends Model
      */
     public function scopeComplete($query)
     {
-        self::ensureContactColumns();
+        self::ensureLeadColumns();
 
         return $query
             ->whereNotNull('phone')
@@ -113,15 +114,15 @@ class Lead extends Model
     }
 
     /**
-     * Adds the `phone`/`email` columns to an already-deployed rel_leads
-     * table on first use, without a (data-wiping) full reset — mirrors the
-     * lazy-table-creation pattern used elsewhere in this app (e.g.
-     * Src\Service\PendingUploadTracker::ensureTable()), generalized to an
-     * ALTER since this table already holds real scraped lead data that must
-     * never be dropped. A fresh install gets these columns directly from
-     * scripts/reset/rel-leads.php instead.
+     * Adds the `phone`/`email`/`slug` columns to an already-deployed
+     * rel_leads table on first use, without a (data-wiping) full reset —
+     * mirrors the lazy-table-creation pattern used elsewhere in this app
+     * (e.g. Src\Service\PendingUploadTracker::ensureTable()), generalized to
+     * an ALTER since this table already holds real scraped lead data that
+     * must never be dropped. A fresh install gets these columns directly
+     * from scripts/reset/rel-leads.php instead.
      */
-    public static function ensureContactColumns(): void
+    public static function ensureLeadColumns(): void
     {
         static $checked = false;
         if ($checked) {
@@ -137,6 +138,14 @@ class Lead extends Model
         }
         if (!$schema->hasColumn($table, 'email')) {
             $schema->table($table, fn ($t) => $t->string('email')->nullable()->after('phone'));
+        }
+        if (!$schema->hasColumn($table, 'slug')) {
+            // Only set for leads with a property_type + specific location
+            // (see LeadsController::buildUniqueSlug()) — unique among
+            // non-null values only, so incomplete leads can simply leave it
+            // null with no collision bookkeeping needed for rows that can
+            // never be publicly linked to anyway (see Lead::isComplete()).
+            $schema->table($table, fn ($t) => $t->string('slug')->nullable()->unique()->after('email'));
         }
     }
 }

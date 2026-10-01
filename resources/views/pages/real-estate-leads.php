@@ -190,7 +190,7 @@ $spotlight = LeadsController::spotlight();
                                 <?= $lead->contact_info_raw ? 'Public contact details available.' : 'Contact details unlock with a full record view.' ?>
                             </span>
                             <?php if ($isLoggedIn): ?>
-                                <a href="<?= $baseUrl ?>leads/<?= $lead->id ?>" data-partial class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
+                                <a href="<?= $baseUrl ?>leads/<?= $lead->slug ?? $lead->id ?>" data-partial class="inline-flex items-center px-4 py-2 bg-gray-900 hover:bg-gray-800 dark:bg-primary-600 dark:hover:bg-primary-500 text-white font-bold text-xs rounded-lg transition-colors shadow-sm tracking-wide">
                                     View Full Details
                                 </a>
                             <?php else: ?>

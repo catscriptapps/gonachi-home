@@ -25,6 +25,7 @@ declare(strict_types=1);
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><?= htmlspecialchars($title) . ' | ' . htmlspecialchars($appName); ?></title>
+    <meta name="description" content="<?= htmlspecialchars($GLOBALS['pageSummary'] ?? 'Live home buyer and seller leads, matched by location and intent — Gonachi Real Estate Leads.') ?>" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

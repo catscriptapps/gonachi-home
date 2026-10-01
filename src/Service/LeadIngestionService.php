@@ -10,6 +10,7 @@ use App\Models\LeadCategory;
 use App\Models\LeadSource;
 use App\Models\Location;
 use Carbon\Carbon;
+use Src\Controller\LeadsController;
 use Src\Service\LeadSources\LeadCandidate;
 use Src\Service\LeadSources\RequiresCompleteListingInfo;
 
@@ -23,14 +24,39 @@ final class LeadIngestionService
 
     public function __construct(?LeadIntentClassifier $classifier = null)
     {
-        $this->classifier = $classifier ?? new LeadIntentClassifier(
-            Location::pluck('name')->all()
-        );
+        $this->classifier = $classifier ?? new LeadIntentClassifier(self::locationIndex());
 
-        // Lazily adds rel_leads.phone/email to an already-deployed database
-        // (see Lead::ensureContactColumns()) before the first create() below
-        // needs to write to them.
-        Lead::ensureContactColumns();
+        // Lazily adds rel_leads.phone/email/slug to an already-deployed
+        // database (see Lead::ensureLeadColumns()) before the first
+        // create() below needs to write to them.
+        Lead::ensureLeadColumns();
+    }
+
+    /**
+     * Every location name paired with its depth in the tree (0 = country,
+     * 1 = state, 2 = area) — see LeadIntentClassifier::detectLocation(),
+     * which needs depth to prefer a specific area match over a country/state
+     * one that happens to also appear in the same text. Shared with
+     * scripts/backfill-lead-locations.php so a standalone re-run uses the
+     * exact same index this class builds for live ingestion.
+     *
+     * @return array<int, array{name: string, depth: int}>
+     */
+    public static function locationIndex(): array
+    {
+        $locations = Location::all(['id', 'name', 'parent_id'])->keyBy('id');
+
+        return $locations->map(function (Location $location) use ($locations) {
+            $depth = 0;
+            $current = $location;
+
+            while ($current->parent_id !== null && $locations->has($current->parent_id)) {
+                $depth++;
+                $current = $locations->get($current->parent_id);
+            }
+
+            return ['name' => $location->name, 'depth' => $depth];
+        })->values()->all();
     }
 
     /**
@@ -80,7 +106,7 @@ final class LeadIngestionService
             $phone = ContactInfoParser::extractPhone($contactText);
             $email = ContactInfoParser::extractEmail($contactText);
 
-            Lead::create([
+            $lead = Lead::create([
                 'lead_source_id' => $source->id,
                 'external_id' => $candidate->externalId,
                 'source_url' => $candidate->url,
@@ -101,6 +127,15 @@ final class LeadIngestionService
                 'posted_at' => $candidate->postedAt,
                 'scraped_at' => Carbon::now(),
             ]);
+
+            // SEO slug — see LeadsController::buildUniqueSlug()'s docblock
+            // for why this needs $lead->location loaded (lazy-loads here via
+            // $lead->location_id, one extra query, acceptable for a
+            // background ingestion run).
+            $slug = LeadsController::buildUniqueSlug($lead);
+            if ($slug) {
+                $lead->update(['slug' => $slug]);
+            }
 
             $stats['new']++;
         }
