@@ -28,6 +28,12 @@ function resetLtvLandlordsTable(): array
             // This is the "Contact Details" LandlordCreditService unlocks —
             // see landlord_and_tenant_validation.pdf's Step 8.
             $table->string('phone')->nullable();
+            // Set when this directory entry is matched to a real Gonachi
+            // account (e.g. the landlord claimed/registered, or was the
+            // logged-in user who initiated a tenancy as the landlord side) —
+            // required for a Tenancy to ever reach mutual_confirmation
+            // verification, see Src\Service\TenancyService::recomputeVerification().
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->timestamps();
         });
 

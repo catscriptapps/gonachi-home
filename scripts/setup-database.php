@@ -146,20 +146,32 @@ $messages = array_merge($messages, resetLtvContactUnlocksTable());
 require_once __DIR__ . '/reset/ltv-properties.php';
 $messages = array_merge($messages, resetLtvPropertiesTable());
 
-require_once __DIR__ . '/reset/ltv-reports.php';
-$messages = array_merge($messages, resetLtvReportsTable());
-
-require_once __DIR__ . '/reset/ltv-report-photos.php';
-$messages = array_merge($messages, resetLtvReportPhotosTable());
-
 require_once __DIR__ . '/reset/ltv-tenants.php';
 $messages = array_merge($messages, resetLtvTenantsTable());
 
-require_once __DIR__ . '/reset/ltv-tenant-reports.php';
-$messages = array_merge($messages, resetLtvTenantReportsTable());
-
 require_once __DIR__ . '/reset/ltv-tenant-unlocks.php';
 $messages = array_merge($messages, resetLtvTenantUnlocksTable());
+
+require_once __DIR__ . '/reset/ltv-review-criteria.php';
+$messages = array_merge($messages, resetLtvReviewCriteriaTable());
+
+require_once __DIR__ . '/reset/ltv-tenancies.php';
+$messages = array_merge($messages, resetLtvTenanciesTable());
+
+require_once __DIR__ . '/reset/ltv-reviews.php';
+$messages = array_merge($messages, resetLtvReviewsTable());
+
+require_once __DIR__ . '/reset/ltv-review-criterion-scores.php';
+$messages = array_merge($messages, resetLtvReviewCriterionScoresTable());
+
+require_once __DIR__ . '/reset/ltv-review-tags.php';
+$messages = array_merge($messages, resetLtvReviewTagsTable());
+
+require_once __DIR__ . '/reset/ltv-review-reports.php';
+$messages = array_merge($messages, resetLtvReviewReportsTable());
+
+require_once __DIR__ . '/reset/ltv-review-responses.php';
+$messages = array_merge($messages, resetLtvReviewResponsesTable());
 
 require_once __DIR__ . '/reset/ltv-rental-listings.php';
 $messages = array_merge($messages, resetLtvRentalListingsTable());

@@ -103,11 +103,15 @@ $tablesToDrop = [
     // Project: landlord-tenant-validation
     'ltv_rental_listing_photos',
     'ltv_rental_listings',
+    'ltv_review_responses',
+    'ltv_review_reports',
+    'ltv_review_tags',
+    'ltv_review_criterion_scores',
+    'ltv_reviews',
+    'ltv_tenancies',
+    'ltv_review_criteria',
     'ltv_tenant_unlocks',
-    'ltv_tenant_reports',
     'ltv_tenants',
-    'ltv_report_photos',
-    'ltv_reports',
     'ltv_properties',
     'ltv_contact_unlocks',
     'ltv_credit_transactions',
@@ -277,20 +281,32 @@ $messages = array_merge($messages, resetLtvContactUnlocksTable());
 require_once __DIR__ . '/../../scripts/reset/ltv-properties.php';
 $messages = array_merge($messages, resetLtvPropertiesTable());
 
-require_once __DIR__ . '/../../scripts/reset/ltv-reports.php';
-$messages = array_merge($messages, resetLtvReportsTable());
-
-require_once __DIR__ . '/../../scripts/reset/ltv-report-photos.php';
-$messages = array_merge($messages, resetLtvReportPhotosTable());
-
 require_once __DIR__ . '/../../scripts/reset/ltv-tenants.php';
 $messages = array_merge($messages, resetLtvTenantsTable());
 
-require_once __DIR__ . '/../../scripts/reset/ltv-tenant-reports.php';
-$messages = array_merge($messages, resetLtvTenantReportsTable());
-
 require_once __DIR__ . '/../../scripts/reset/ltv-tenant-unlocks.php';
 $messages = array_merge($messages, resetLtvTenantUnlocksTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-review-criteria.php';
+$messages = array_merge($messages, resetLtvReviewCriteriaTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-tenancies.php';
+$messages = array_merge($messages, resetLtvTenanciesTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-reviews.php';
+$messages = array_merge($messages, resetLtvReviewsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-review-criterion-scores.php';
+$messages = array_merge($messages, resetLtvReviewCriterionScoresTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-review-tags.php';
+$messages = array_merge($messages, resetLtvReviewTagsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-review-reports.php';
+$messages = array_merge($messages, resetLtvReviewReportsTable());
+
+require_once __DIR__ . '/../../scripts/reset/ltv-review-responses.php';
+$messages = array_merge($messages, resetLtvReviewResponsesTable());
 
 require_once __DIR__ . '/../../scripts/reset/ltv-rental-listings.php';
 $messages = array_merge($messages, resetLtvRentalListingsTable());

@@ -18,8 +18,8 @@ declare(strict_types=1);
 use Src\Controller\AdvertsController;
 use Src\Controller\ChatController;
 use Src\Controller\ContractorClaimController;
-use Src\Controller\LandlordReportReviewController;
 use Src\Controller\LeadReviewController;
+use Src\Controller\ReviewModerationController;
 use Src\Controller\MessagesController;
 use Src\Service\AuthService;
 use Src\Service\ContractorOutreachService;
@@ -39,7 +39,7 @@ $currentPath = $path ?? '';
 $openConversations = ChatController::openConversations()->total();
 $unreadChats = ChatController::unreadCountForAdmin();
 $pendingLeads = LeadReviewController::pending()->total();
-$pendingReports = LandlordReportReviewController::pending()->total();
+$pendingReports = ReviewModerationController::pending()->total();
 $pendingClaims = ContractorClaimController::pending()->total();
 $pendingAdverts = AdvertsController::pendingCount();
 $outreachableContractors = ContractorOutreachService::outreachable()->total();
@@ -51,7 +51,7 @@ $tabs = [
     ['label' => 'Messages', 'href' => 'messages', 'badge' => $unreadMessages],
     ['label' => 'Live Chats', 'href' => 'live-chat', 'badge' => $unreadChats],
     ['label' => 'Lead Review', 'href' => 'lead-review', 'badge' => $pendingLeads],
-    ['label' => 'Landlord Reports', 'href' => 'landlord-report-review', 'badge' => $pendingReports],
+    ['label' => 'Review Disputes', 'href' => 'review-moderation', 'badge' => $pendingReports],
     // crossShell: true — both Contractor tabs live under Contractor
     // Discovery's own sidebar shell (layouts/contractor-app.php), unlike
     // every OTHER tab here which stays inside this dashboard's app.php
@@ -85,10 +85,10 @@ $statCards = [
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
     ],
     [
-        'label' => 'Pending Landlord Reports',
+        'label' => 'Pending Review Disputes',
         'value' => $pendingReports,
         'sub' => 'Landlord & Tenant Validation',
-        'href' => 'landlord-report-review',
+        'href' => 'review-moderation',
         'accent' => 'text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40',
         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />',
     ],

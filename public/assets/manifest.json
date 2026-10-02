@@ -142,6 +142,10 @@
     "file": "js/resend-activation-Cb05OAl_.min.js",
     "name": "resend-activation"
   },
+  "_review-criteria-form-CVgv7usy.min.js": {
+    "file": "js/review-criteria-form-CVgv7usy.min.js",
+    "name": "review-criteria-form"
+  },
   "_spa-router-CVq88Upj.min.js": {
     "file": "js/spa-router-CVq88Upj.min.js",
     "name": "spa-router"
@@ -430,15 +434,6 @@
       "_confirm-CjaIikI-.min.js"
     ]
   },
-  "resources/js/pages/landlord-report-review-page.js": {
-    "file": "js/landlord-report-review-page.min.js",
-    "name": "landlord-report-review-page",
-    "src": "resources/js/pages/landlord-report-review-page.js",
-    "isEntry": true,
-    "imports": [
-      "_preview-B3PUvf1N.min.js"
-    ]
-  },
   "resources/js/pages/landlord-tenant-validation-page.js": {
     "file": "js/landlord-tenant-validation-page.min.js",
     "name": "landlord-tenant-validation-page",
@@ -679,29 +674,6 @@
       "resources/js/ui/toast.js"
     ]
   },
-  "resources/js/pages/report-landlord-page.js": {
-    "file": "js/report-landlord-page.min.js",
-    "name": "report-landlord-page",
-    "src": "resources/js/pages/report-landlord-page.js",
-    "isEntry": true,
-    "imports": [
-      "_form-validator-Cyy6Sf_e.min.js",
-      "_upload-modal-LZn6zRtd.min.js",
-      "resources/js/ui/toast.js",
-      "_preview-B3PUvf1N.min.js",
-      "_pic-reorder-DifLv53e.min.js"
-    ]
-  },
-  "resources/js/pages/report-tenant-page.js": {
-    "file": "js/report-tenant-page.min.js",
-    "name": "report-tenant-page",
-    "src": "resources/js/pages/report-tenant-page.js",
-    "isEntry": true,
-    "imports": [
-      "_form-validator-Cyy6Sf_e.min.js",
-      "resources/js/ui/toast.js"
-    ]
-  },
   "resources/js/pages/reset-password-page.js": {
     "file": "js/reset-password-page.min.js",
     "name": "reset-password-page",
@@ -710,6 +682,28 @@
     "imports": [
       "_form-validator-Cyy6Sf_e.min.js",
       "_spinner-utils-BGUFcaGl.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/review-landlord-page.js": {
+    "file": "js/review-landlord-page.min.js",
+    "name": "review-landlord-page",
+    "src": "resources/js/pages/review-landlord-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator-Cyy6Sf_e.min.js",
+      "_review-criteria-form-CVgv7usy.min.js",
+      "resources/js/ui/toast.js"
+    ]
+  },
+  "resources/js/pages/review-tenant-page.js": {
+    "file": "js/review-tenant-page.min.js",
+    "name": "review-tenant-page",
+    "src": "resources/js/pages/review-tenant-page.js",
+    "isEntry": true,
+    "imports": [
+      "_form-validator-Cyy6Sf_e.min.js",
+      "_review-criteria-form-CVgv7usy.min.js",
       "resources/js/ui/toast.js"
     ]
   },

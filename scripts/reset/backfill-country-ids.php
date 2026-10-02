@@ -2,8 +2,8 @@
 // /scripts/reset/backfill-country-ids.php
 //
 // Call AFTER restoreScrapedData() in a full reset. A reset recreates
-// cde_contractors/rel_locations/ltv_properties/ltv_tenant_reports from the
-// current schema (which now includes country_id), but restoreScrapedData()
+// cde_contractors/rel_locations/ltv_properties from the current schema
+// (which now includes country_id), but restoreScrapedData()
 // re-inserts leads/contractors that were backed up from the OLD schema —
 // their backed-up row never had a country_id key at all, so they come back
 // with it NULL. Every row that predates the country expansion is
@@ -18,7 +18,8 @@ declare(strict_types=1);
 use App\Models\Contractor;
 use App\Models\Location;
 use App\Models\PropertyRecord;
-use App\Models\TenantReport;
+use App\Models\Review;
+use App\Models\Tenancy;
 use Src\Utils\CountryScope;
 
 function backfillCountryIds(): array
@@ -29,7 +30,6 @@ function backfillCountryIds(): array
     Contractor::ensureContractorColumns();
     Location::ensureLocationColumns();
     PropertyRecord::ensurePropertyColumns();
-    TenantReport::ensureTenantReportColumns();
 
     $contractorsUpdated = Contractor::whereNull('country_id')->update(['country_id' => $nigeria]);
     if ($contractorsUpdated > 0) {
@@ -49,9 +49,14 @@ function backfillCountryIds(): array
         $messages[] = "backfilled country_id to Nigeria on {$propertiesUpdated} property record(s)";
     }
 
-    $tenantReportsUpdated = TenantReport::whereNull('country_id')->update(['country_id' => $nigeria]);
-    if ($tenantReportsUpdated > 0) {
-        $messages[] = "backfilled country_id to Nigeria on {$tenantReportsUpdated} tenant report(s)";
+    $tenanciesUpdated = Tenancy::whereNull('country_id')->update(['country_id' => $nigeria]);
+    if ($tenanciesUpdated > 0) {
+        $messages[] = "backfilled country_id to Nigeria on {$tenanciesUpdated} tenancy/tenancies";
+    }
+
+    $reviewsUpdated = Review::whereNull('country_id')->update(['country_id' => $nigeria]);
+    if ($reviewsUpdated > 0) {
+        $messages[] = "backfilled country_id to Nigeria on {$reviewsUpdated} review(s)";
     }
 
     return $messages;

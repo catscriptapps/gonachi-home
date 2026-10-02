@@ -30,9 +30,9 @@ class PropertyRecord extends Model
         return $this->belongsTo(LandlordRecord::class, 'landlord_id');
     }
 
-    public function reports()
+    public function tenancies()
     {
-        return $this->hasMany(LandlordReport::class, 'property_id');
+        return $this->hasMany(Tenancy::class, 'property_id');
     }
 
     public function country()

@@ -28,6 +28,11 @@ function resetLtvTenantsTable(): array
             // reveals — see landlord_and_tenant_validation.pdf's Step 8 and
             // Tenant Profile's "References" field.
             $table->string('reference_phone')->nullable();
+            // Set when this directory entry is matched to a real Gonachi
+            // account — required for a Tenancy to ever reach
+            // mutual_confirmation verification, see
+            // Src\Service\TenancyService::recomputeVerification().
+            $table->unsignedBigInteger('user_id')->nullable()->index();
             $table->timestamps();
         });
 

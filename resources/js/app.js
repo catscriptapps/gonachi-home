@@ -59,6 +59,7 @@ import { init as initMessagesPage } from './pages/messages-page.js';
 import { cleanupModals } from './utils/modal-cleanup.js';
 import { init as initChatWidget } from './components/chat-widget.js';
 import { wireReviewQueue } from './utils/review-queue.js';
+import { initReviewActions } from './components/review-actions.js';
 import { initRegisterNewUser } from './utils/home/register-new-user.js';
 import { initAuthGateTriggers } from './modals/auth-gate-modal.js';
 import { initSponsoredAd } from './components/sponsored-ad.js';
@@ -195,6 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initFooterLinks();
   initChatWidget();
   wireReviewQueue();
+  initReviewActions();
 
   // Initialize modals
   initGlobalModals();

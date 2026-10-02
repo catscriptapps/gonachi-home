@@ -7,26 +7,31 @@ declare(strict_types=1);
  * Gonachi Landlord & Tenant Validation Engine - Rental Opportunities Feed
  *
  * Backed by real data via Src\Controller\RentalListingController — listings
- * are submitted at /list-rental-property (mirrors report-landlord.php) and
- * moderated the same way landlord reports are, at /rental-listing-review.
- * A listing's "Verified/Unverified Landlord" badge reuses the real
- * confidence engine (LandlordDirectoryController::confidenceScore()) against
- * its shared PropertyRecord, so a property with landlord reports on file
- * shows a genuine score here too.
+ * are submitted at /list-rental-property and moderated at
+ * /rental-listing-review. A listing's "Verified/Unverified Landlord" badge
+ * now reflects whether the landlord has at least one verified tenancy in
+ * the rebuilt review system (Src\Service\ReviewAggregationService) — the
+ * old percentage-based confidence engine was part of the single-rating
+ * system the PDF rebuild replaced.
  *
  * @var string $baseUrl
  */
 
-use Src\Controller\LandlordDirectoryController;
+use Src\Controller\ReviewProfileController;
 use Src\Controller\RentalListingController;
+use Src\Service\ReviewAggregationService;
+use Src\Utils\CountryScope;
+
+$countryCode = $GLOBALS['countryCode'] ?? 'ng';
+$countryId = CountryScope::idFor($countryCode);
 
 $areaFilter = trim((string) ($_GET['area'] ?? ''));
-$listings = RentalListingController::browse($areaFilter !== '' ? $areaFilter : null, 9);
+$listings = RentalListingController::browse($areaFilter !== '' ? $areaFilter : null, 9, $countryId);
 if ($areaFilter !== '') {
     $listings->appends(['area' => $areaFilter]);
 }
 
-$topAreas = RentalListingController::countsByArea(3);
+$topAreas = RentalListingController::countsByArea(3, $countryId);
 ?>
 <div class="space-y-6">
 
@@ -81,8 +86,10 @@ $topAreas = RentalListingController::countsByArea(3);
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             <?php foreach ($listings as $listing): ?>
                 <?php
-                $score = $listing->property ? LandlordDirectoryController::confidenceScore($listing->property) : 0;
-                $landlordStatus = $score >= 70 ? 'Verified' : 'Unverified';
+                $landlordId = $listing->property->landlord_id ?? null;
+                $aggregate = $landlordId ? ReviewAggregationService::profileAggregate('landlord', $landlordId) : null;
+                $verifiedTenancies = $landlordId ? ReviewAggregationService::verifiedTenancyCount('landlord', $landlordId) : 0;
+                $landlordStatus = $verifiedTenancies > 0 ? 'Verified' : 'Unverified';
                 $statusStyle = $landlordStatus === 'Verified'
                     ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400'
                     : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400';
@@ -110,13 +117,14 @@ $topAreas = RentalListingController::countsByArea(3);
                     </p>
 
                     <div class="mt-4 pt-4 border-t border-gray-100 dark:border-gray-800/80">
-                        <div class="flex items-center justify-between text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5">
-                            <span>Review Score</span>
-                            <span><?= $score ?>%</span>
-                        </div>
-                        <div class="h-1.5 rounded-full bg-gray-100 dark:bg-gray-800 overflow-hidden">
-                            <div class="h-full rounded-full bg-indigo-500" style="width: <?= $score ?>%"></div>
-                        </div>
+                        <?php if ($aggregate && $aggregate['overall'] !== null): ?>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="font-semibold text-gray-500 dark:text-gray-400">Landlord Rating</span>
+                                <span class="text-amber-500 dark:text-amber-400"><?= ReviewProfileController::starHtml($aggregate['overall']) ?> <?= number_format($aggregate['overall'], 1) ?></span>
+                            </div>
+                        <?php else: ?>
+                            <span class="text-xs text-gray-400">No landlord reviews yet</span>
+                        <?php endif; ?>
                     </div>
 
                     <div class="flex items-center justify-between pt-4">

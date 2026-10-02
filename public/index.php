@@ -84,7 +84,7 @@ if (in_array(trim($path, '/'), $countryScopedProjects, true)) {
 // path) fell back to layouts/app.php regardless of which project it was.
 $portalPaths = ['/home'];
 $contractorPaths = ['/contractor-discovery', '/job-requests', '/bidding', '/contractor-claims-review', '/contractor-outreach'];
-$landlordPaths = ['/landlord-tenant-validation', '/report-landlord', '/report-tenant', '/rental-opportunities', '/landlord-report-review', '/tenant-report-review', '/list-rental-property', '/rental-listing-review'];
+$landlordPaths = ['/landlord-tenant-validation', '/review-landlord', '/review-tenant', '/rental-opportunities', '/review-moderation', '/list-rental-property', '/rental-listing-review'];
 $realEstateWorldPaths = ['/real-estate-world', '/social-feed', '/adverts', '/my-adverts', '/adverts-admin', '/quotations', '/my-quotations', '/mentors', '/listings', '/my-listings', '/ratings', '/recommendations'];
 $swapPaths = ['/swap', '/my-swap-listings', '/saved-swap-listings'];
 
@@ -95,10 +95,13 @@ $swapPaths = ['/swap', '/my-swap-listings', '/saved-swap-listings'];
 // showing the wrong project's sidebar on every contractor profile page.
 // /contractor-discovery/{ng|us|ca} needs the same prefix treatment — it
 // never exact-matches $contractorPaths either, since it always carries a
-// country-code suffix.
+// country-code suffix. /landlords/{id} and /tenants/{id} are the same kind
+// of dynamic detail route as /contractor/{id} — the rebuilt review system's
+// profile pages (see resolveDynamicPageMeta()'s 'landlords'/'tenants' branches).
 $isContractorPath = in_array($path, $contractorPaths, true) || str_starts_with($path, '/contractor/')
     || (bool) preg_match('#^/contractor-discovery/(ng|us|ca)$#', $path);
 $isLandlordPath = in_array($path, $landlordPaths, true)
+    || str_starts_with($path, '/landlords/') || str_starts_with($path, '/tenants/')
     || (bool) preg_match('#^/landlord-tenant-validation/(ng|us|ca)$#', $path);
 
 if (in_array($path, $portalPaths, true)) {

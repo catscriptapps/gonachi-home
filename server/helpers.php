@@ -310,6 +310,36 @@ function resolveDynamicPageMeta(string $resource, string $id): ?array
         ];
     }
 
+    if ($resource === 'landlords') {
+        $profile = \Src\Controller\ReviewProfileController::landlordProfile((int) $id);
+
+        if ($profile) {
+            return [
+                'title'   => "{$profile['record']->name} — Landlord Reviews",
+                'summary' => "See verified tenant reviews and ratings for {$profile['record']->name} on Gonachi Landlord & Tenant Validation.",
+            ];
+        }
+
+        http_response_code(404);
+
+        return ['title' => 'Landlord Not Found', 'summary' => 'This landlord profile is no longer available.'];
+    }
+
+    if ($resource === 'tenants') {
+        $profile = \Src\Controller\ReviewProfileController::tenantProfile((int) $id);
+
+        if ($profile) {
+            return [
+                'title'   => "{$profile['record']->name} — Tenant Reviews",
+                'summary' => "See verified landlord reviews and ratings for {$profile['record']->name} on Gonachi Landlord & Tenant Validation.",
+            ];
+        }
+
+        http_response_code(404);
+
+        return ['title' => 'Tenant Not Found', 'summary' => 'This tenant profile is no longer available.'];
+    }
+
     return null;
 }
 
