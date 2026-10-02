@@ -44,6 +44,7 @@ if ($isAdminReset) {
 
 require_once __DIR__ . '/../../scripts/reset/preserve-system-settings.php';
 require_once __DIR__ . '/../../scripts/reset/preserve-scraped-data.php';
+require_once __DIR__ . '/../../scripts/reset/backfill-country-ids.php';
 
 $messages = [];
 
@@ -344,6 +345,11 @@ $messages = array_merge($messages, seedCdeBaselineData());
 // are stable for restoreScrapedData() to resolve against — see
 // scripts/reset/preserve-scraped-data.php.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
+
+// Restored rows above came from a backup taken before this reset's schema
+// changes, so they never had a country_id key at all — see
+// scripts/reset/backfill-country-ids.php.
+$messages = array_merge($messages, backfillCountryIds());
 
 /**
  * 4d. CREATION PHASE - PROJECT: real-estate-world (rew_ prefixed tables)

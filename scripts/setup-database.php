@@ -16,6 +16,7 @@ use Illuminate\Database\Capsule\Manager as Capsule;
 require_once __DIR__ . '/../server/bootstrap.php';
 require_once __DIR__ . '/reset/preserve-system-settings.php';
 require_once __DIR__ . '/reset/preserve-scraped-data.php';
+require_once __DIR__ . '/reset/backfill-country-ids.php';
 
 $messages = [];
 
@@ -213,6 +214,11 @@ $messages = array_merge($messages, seedCdeBaselineData());
 // are stable for restoreScrapedData() to resolve against — see
 // reset/preserve-scraped-data.php.
 $messages = array_merge($messages, restoreScrapedData($scrapedDataBackup));
+
+// Restored rows above came from a backup taken before this reset's schema
+// changes, so they never had a country_id key at all — see
+// reset/backfill-country-ids.php.
+$messages = array_merge($messages, backfillCountryIds());
 
 // --------------------------------------------------
 // Project: real-estate-world (rew_ prefixed tables)
